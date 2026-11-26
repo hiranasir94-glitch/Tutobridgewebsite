@@ -340,7 +340,15 @@ welcome(){return `<div class="wl"><div class="blob b1"></div><div class="blob b2
 login(){return head('Log in')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;flex-direction:row;justify-content:center;gap:14px">${stk('pencil',54)}<div class="wlogo" style="background:var(--brand);width:68px;height:68px;border-radius:22px">${BRIDGE(34)}</div>${stk('books',54)}</div><h2 class="center">Welcome back</h2><p class="muted center" style="margin-top:0">Log in to find teachers or manage your requests.</p>
  ${fld('lemail','Email',{type:'email'})}${fld('lpass','Password',{type:'password'})}
  <button class="btn" style="margin-top:20px" data-a="login">Log in</button>
+ <div class="center" style="margin-top:8px"><button class="wlink" style="font-size:11px;font-weight:700;padding:6px 10px" data-a="forgotScreen">Forgot password?</button></div>
  <div class="center" style="margin-top:18px"><span class="muted small">New to Tutobridge?</span><div class="row" style="margin-top:8px"><button class="btn out sm" data-a="signup" data-v="parent">Sign up as a parent</button><button class="btn out sm" data-a="signup" data-v="teacher">Register as a teacher</button></div></div></div>`},
+forgot(){return head('Reset password')+`<div class="scroll"><div class="center" style="margin:6px 0 4px">${stk('bulb',64)}</div><h2 class="center">Forgot your password?</h2><p class="muted center" style="margin-top:0">Enter the email you signed up with. We will send you a link to choose a new password.</p>
+ ${fld('femail','Email',{type:'email'})}<button class="btn" style="margin-top:20px" data-a="sendReset">Send reset link</button></div>`},
+forgotSent(){return head('Check your email')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;font-size:54px">📧</div><h2 class="center">Check your email</h2><p class="muted center" style="margin-top:0;line-height:1.5">If there is an account for <b style="color:var(--ink)">${esc(S.resetEmail||'')}</b>, a reset link is on its way. Open it on this device to choose a new password. The link works once and expires after an hour.</p>
+ <button class="btn out" style="margin-top:18px" data-a="backToLogin">Back to log in</button>
+ <div class="center" style="margin-top:22px"><span class="muted small">Preview only: no email is sent here.</span><br><button class="wlink" style="font-size:12px" data-a="openReset">Open the link from the email</button></div></div>`},
+reset(){return head('New password')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;flex-direction:row;justify-content:center;gap:14px">${stk('pencil',54)}<div class="wlogo" style="background:var(--brand);width:68px;height:68px;border-radius:22px">${BRIDGE(34)}</div>${stk('star',46)}</div><h2 class="center">Choose a new password</h2><p class="muted center" style="margin-top:0">Use at least 8 characters.</p>
+ ${fld('np','New password',{type:'password'})}${fld('np2','Confirm new password',{type:'password'})}<button class="btn" style="margin-top:20px" data-a="doReset">Save new password</button></div>`},
 signup(){const t=S.role==='teacher';return head(t?'Register as a Teacher':'Parent / Student Sign Up')+`<div class="scroll"><p class="muted" style="margin-top:0">${t?'Create your teacher account. You will add subjects and fees next.':'Create an account to find teachers near you.'}</p>
  ${fld('name','Full name')}${fld('phone','Phone / WhatsApp number',{im:'tel',ph:'03XX XXXXXXX'})}
  ${fld('address',t?'Current Address':'Residential / Street Address',{area:1,rows:2,ph:'House, street, area, city'})}
@@ -520,6 +528,14 @@ const A={
  closeReq(v){const r=(S.posted||[]).find(x=>x.id===v);if(r)r.open=false;drawOver()},
  reqConnect(v){const r=REQS.concat(S.posted||[]).find(x=>x.id===v);if(!r)return;S.sheet=null;const id='q'+v;S.chats[id]=S.chats[id]||{name:r.name,ci:REQS.indexOf(r)<0?0:REQS.indexOf(r)+1,msgs:[],t:Date.now()};go('chat',id)},
  loginScreen(){S.f={};S.err={};go('login')},
+ forgotScreen(){S.f={femail:(S.f.lemail||'').trim()};S.err={};go('forgot')},
+ sendReset(){const em=(S.f.femail||'').trim().toLowerCase();S.err={};if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)){S.err.femail='Enter a valid email address';render();toast('Please fix the highlighted field.',1);return}
+  S.resetEmail=em;S.f={};go('forgotSent')},
+ backToLogin(){S.f={lemail:S.resetEmail||''};S.err={};S.stack=['welcome'];S.screen='login';S.dir='back';render()},
+ openReset(){S.f={};S.err={};go('reset')},
+ doReset(){const f=S.f;if(!chk([['np','Use at least 8 characters',()=>(f.np||'').length>=8],['np2','The passwords do not match',()=>f.np2===f.np]])){render();toast('Please fix the highlighted fields.',1);return}
+  const a=ACCTS[S.resetEmail];if(!a){S.err.np='This reset link is no longer valid. Request a new one.';render();toast('Reset link is not valid.',1);return}
+  a.pw=f.np;S.f={lemail:S.resetEmail};S.err={};S.stack=['welcome'];S.screen='login';S.dir='fade';render();toast('Password updated. Log in with your new password.')},
  login(){const f=S.f,em=(f.lemail||'').trim().toLowerCase();S.err={};
   if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em))S.err.lemail='Enter a valid email address';
   if(!(f.lpass||'').length)S.err.lpass='Enter your password';
