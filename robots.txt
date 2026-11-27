@@ -1,0 +1,8 @@
+# robots.txt for https://tutobridge.com
+User-agent: *
+Allow: /
+
+# Private / login-only areas
+Disallow: /admin/
+
+Sitemap: https://tutobridge.com/sitemap.xml
