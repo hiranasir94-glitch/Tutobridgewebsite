@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Find a Tutor in Lahore · Tutobridge</title>
+<meta name="description" content="Browse verified tutors in Lahore by subject and rating. Sign up free to see full profiles, fees and contact options.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.av{width:52px;height:52px;border-radius:16px;border:2px solid var(--ink);background:var(--lime);display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.tc-top{display:flex;gap:12px;align-items:center}
+.tc-top h3{font-size:17px}
+.lock{margin-top:4px;border:1.5px dashed #bbb;border-radius:14px;padding:10px 12px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.lock span{filter:blur(4px);user-select:none}
+.card.star{background:#FBFFE0}
+.card.example{opacity:.85}
+.tools-row{display:flex;flex-direction:column;gap:12px;margin-bottom:22px}
+.cta-band{border:2px solid var(--ink);border-radius:24px;background:var(--ink);color:#fff;padding:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-top:30px}
+.cta-band b{font-size:20px}
+.cta-band .btns{display:flex;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body data-page="tutors">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">Find a tutor</span>
+  <h1>Tutors in Lahore</h1>
+  <p>Browse verified teachers by subject and rating. Sign up free as a parent, student or teacher to see full profiles, fees and contact options.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="tools-row">
+    <input class="inp" id="q" type="search" placeholder="Search a subject, e.g. Mathematics, Chemistry, Urdu" aria-label="Search tutors by subject">
+    <div class="chips" id="subj"></div>
+  </div>
+  <div id="list"><div class="spin"></div></div>
+
+  <div class="cta-band">
+    <div><b>Want a tutor's full profile?</b><div style="opacity:.8;font-size:14.5px">Fees, qualifications, teaching areas and chat open up once you sign up. It's free.</div></div>
+    <div class="btns"><a class="btn" href="/app/#/signup/parent">Sign up as parent / student</a><a class="btn out" href="/app/#/signup/teacher">I'm a teacher</a></div>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var all = [], subj = 'All', q = '';
+  var EXAMPLES = [
+    { display_name: 'Example: Ayesha K.', subjects: ['Mathematics', 'Physics'], rating_avg: 4.9, reviews_count: 31, is_star_teacher: true, years_experience: 8 },
+    { display_name: 'Example: Sana M.', subjects: ['Chemistry', 'Biology'], rating_avg: 4.8, reviews_count: 24, is_star_teacher: true, years_experience: 6 },
+    { display_name: 'Example: Hamza T.', subjects: ['Computer Science', 'Mathematics'], rating_avg: 4.4, reviews_count: 9, years_experience: 3 }
+  ];
+  function card(t, example) {
+    return '<div class="card' + (t.is_star_teacher ? ' star' : '') + (example ? ' example' : '') + '">' +
+      '<div class="tc-top"><div class="av">' + TB.ini(t.display_name.replace('Example: ', '')) + '</div><div><h3>' + TB.esc(t.display_name) + '</h3>' +
+      (t.is_star_teacher ? '<span class="pill ink">★ Star Teacher</span>' : '<span class="pill">✓ Verified</span>') + '</div></div>' +
+      '<div><b class="small">Subjects</b><div class="pills" style="margin-top:4px">' + (t.subjects || []).map(function (s) { return '<span class="pill">' + TB.esc(s) + '</span>'; }).join('') + '</div></div>' +
+      '<div>' + TB.stars(t.rating_avg, t.reviews_count) + '</div>' +
+      '<div class="lock">🔒 <span>Fees · Qualifications · Areas · Chat</span></div>' +
+      '<a class="btn sm" href="/app/#/signup/parent" style="align-self:flex-start">Sign up to see details</a></div>';
+  }
+  function draw() {
+    var subs = {};
+    all.forEach(function (t) { (t.subjects || []).forEach(function (s) { subs[s] = 1; }); });
+    document.getElementById('subj').innerHTML = ['All'].concat(Object.keys(subs).sort()).map(function (s) {
+      return '<button class="chip' + (s === subj ? ' on' : '') + '" data-s="' + TB.esc(s) + '">' + TB.esc(s) + '</button>';
+    }).join('');
+    var shown = all.filter(function (t) {
+      var ss = (t.subjects || []).join(' ').toLowerCase();
+      return (subj === 'All' || (t.subjects || []).indexOf(subj) > -1) && (!q || ss.indexOf(q) > -1);
+    });
+    var el = document.getElementById('list');
+    if (!all.length) {
+      el.innerHTML = '<div class="note" style="margin-bottom:16px">📣 <b>Our first verified teachers are being reviewed now.</b> They will appear here as soon as our team approves them. Here is what a profile card looks like:</div><div class="grid">' + EXAMPLES.map(function (t) { return card(t, true); }).join('') + '</div>';
+    } else if (!shown.length) {
+      el.innerHTML = '<div class="empty"><b>🔍</b>No tutors match that subject yet. Try another one.</div>';
+    } else {
+      el.innerHTML = '<p class="muted small" style="margin:0 0 12px">' + shown.length + ' verified tutor' + (shown.length === 1 ? '' : 's') + '</p><div class="grid">' + shown.map(function (t) { return card(t); }).join('') + '</div>';
+    }
+  }
+  document.addEventListener('click', function (e) { var c = e.target.closest('[data-s]'); if (c) { subj = c.getAttribute('data-s'); draw(); } });
+  document.getElementById('q').addEventListener('input', function (e) { q = e.target.value.trim().toLowerCase(); draw(); });
+  TB.teachers().then(function (d) { all = d || []; draw(); }).catch(function () {
+    document.getElementById('list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load tutors right now. Please refresh in a moment.</div>';
+  });
+})();
+</script>
+</body>
+</html>

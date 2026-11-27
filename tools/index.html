@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Best Education Tools for Teachers & Parents · Tutobridge</title>
+<meta name="description" content="The education tools teachers and families use most today, from MagicSchool and Khanmigo to NotebookLM and Wayground, explained simply, with safety tips for parents.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.tool .hd{display:flex;align-items:center;gap:12px}
+.tool .ic{width:46px;height:46px;border-radius:14px;border:2px solid var(--ink);background:var(--lime);display:grid;place-items:center;font-size:22px;flex:none}
+.tool a.go{margin-top:auto;align-self:flex-start}
+.feat{border:2px solid var(--ink);border-radius:24px;background:var(--ink);color:#fff;padding:22px;display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+.feat b{font-size:21px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 20px}
+.tips{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+@media(max-width:699px){.tips{grid-template-columns:1fr}}
+.tips div{border:2px solid var(--ink);border-radius:18px;background:#fff;padding:14px 16px}
+.tips b{display:block;margin-bottom:2px}
+.cat{margin:30px 0 12px;font-size:20px}
+</style>
+</head>
+<body data-page="tools">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">🧰 Tools</span>
+  <h1>Education tools worth knowing</h1>
+  <p>The tools teachers and families use most right now, explained in plain words. Most have a free plan. Tap a tool to visit its official site.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="feat">
+    <div><span class="pill lime" style="color:var(--ink)">From Tutobridge · Free</span><div style="margin-top:8px"><b>Lesson Planner</b></div><div style="opacity:.8;font-size:14.5px">Build a timed, printable lesson plan for any subject and class in minutes. No sign-up.</div></div>
+    <a class="btn" href="/tools/lesson-planner/">Open Lesson Planner →</a>
+  </div>
+
+  <div class="tabs" id="tabs" style="margin-top:28px"></div>
+  <div id="tools"></div>
+  <p class="muted small" style="margin-top:22px">Tutobridge is not affiliated with these companies. Plans and prices can change, so check each site for the latest.</p>
+</div></section>
+
+<section class="pblk soft"><div class="wrap">
+  <h2>For parents: using these tools safely</h2>
+  <p class="sub">AI tools can help children learn, but they work best with an adult nearby.</p>
+  <div class="tips">
+    <div><b>✅ Check the age rule</b>Many AI chat tools ask for users to be 13 or older, or need a parent's permission. Look at the sign-up page.</div>
+    <div><b>🧠 Help, not homework-copying</b>Encourage tools that explain step by step, like Khanmigo, over ones that just give answers.</div>
+    <div><b>🔍 Double-check facts</b>AI can sound confident and still be wrong. Compare with the textbook or ask the teacher.</div>
+    <div><b>🔒 Keep personal details private</b>Children should not type their full name, school, address or photos into AI tools.</div>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var T = [
+    ['Teachers: planning & AI help', [
+      ['🪄', 'MagicSchool', 'https://www.magicschool.ai/', 'An all-in-one AI helper for teachers with 80+ tools: lesson plans, worksheets, quizzes, rubrics and report comments.', 'Free plan', 'teachers'],
+      ['🦉', 'Khanmigo for Teachers', 'https://www.khanmigo.ai/teachers', "Khan Academy's AI teaching assistant. Makes lesson hooks, exit tickets and rubrics, and tutors students step by step.", 'Free for teachers in many countries', 'teachers'],
+      ['⚡', 'Brisk Teaching', 'https://www.briskteaching.com/', 'A Chrome extension that works inside Google Docs, Slides and YouTube to give feedback, level texts and create activities.', 'Free plan', 'teachers'],
+      ['📖', 'Diffit', 'https://web.diffit.me/', 'Rewrites any article or topic at the reading level you need, with vocabulary and questions ready to print.', 'Free plan', 'teachers'],
+      ['🎯', 'Curipod', 'https://curipod.com/', 'Makes interactive lessons with polls, drawings and word clouds that students answer from their phones.', 'Free plan', 'teachers']
+    ]],
+    ['Quizzes & classroom fun', [
+      ['🎮', 'Wayground (formerly Quizizz)', 'https://wayground.com/', 'Game-style quizzes and lessons students can play live in class or as homework. Quizizz changed its name to Wayground in 2025.', 'Free plan', 'both'],
+      ['🟣', 'Kahoot!', 'https://kahoot.com/', 'Fast, fun quiz games for the whole class, played on a big screen with phones as buzzers.', 'Free plan', 'both'],
+      ['🎨', 'Canva for Education', 'https://www.canva.com/education/', 'Design posters, worksheets, slides and certificates from ready-made templates. Free for eligible teachers and their students.', 'Free for teachers', 'teachers'],
+      ['🏫', 'Google Classroom', 'https://classroom.google.com/', 'Share assignments, collect work and give marks in one place. Works well with Docs, Slides and Forms.', 'Free', 'both']
+    ]],
+    ['AI assistants & research', [
+      ['📓', 'NotebookLM', 'https://notebooklm.google/', "Upload your notes, chapters or PDFs and ask questions about them. It can also make study guides and audio summaries.", 'Free', 'both'],
+      ['✨', 'Gemini', 'https://gemini.google.com/', "Google's AI assistant. Helps draft, explain and summarise, and works inside Google Docs and Gmail.", 'Free plan', 'both'],
+      ['💬', 'ChatGPT', 'https://chatgpt.com/', 'A general AI assistant for drafting, explaining topics and brainstorming ideas.', 'Free plan', 'both'],
+      ['🧡', 'Claude', 'https://claude.ai/', 'A general AI assistant that is good at writing, explaining and working through long documents.', 'Free plan', 'both']
+    ]],
+    ['Students: practice at home', [
+      ['🎓', 'Khan Academy', 'https://www.khanacademy.org/', 'Free videos and practice for maths, science and more, from early years to A Levels.', 'Free', 'students'],
+      ['📈', 'Desmos', 'https://www.desmos.com/calculator', 'A free online graphing and scientific calculator, great for O and A Level maths.', 'Free', 'students'],
+      ['📐', 'GeoGebra', 'https://www.geogebra.org/', 'Interactive geometry, algebra and graphing tools that make maths visual.', 'Free', 'students'],
+      ['🦜', 'Duolingo', 'https://www.duolingo.com/', 'Bite-sized daily practice for English and other languages.', 'Free plan', 'students']
+    ]]
+  ];
+  var F = [['all', 'All'], ['teachers', 'For teachers'], ['students', 'For students & parents']], f = 'all';
+  function draw() {
+    document.getElementById('tabs').innerHTML = F.map(function (x) { return '<button class="chip' + (x[0] === f ? ' on' : '') + '" data-f="' + x[0] + '">' + x[1] + '</button>'; }).join('');
+    document.getElementById('tools').innerHTML = T.map(function (c) {
+      var items = c[1].filter(function (t) { return f === 'all' || t[5] === 'both' || t[5] === f; });
+      if (!items.length) return '';
+      return '<h3 class="cat">' + c[0] + '</h3><div class="grid">' + items.map(function (t) {
+        return '<div class="card tool"><div class="hd"><div class="ic">' + t[0] + '</div><div><h3>' + t[1] + '</h3><span class="pill lime">' + t[4] + '</span></div></div><p>' + t[3] + '</p>' +
+          '<a class="btn sm go" href="' + t[2] + '" target="_blank" rel="noopener">Visit ' + t[1].split(' (')[0] + ' ↗</a></div>';
+      }).join('') + '</div>';
+    }).join('');
+  }
+  document.addEventListener('click', function (e) { var c = e.target.closest('[data-f]'); if (c) { f = c.getAttribute('data-f'); draw(); } });
+  draw();
+})();
+</script>
+</body>
+</html>

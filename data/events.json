@@ -1,0 +1,38 @@
+{
+  "updated": "2026-11-27",
+  "events": [
+    {
+      "title": "DIDAC Skills",
+      "start": "2026-12-02",
+      "end": "2026-12-03",
+      "venue": "Lahore",
+      "category": "Expo",
+      "audience": "Teachers & school leaders",
+      "description": "Education and training trade show covering classroom technology, teaching resources and skills development.",
+      "url": "https://10times.com/lahore-pk",
+      "source": "10times"
+    },
+    {
+      "title": "International Youth Summit Pakistan",
+      "start": "2026-12-02",
+      "end": "2026-12-03",
+      "venue": "Lahore",
+      "category": "Conference",
+      "audience": "Students",
+      "description": "Youth summit for students on leadership, education and careers.",
+      "url": "https://10times.com/lahore-pk",
+      "source": "10times"
+    },
+    {
+      "title": "Dawn Education Expo 2027",
+      "start": "2027-01-24",
+      "end": "2027-01-24",
+      "venue": "PC Hotel, Lahore",
+      "category": "Expo",
+      "audience": "Students & parents",
+      "description": "Universities and colleges from Pakistan and abroad under one roof. Meet admissions teams and ask about programmes and scholarships.",
+      "url": "https://educationexpo.dawn.com/",
+      "source": "Dawn Education Expo"
+    }
+  ]
+}
