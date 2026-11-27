@@ -213,6 +213,20 @@ footer .wrap.fcols{display:grid}
 .tile b{display:grid;place-items:center;height:56px}.tile:hover .stk{transform:scale(1.15) rotate(-6deg)}.stk{transition:transform .3s var(--spring)}
 .tfeat .deco .stk{filter:drop-shadow(0 6px 8px rgba(17,17,17,.18))}
 @media(max-width:899px){.deco{display:none}.thero>.sa{display:none}.strip{gap:8px}.strip .stk{width:40px;height:40px}}
+
+/* front page = app's first page */
+.wl h1{font-size:30px!important;letter-spacing:-.8px}
+.wl .wbtn a.btn{display:flex;align-items:center;justify-content:center;text-decoration:none}
+.wl a.wlink{display:inline-block;text-decoration:underline}
+.stage{flex-direction:column;align-items:center;gap:22px}
+.tryapp{display:inline-flex;align-items:center;justify-content:center;background:#D4FF00;color:#111;border:2px solid #111;border-radius:999px;font-weight:800;font-size:22px;padding:16px 34px;text-decoration:none;box-shadow:0 10px 0 #111;transition:transform .15s,box-shadow .15s}
+.tryapp:hover{transform:translateY(3px);box-shadow:0 7px 0 #111}
+@media(min-width:900px){.phone:not(.full){width:460px!important;height:clamp(560px,calc(100dvh - 210px),800px)!important}}
+@media(max-width:899px){
+ .stage{display:flex!important;height:auto!important;overflow:visible!important;margin-top:26px}
+ .phone:not(.full){display:flex!important;position:relative!important;inset:auto!important;width:min(100%,400px)!important;height:640px!important;border-radius:36px!important;box-shadow:0 30px 70px rgba(17,17,17,.3),0 0 0 8px #fff,0 0 0 9px var(--line)!important;z-index:1}
+ .tryapp{font-size:20px;width:min(100%,400px)}
+}
 </style>
 </head>
 <body>
@@ -223,9 +237,9 @@ footer .wrap.fcols{display:grid}
 <span class="eyebrow">📍 Lahore</span>
 <h1>Find a trusted tutor <em>right in your neighbourhood.</em></h1>
 <p class="lead">Tutobridge connects parents and students with verified teachers nearby. Search by subject, grade or curriculum, chat first, then book a trial.</p>
-<div class="ctas"><button class="lb" data-open>Try the app now →</button><button class="lb ghost" data-open data-login>Log in</button></div>
+
 <div class="trust"><span>✓ Verified teachers</span><span>💬 Chat before you commit</span><span>🔒 Address kept private</span></div></div>
-<div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div></div></div></section>
+<div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div><a class="tryapp" href="/app/">Try the app now →</a></div></div></section>
 <section class="blk" id="problem"><span class="sa deco" style="right:3%;top:24px;--r:10deg;--s:1"><svg class="stk " width="64" height="64" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-pencil"/></svg></span><span class="sa deco" style="left:3%;bottom:24px;--r:0deg;--s:2"><svg class="stk " width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-star"/></svg></span><div class="wrap two" style="align-items:center"><div class="rv"><span class="lab">The problem</span><h2 style="text-align:left">Finding a good tutor shouldn't mean asking everyone you know.</h2><p class="lead2">Most families rely on word of mouth, long phone calls and guesswork. It is hard to know who is qualified, who lives nearby and what they charge.</p></div>
 <div class="aud o rv"><span class="lab">The Tutobridge way</span><ul><li>See verified teachers sorted by distance</li><li>Read qualifications, ratings and fees up front</li><li>Chat privately before sharing any details</li><li>Book a trial lesson in a few taps</li></ul></div></div></section>
 <section class="blk" id="how" style="padding-top:20px"><div class="wrap"><span class="lab c rv">How it works</span><h2 class="rv">From search to first lesson in four steps</h2><p class="sub rv">No phone tag. Everything happens in one place.</p>
@@ -338,10 +352,9 @@ welcome(){return `<div class="wl"><div class="blob b1"></div><div class="blob b2
  <div class="scat" aria-hidden="true">${sa('books',84,'right:5%;top:5%',8,0)}${sa('bulb',60,'right:34%;top:13%',-8,1)}${sa('globe',74,'right:3%;top:27%',-6,2)}${sa('pencilcup',64,'right:12%;top:44%',6,3)}${sa('apple',58,'left:5%;top:47%',-10,4)}${sa('backpack',62,'right:30%;top:57%',8,5)}${sa('star',30,'left:44%;top:6%',10,2)}${sa('heart',28,'left:12%;top:60%',-12,1)}${sa('spark',26,'right:42%;top:46%',0,3)}${sa('palette',54,'left:38%;top:64%',-6,6)}</div>
  <div><div class="wlogo st" style="--i:0">${BRIDGE(44)}</div><h1 class="st" style="--i:1">Tutobridge</h1><p class="st" style="--i:2">Find trusted tutors in your Lahore neighbourhood.</p>
  <div class="feat st" style="--i:3"><span>✓ Verified teachers</span><span>📍 Near you</span><span>💬 Chat first</span></div></div>
- <div class="wbtn st" style="--i:4"><button class="btn wb1" data-a="signup" data-v="parent">Sign Up as a Parent / Student</button>
- <button class="btn wb2" data-a="signup" data-v="teacher">Register as a Teacher</button>
- <div class="center"><button class="wlink" data-a="loginScreen">I already have an account · Log in</button></div>
- <div class="small center" style="opacity:.85;margin-top:2px">Preview only: nothing you enter is saved.</div></div></div>`},
+ <div class="wbtn st" style="--i:4"><a class="btn wb1" href="/app/#/signup/parent">Sign Up as a Parent / Student</a>
+ <a class="btn wb2" href="/app/#/signup/teacher">Register as a Teacher</a>
+ <div class="center"><a class="wlink" href="/app/#/login">I already have an account · Log in</a></div></div></div>`},
 login(){return head('Log in')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;flex-direction:row;justify-content:center;gap:14px">${stk('pencil',54)}<div class="wlogo" style="background:var(--brand);width:68px;height:68px;border-radius:22px">${BRIDGE(34)}</div>${stk('books',54)}</div><h2 class="center">Welcome back</h2><p class="muted center" style="margin-top:0">Log in to find teachers or manage your requests.</p>
  ${fld('lemail','Email',{type:'email'})}${fld('lpass','Password',{type:'password'})}
  <button class="btn" style="margin-top:20px" data-a="login">Log in</button>
