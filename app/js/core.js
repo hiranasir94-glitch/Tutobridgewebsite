@@ -231,7 +231,7 @@ function renderNav() {
     return;
   }
   const role = S.profile.role;
-  const homeLabel = role === 'teacher' ? 'Dashboard' : role === 'admin' ? 'Review' : 'Search';
+  const homeLabel = role === 'teacher' ? 'Dashboard' : role === 'admin' ? 'Admin' : 'Search';
   const homeIcon = role === 'teacher' ? '📋' : role === 'admin' ? '🛡️' : '🔍';
   nav.innerHTML = `<a class="nb ${['home', ''].includes(r) ? 'on' : ''}" href="#/home">${homeIcon}<span class="tx">${homeLabel}</span></a>
     ${role !== 'admin' ? `<a class="nb ${['chats', 'chat'].includes(r) ? 'on' : ''}" href="#/chats">💬<span class="tx">Chats</span></a>` : ''}
@@ -255,7 +255,7 @@ function onboardingComplete(t) {
   return (t.qualifications || []).length && (t.subjects || []).length && (t.curricula || []).length && (t.neighborhoods || []).length && modes > 0;
 }
 
-const PUBLIC = new Set(['', 'welcome', 'login', 'signup', 'forgot', 'help', 'terms']);
+const PUBLIC = new Set(['', 'welcome', 'login', 'signup', 'forgot', 'help', 'terms', 'admin']);
 async function route() {
   clearChannels();
   closeOverlay();
@@ -281,7 +281,7 @@ async function route() {
   }
   renderNav();
   if (['', 'welcome', 'login', 'signup', 'forgot'].includes(name)) name = 'home';
-  if (S.profile.role === 'teacher' && !onboardingComplete(S.teacher) && !['help', 'terms'].includes(name)) name = 'onboarding';
+  if (S.profile.role === 'teacher' && !onboardingComplete(S.teacher) && !['help', 'terms', 'admin'].includes(name)) name = 'onboarding';
   const fn = ROUTES[name] || ROUTES.home;
   try { await fn(params); } catch (e) { console.error(e); view(`<div class="narrow center" style="padding:40px 0"><p>${esc(errText(e))}</p><button class="btn" data-a="reload">Try again</button></div>`); }
   renderNav();

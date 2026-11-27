@@ -272,10 +272,111 @@ ROUTES.terms = () => {
 };
 
 /* ------------------------------------------------------------------ admin review (admins only; enforced by RLS) */
+/* ------------------------------------------------------------------ admin panel */
+const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests']];
+let ADMIN_TAB = 'overview';
+function stat(n, label) { return `<div class="card center"><div style="font-size:30px;font-weight:800">${n}</div><div class="small muted">${label}</div></div>`; }
+function table(cols, rows) {
+  if (!rows.length) return '<div class="empty"><b>📭</b><span class="muted">Nothing here yet.</span></div>';
+  return `<div style="overflow-x:auto"><table class="atable"><thead><tr>${cols.map((c) => `<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((v) => `<td>${v}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+}
+const fmtDate = (t) => (t ? new Date(t).toLocaleDateString([], { day: 'numeric', month: 'short', year: 'numeric' }) : '—');
+const statusPill = (s) => `<span class="pill ${s === 'verified' || s === 'accepted' || s === 'active' ? 'lime' : ''}">${esc(s || '—')}</span>`;
+
 async function renderAdmin() {
+  const a = view(`<div class="row wrap" style="justify-content:space-between;align-items:center"><div><h1 style="margin-bottom:4px">Admin panel</h1><p class="muted" style="margin:0">Tutobridge control room</p></div>
+    <button class="btn out sm" data-a="refresh-admin">↻ Refresh</button></div>
+    <div class="seg" id="atabs" style="margin:16px 0;flex-wrap:wrap">${ADMIN_TABS.map(([k, l]) => `<button data-atab="${k}" class="${ADMIN_TAB === k ? 'on' : ''}">${l}</button>`).join('')}</div>
+    <div id="apane"><div class="spin"></div></div>`);
+  const pane = $('#apane', a);
+  const show = async () => {
+    $$('[data-atab]', a).forEach((b) => b.classList.toggle('on', b.dataset.atab === ADMIN_TAB));
+    pane.innerHTML = '<div class="spin"></div>';
+    try { await ADMIN_PANES[ADMIN_TAB](pane); } catch (e) { pane.innerHTML = `<p>${esc(errText(e))}</p>`; }
+  };
+  a.addEventListener('click', (e) => {
+    const t = e.target.closest('[data-atab]');
+    if (t) { ADMIN_TAB = t.dataset.atab; show(); }
+    if (e.target.closest('[data-a="refresh-admin"]')) show();
+    const j = e.target.closest('[data-jump]');
+    if (j) { ADMIN_TAB = j.dataset.jump; show(); }
+  });
+  show();
+}
+
+const ADMIN_PANES = {
+  async overview(p) {
+    const [u, b, r] = await Promise.all([sb.rpc('admin_users'), sb.from('bookings').select('status, created_at'), sb.rpc('admin_requests')]);
+    if (u.error) throw u.error; if (b.error) throw b.error; if (r.error) throw r.error;
+    const users = u.data || [], bk = b.data || [], rq = r.data || [];
+    const week = Date.now() - 7 * 864e5;
+    const pending = users.filter((x) => x.role === 'teacher' && x.verification_status === 'pending').length;
+    p.innerHTML = `<div class="tgrid" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))">
+      ${stat(users.length, 'Total users')}${stat(users.filter((x) => x.role === 'parent').length, 'Parents / students')}
+      ${stat(users.filter((x) => x.role === 'teacher').length, 'Teachers')}${stat(users.filter((x) => x.verification_status === 'verified').length, 'Verified teachers')}
+      ${stat(users.filter((x) => new Date(x.created_at) > week).length, 'New sign-ups (7 days)')}${stat(bk.length, 'Bookings')}
+      ${stat(bk.filter((x) => x.status === 'pending').length, 'Bookings waiting')}${stat(rq.filter((x) => x.status === 'open').length, 'Open tuition requests')}</div>
+      ${pending ? `<div class="card" style="margin-top:16px;background:#D4FF00"><b>${pending} teacher${pending > 1 ? 's' : ''} waiting for verification.</b> <button class="btn sm" data-jump="teachers" style="margin-left:8px">Review now →</button></div>` : ''}`;
+  },
+  async teachers(p) { await adminTeachers(p); },
+  async users(p) {
+    const { data, error } = await sb.rpc('admin_users');
+    if (error) throw error;
+    let rows = data || [], f = 'all', q = '';
+    p.innerHTML = `<div class="row wrap" style="margin-bottom:12px"><input class="inp grow" id="uq" placeholder="Search name, email or phone" style="min-width:200px">
+      <div class="seg" id="uf">${['all', 'parent', 'teacher', 'admin'].map((k) => `<button data-uf="${k}" class="${k === 'all' ? 'on' : ''}">${k === 'all' ? 'All' : k[0].toUpperCase() + k.slice(1)}</button>`).join('')}</div></div><div id="ut"></div>`;
+    const draw = () => {
+      const s = q.toLowerCase();
+      const shown = rows.filter((x) => (f === 'all' || x.role === f) && (!s || [x.full_name, x.email, x.phone_number].some((v) => String(v || '').toLowerCase().includes(s))));
+      $('#ut', p).innerHTML = `<p class="small muted">${shown.length} of ${rows.length} users</p>` + table(['Name', 'Email', 'Phone', 'Role', 'Plan', 'Joined', 'Last login'],
+        shown.map((x) => [`<b>${esc(x.full_name)}</b>`, esc(x.email), x.phone_number ? `<a href="https://wa.me/${toIntl(x.phone_number)}" target="_blank" rel="noopener">${esc(x.phone_number)}</a>` : '—',
+          esc(x.role) + (x.role === 'teacher' ? ' ' + statusPill(x.verification_status) : ''), x.plan_id ? `${esc(x.plan_id)} ${statusPill(x.plan_status)}` : '—', fmtDate(x.created_at), fmtDate(x.last_sign_in_at)]));
+    };
+    $('#uq', p).oninput = (e) => { q = e.target.value; draw(); };
+    $('#uf', p).onclick = (e) => { const b = e.target.closest('[data-uf]'); if (!b) return; f = b.dataset.uf; $$('[data-uf]', p).forEach((x) => x.classList.toggle('on', x === b)); draw(); };
+    draw();
+  },
+  async bookings(p) {
+    const { data, error } = await sb.from('bookings').select('*, parent:profiles!bookings_parent_id_fkey(full_name), teacher:teacher_profiles!bookings_teacher_id_fkey(profiles(full_name))').order('created_at', { ascending: false });
+    if (error) throw error;
+    p.innerHTML = table(['Date', 'Parent', 'Teacher', 'Subject', 'Grade', 'Mode', 'Schedule', 'Status'], (data || []).map((x) => [fmtDate(x.created_at), esc(x.parent?.full_name || '—'), esc(x.teacher?.profiles?.full_name || '—'),
+      esc(x.subject), esc(x.student_grade), esc(BOOKING_MODES[x.teaching_mode]?.label || x.teaching_mode), esc(x.proposed_schedule || '—'), statusPill(x.status)]));
+  },
+  async requests(p) {
+    const { data, error } = await sb.rpc('admin_requests');
+    if (error) throw error;
+    p.innerHTML = table(['Date', 'Parent', 'Subject', 'Curriculum', 'Grade', 'Note', 'Status'], (data || []).map((x) => [fmtDate(x.created_at), esc(x.parent_name), esc(x.subject), esc(x.curriculum || '—'), esc(x.grade || '—'), esc(x.note || '—'), statusPill(x.status)]));
+  },
+};
+
+/* Admin login at tutobridge.com/admin (→ /app/#/admin) */
+ROUTES.admin = () => {
+  if (S.profile?.role === 'admin') return renderAdmin();
+  if (S.session) {
+    return view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:48px">🔒</div><h1>Admins only</h1>
+      <p class="muted">You're logged in as <b>${esc(S.profile?.full_name || '')}</b>, which is not an admin account.</p>
+      <button class="btn" data-a="signout-now">Log out and use an admin account</button> <a class="btn out" href="#/home">Back to the app</a></div>`);
+  }
+  const a = view(`<div class="narrow" style="padding-top:30px"><div style="font-size:44px">🛡️</div><h1>Admin login</h1><p class="muted">Tutobridge staff only.</p>
+    <form id="f" novalidate style="margin-top:16px">
+      <label class="f"><span>Email</span><input class="inp" name="email" type="email" autocomplete="username"></label>
+      <label class="f"><span>Password</span><input class="inp" name="password" type="password" autocomplete="current-password"></label>
+      <button class="btn full" id="go">Log in to admin panel</button></form></div>`);
+  $('#f', a).onsubmit = async (e) => {
+    e.preventDefault();
+    const f = e.target, email = f.email.value.trim();
+    if (!isEmail(email) || !f.password.value) return toast('Enter your email and password.', true);
+    const b = $('#go', a); setBusy(b, true, 'Logging in...');
+    const { error } = await sb.auth.signInWithPassword({ email, password: f.password.value });
+    setBusy(b, false);
+    if (error) return toast(errText(error), true);
+  };
+};
+
+async function adminTeachers(a) {
   let tab = 'pending';
-  const a = view(`<h1>Teacher review</h1><p class="muted">Verify teachers so parents can find them, and mark Star Teachers.</p>
-    <div class="seg" id="tabs" style="margin:8px 0 14px"></div><div id="list"><div class="spin"></div></div>`);
+  a.innerHTML = `<p class="muted">Verify teachers so parents can find them, and mark Star Teachers.</p>
+    <div class="seg" id="tabs" style="margin:8px 0 14px"></div><div id="list"><div class="spin"></div></div>`;
   let rows = [];
   const draw = () => {
     const n = (s) => rows.filter((r) => r.verification_status === s).length;
