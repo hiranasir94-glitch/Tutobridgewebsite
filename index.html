@@ -372,13 +372,13 @@ forgot(){return head('Reset password')+`<div class="scroll"><div class="center" 
 forgotSent(){return head('Check your email')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;font-size:54px">📧</div><h2 class="center">Check your email</h2><p class="muted center" style="margin-top:0;line-height:1.5">If there is an account for <b style="color:var(--ink)">${esc(S.resetEmail||'')}</b>, a reset link is on its way. Open it on this device to choose a new password. The link works once and expires after an hour.</p>
  <button class="btn out" style="margin-top:18px" data-a="backToLogin">Back to log in</button>
  <div class="center" style="margin-top:22px"><span class="muted small">Preview only: no email is sent here.</span><br><button class="wlink" style="font-size:12px" data-a="openReset">Open the link from the email</button></div></div>`},
-reset(){return head('New password')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;flex-direction:row;justify-content:center;gap:14px">${stk('pencil',54)}<div class="wlogo" style="background:var(--brand);width:68px;height:68px;border-radius:22px">${BRIDGE(34)}</div>${stk('star',46)}</div><h2 class="center">Choose a new password</h2><p class="muted center" style="margin-top:0">Use at least 8 characters.</p>
+reset(){return head('New password')+`<div class="scroll"><div class="center" style="margin:6px 0 4px;flex-direction:row;justify-content:center;gap:14px">${stk('pencil',54)}<div class="wlogo" style="background:var(--brand);width:68px;height:68px;border-radius:22px">${BRIDGE(34)}</div>${stk('star',46)}</div><h2 class="center">Choose a new password</h2><p class="muted center" style="margin-top:0">Use at least 6 characters.</p>
  ${fld('np','New password',{type:'password'})}${fld('np2','Confirm new password',{type:'password'})}<button class="btn" style="margin-top:20px" data-a="doReset">Save new password</button></div>`},
 signup(){const t=S.role==='teacher';return head(t?'Register as a Teacher':'Parent / Student Sign Up')+`<div class="scroll"><p class="muted" style="margin-top:0">${t?'Create your teacher account. You will add subjects and fees next.':'Create an account to find teachers near you.'}</p>
  ${fld('name','Full name')}${fld('phone','Phone / WhatsApp number',{im:'tel',ph:'03XX XXXXXXX'})}
  ${fld('address',t?'Current Address':'Residential / Street Address',{area:1,rows:2,ph:'House, street, area, city'})}
  ${locField('loc','Current location')}
- ${fld('email','Email',{type:'email'})}${fld('password','Password',{type:'password',help:'At least 8 characters'})}
+ ${fld('email','Email',{type:'email'})}${fld('password','Password',{type:'password',help:'At least 6 characters'})}
  <button class="btn" style="margin-top:20px" data-a="doSignup">${t?'Create Teacher Account':'Create Account'}</button></div>`},
 home(){const u=S.user,my=u.loc;
  const hero=`<div class="hero"><div class="row"><div class="logo"><i>${BRIDGE(20)}</i>Tutobridge</div><span style="flex:1"></span><button class="ib" data-a="askOut" aria-label="Log out">🚪</button></div>
@@ -558,7 +558,7 @@ const A={
   S.resetEmail=em;S.f={};go('forgotSent')},
  backToLogin(){S.f={lemail:S.resetEmail||''};S.err={};S.stack=['welcome'];S.screen='login';S.dir='back';render()},
  openReset(){S.f={};S.err={};go('reset')},
- doReset(){const f=S.f;if(!chk([['np','Use at least 8 characters',()=>(f.np||'').length>=8],['np2','The passwords do not match',()=>f.np2===f.np]])){render();toast('Please fix the highlighted fields.',1);return}
+ doReset(){const f=S.f;if(!chk([['np','Use at least 6 characters',()=>(f.np||'').length>=6],['np2','The passwords do not match',()=>f.np2===f.np]])){render();toast('Please fix the highlighted fields.',1);return}
   const a=ACCTS[S.resetEmail];if(!a){S.err.np='This reset link is no longer valid. Request a new one.';render();toast('Reset link is not valid.',1);return}
   a.pw=f.np;S.f={lemail:S.resetEmail};S.err={};S.stack=['welcome'];S.screen='login';S.dir='fade';render();toast('Password updated. Log in with your new password.')},
  login(){const f=S.f,em=(f.lemail||'').trim().toLowerCase();S.err={};
@@ -571,7 +571,7 @@ const A={
  fav(v){S.favs[v]=!S.favs[v];S.popFav=v;render()},
  back,
  signup(v){S.role=v;S.f={};S.err={};go('signup')},
- doSignup(){const f=S.f;if(!chk([['name','Enter your name',()=>(f.name||'').trim().length>=2],['phone','Enter a Pakistani mobile number like 0300 1234567',()=>validPhone(f.phone)],['address','Enter your full address',()=>(f.address||'').trim().length>=8],['loc','Enter your location or tap "Use Current Location"',()=>locOk('loc')],['email','Enter a valid email address',()=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((f.email||'').trim())],['password','Use at least 8 characters',()=>(f.password||'').length>=8]])){render();toast('Please fix the highlighted fields.',1);return}finishSignup()},
+ doSignup(){const f=S.f;if(!chk([['name','Enter your name',()=>(f.name||'').trim().length>=2],['phone','Enter a Pakistani mobile number like 0300 1234567',()=>validPhone(f.phone)],['address','Enter your full address',()=>(f.address||'').trim().length>=8],['loc','Enter your location or tap "Use Current Location"',()=>locOk('loc')],['email','Enter a valid email address',()=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test((f.email||'').trim())],['password','Use at least 6 characters',()=>(f.password||'').length>=6]])){render();toast('Please fix the highlighted fields.',1);return}finishSignup()},
  locate(v){locate(v)},
  chip(v,el){const k=el.dataset.k,a=S.f[k]=S.f[k]||[],i=a.indexOf(v);i<0?a.push(v):a.splice(i,1);S.err={};render()},
 

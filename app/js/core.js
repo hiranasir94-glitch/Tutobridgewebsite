@@ -373,7 +373,7 @@ ROUTES.signup = ([role]) => {
       <label class="f"><span>${isT ? 'Current Address' : 'Residential / Street Address'}</span><textarea class="inp" name="address" maxlength="300" placeholder="House, street, area, city" autocomplete="street-address"></textarea></label>
       ${locationField('loc')}
       <label class="f"><span>Email</span><input class="inp" name="email" type="email" autocomplete="email"></label>
-      <label class="f"><span>Password</span><input class="inp" name="password" type="password" autocomplete="new-password"><div class="help">At least 8 characters</div></label>
+      <label class="f"><span>Password</span><input class="inp" name="password" type="password" autocomplete="new-password"><div class="help">At least 6 characters</div></label>
       <p class="small muted">By creating an account you agree to the <a href="#/terms">Terms and Privacy Policy</a>.</p>
       <button class="btn full" id="go">${isT ? 'Create Teacher Account' : 'Create Account'}</button>
       <p class="center muted">Already have an account? <a href="#/login" style="font-weight:800">Log in</a></p>
@@ -386,7 +386,7 @@ ROUTES.signup = ([role]) => {
       [f.phone, isPkMobile(f.phone.value) ? '' : 'Enter a Pakistani mobile number like 0300 1234567'],
       [f.address, f.address.value.trim().length >= 8 ? '' : 'Enter your full address'],
       [f.email, isEmail(f.email.value) ? '' : 'Enter a valid email address'],
-      [f.password, f.password.value.length >= 8 ? '' : 'Use at least 8 characters'],
+      [f.password, f.password.value.length >= 6 ? '' : 'Use at least 6 characters'],
     ];
     checks.forEach(([i, m]) => fieldError(i, m));
     if (checks.some(([, m]) => m)) return toast('Please fix the highlighted fields.', true);
@@ -443,15 +443,15 @@ ROUTES.forgot = () => {
 ROUTES.reset = () => {
   const a = view(`<div class="narrow" style="padding-top:20px"><h1>Choose a new password</h1><p class="muted">You're signed in from your reset link. Pick a new password to finish.</p>
     <form id="f" novalidate style="margin-top:16px">
-      <label class="f"><span>New password</span><input class="inp" name="p1" type="password" autocomplete="new-password"><div class="help">At least 8 characters</div></label>
+      <label class="f"><span>New password</span><input class="inp" name="p1" type="password" autocomplete="new-password"><div class="help">At least 6 characters</div></label>
       <label class="f"><span>Confirm new password</span><input class="inp" name="p2" type="password" autocomplete="new-password"></label>
       <button class="btn full" id="go">Save new password</button></form></div>`);
   $('#f', a).onsubmit = async (e) => {
     e.preventDefault();
     const f = e.target;
-    fieldError(f.p1, f.p1.value.length >= 8 ? '' : 'Use at least 8 characters');
+    fieldError(f.p1, f.p1.value.length >= 6 ? '' : 'Use at least 6 characters');
     fieldError(f.p2, f.p2.value === f.p1.value ? '' : 'The passwords do not match');
-    if (f.p1.value.length < 8 || f.p1.value !== f.p2.value) return;
+    if (f.p1.value.length < 6 || f.p1.value !== f.p2.value) return;
     const b = $('#go', a);
     setBusy(b, true, 'Saving...');
     const { error } = await sb.auth.updateUser({ password: f.p1.value });
