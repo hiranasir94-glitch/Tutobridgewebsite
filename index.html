@@ -233,6 +233,47 @@ footer .wrap.fcols{display:grid}
 .stl{width:100%;text-align:center;font-weight:800;font-size:15px;color:#111}
 .stb{display:inline-flex;align-items:center;gap:8px;background:#111;color:#fff;border-radius:14px;padding:11px 18px;font-weight:800;font-size:15px}
 @media(max-width:899px){.ctaweb .tryapp{width:100%}}
+
+/* educator interactive preview */
+.ed-wrap{display:grid;grid-template-columns:1fr 400px;gap:48px;align-items:center}
+.ed-list{list-style:none;padding:0;margin:22px 0;display:grid;gap:10px}
+.ed-list li{border:2px solid #111;border-radius:18px;padding:14px 16px;background:#fff;cursor:pointer;transition:transform .2s,background .2s}
+.ed-list li:hover,.ed-list li.on{background:#D4FF00;transform:translateX(6px)}
+.ed-list b{display:block;font-size:16px;margin-bottom:3px}.ed-list span{color:#595959;font-size:14px;line-height:1.45}
+.ed-list li.on span{color:#111}
+.ed-stage{display:flex;flex-direction:column;align-items:center;gap:12px}
+.ed-phone{position:relative;width:100%;max-width:370px;height:640px;background:#fff;border-radius:40px;box-shadow:0 30px 70px rgba(17,17,17,.25),0 0 0 9px #111;overflow:hidden;display:flex;flex-direction:column;text-align:left}
+.ed-top{display:flex;gap:12px;align-items:center;padding:26px 18px 14px;background:#D4FF00}
+.ed-av{width:48px;height:48px;border-radius:50%;background:#111;color:#D4FF00;display:grid;place-items:center;font-weight:800;flex:none}
+.ed-badges{display:flex;gap:6px;margin-top:5px;flex-wrap:wrap}
+.ed-pill{font-size:11px;font-weight:800;border:1.5px solid #111;border-radius:999px;padding:2px 8px;background:#fff}.ed-pill.ok{background:#111;color:#D4FF00}
+.ed-tabs{display:flex;gap:6px;padding:10px 12px;border-bottom:1px solid #eee}
+.ed-tabs button{flex:1;border:2px solid #111;background:#fff;border-radius:999px;padding:7px 4px;font-weight:800;font-size:13px;cursor:pointer}
+.ed-tabs button.on{background:#111;color:#fff}.ed-tabs i{font-style:normal;background:#D4FF00;color:#111;border-radius:999px;padding:0 6px;margin-left:3px}
+.ed-body{flex:1;overflow-y:auto;padding:12px}
+.ed-card{border:2px solid #111;border-radius:18px;padding:12px;margin-bottom:10px;background:#fff;animation:edIn .35s cubic-bezier(.22,1,.36,1) both}
+.ed-card.done{border-color:#ddd;background:#fafafa}
+.ed-row{display:flex;gap:8px;align-items:center}.ed-muted{color:#666;font-size:13px}
+.ed-btns{display:flex;gap:8px;margin-top:10px}
+.ed-btn{flex:1;border:2px solid #111;border-radius:999px;padding:8px;font-weight:800;font-size:13px;cursor:pointer;background:#D4FF00;text-align:center;text-decoration:none;color:#111}
+.ed-btn.out{background:#fff}
+.ed-contact{margin-top:10px;background:#F2FFC2;border-radius:12px;padding:10px;font-size:13px}
+.ed-map{position:relative;height:300px;border-radius:18px;border:2px solid #111;overflow:hidden;background:#EEF3E6}
+.ed-map svg{position:absolute;inset:0;width:100%;height:100%}
+.ed-pin{position:absolute;transform:translate(-50%,-100%);border:2px solid #111;background:#fff;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap;transition:transform .2s}
+.ed-pin:hover,.ed-pin.on{background:#D4FF00;transform:translate(-50%,-100%) scale(1.12)}
+.ed-me{position:absolute;width:16px;height:16px;border-radius:50%;background:#111;box-shadow:0 0 0 6px rgba(17,17,17,.15);transform:translate(-50%,-50%)}
+.ed-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+.ed-stat{border:2px solid #111;border-radius:16px;padding:10px;text-align:center}.ed-stat b{font-size:24px;display:block}
+.ed-switch{display:flex;justify-content:space-between;align-items:center;border:2px solid #111;border-radius:18px;padding:12px}
+.ed-sw{width:52px;height:30px;border-radius:999px;background:#ccc;border:2px solid #111;position:relative;cursor:pointer;transition:background .2s;flex:none}
+.ed-sw::after{content:"";position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;border:2px solid #111;transition:left .2s}
+.ed-sw.on{background:#D4FF00}.ed-sw.on::after{left:24px}
+.ed-toast{position:absolute;left:14px;right:14px;bottom:14px;background:#111;color:#fff;border-radius:14px;padding:10px 12px;font-size:13px;font-weight:700;opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none}
+.ed-toast.show{opacity:1;transform:none}
+.ed-note{font-size:13px;color:#595959}.ed-note button{border:0;background:none;text-decoration:underline;font-weight:800;cursor:pointer;padding:0}
+@keyframes edIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media(max-width:899px){.ed-wrap{grid-template-columns:1fr;gap:28px}.ed-phone{height:600px}.ed-copy .tryapp{width:100%}}
 </style>
 </head>
 <body>
@@ -267,6 +308,21 @@ footer .wrap.fcols{display:grid}
 <section class="blk soft" id="who"><div class="wrap"><span class="lab c rv">For everyone</span><h2 class="rv">Built for both sides</h2><p class="sub rv">Whether you're looking for a teacher or you are one.</p>
 <div class="two"><div class="aud rv"><h3>For parents and students</h3><p class="muted">Find the right person for your child, close to home.</p><ul><li>Search by subject, class, curriculum and area</li><li>Compare ratings, qualifications and fees</li><li>Chat, then book a trial lesson</li></ul><button class="lb" data-open data-role="parent">Sign up as a parent</button></div>
 <div class="aud o rv"><h3>For teachers</h3><p class="muted">Reach families in your area and manage requests easily.</p><ul><li>Create your profile in four quick steps</li><li>Set your own teaching modes and fees</li><li>Accept or decline trial requests from your dashboard</li></ul><button class="lb" data-open data-role="teacher">Register as a teacher</button></div></div></div></section>
+<section class="blk" id="educators"><div class="wrap ed-wrap">
+<div class="ed-copy"><span class="lab rv">For educators</span><h2 class="rv" style="text-align:left">Try the teacher dashboard</h2>
+<p class="sub rv" style="text-align:left;margin-left:0">This is what teachers see after joining Tutobridge. Tap around: accept a trial request, find parents near you on the map, and switch your availability on or off.</p>
+<ul class="ed-list">
+<li data-edgo="req"><b>📥 Trial requests</b><span>Parents send requests. Accept to see their phone and WhatsApp, or decline politely.</span></li>
+<li data-edgo="map"><b>📍 Parents near you</b><span>See open tuition requests around your area and reach out first.</span></li>
+<li data-edgo="me"><b>⚙️ Your profile and availability</b><span>Pause new requests when you're full, and track your numbers.</span></li></ul>
+<a class="tryapp" href="/app/#/signup/teacher" style="margin-top:8px">Register as a teacher →</a></div>
+<div class="ed-stage"><div class="ed-phone" id="edp">
+<div class="ed-top"><div class="ed-av">AM</div><div style="flex:1;min-width:0"><b>Salam, Ayesha 👋</b><div class="ed-badges"><span class="ed-pill ok">✓ Verified</span><span class="ed-pill">★ Star Teacher</span></div></div></div>
+<div class="ed-tabs"><button data-edt="req" class="on">Requests <i id="edn">3</i></button><button data-edt="map">Map</button><button data-edt="me">Profile</button></div>
+<div class="ed-body" id="edb"></div>
+<div class="ed-toast" id="edt"></div></div>
+<div class="ed-note">Interactive preview with sample data · <button id="edreset">Reset</button></div></div>
+</div></section>
 <section class="blk" id="faq"><span class="sa deco" style="right:5%;top:30px;--r:6deg;--s:2"><svg class="stk " width="64" height="64" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-bulb"/></svg></span><span class="sa deco" style="left:5%;top:44px;--r:-8deg;--s:3"><svg class="stk " width="56" height="56" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-clips"/></svg></span><div class="wrap"><span class="lab c rv">FAQ</span><h2 class="rv">Questions, answered</h2><p class="sub rv">Quick answers about using Tutobridge.</p><div class="fq rv"><details><summary>How does Tutobridge work?</summary><p>Search for teachers near you, chat with the ones you like, then send a trial request. When the teacher accepts, you can arrange lessons directly.</p></details><details><summary>Who can see my address and phone number?</summary><p>A teacher sees your address and phone number only after they accept your booking request. Teachers' exact locations are never shown, only a rounded distance.</p></details><details><summary>How are teachers verified?</summary><p>Teachers submit their qualifications when they register. A verified badge is shown on profiles that have been approved.</p></details><details><summary>Where is Tutobridge available?</summary><p>We are starting in Lahore and matching teachers at neighbourhood level. More cities will follow.</p></details><details><summary>Which classes and subjects are covered?</summary><p>Early years and Montessori, Primary, Matric/FSc, O Levels, A Levels and IB, across subjects such as Mathematics, English, Urdu, sciences and Computer Science.</p></details><details><summary>Where do lessons take place?</summary><p>Teachers choose where they teach: at a school, at the student's home, at their own home, or a mix. You can filter by this when searching.</p></details><details><summary>How much do lessons cost?</summary><p>Each teacher lists a fee per day or per month in PKR on their profile, so you can compare before you chat.</p></details><details><summary>Do I pay inside the app?</summary><p>Plans and payments are still being finalised. Lesson fees are agreed directly between parent and teacher.</p></details><details><summary>How do I contact support?</summary><p>Email support@tutobridge.com.</p></details></div></div></section>
 <section class="blk soft" id="contact"><span class="sa deco" style="right:4%;top:26px;--r:8deg;--s:1"><svg class="stk " width="64" height="64" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-glue"/></svg></span><span class="sa deco" style="left:3%;bottom:26px;--r:-6deg;--s:2"><svg class="stk " width="66" height="66" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-crayons"/></svg></span><div class="wrap"><div class="two" style="align-items:center"><div class="rv"><span class="lab">Contact</span><h2 style="text-align:left">We'd love to hear from you</h2><p class="lead2">Questions, feedback or want to partner with us? Send us an email and we will get back to you.</p></div>
 <div class="aud rv"><h3 style="font-size:20px">Email support</h3><p class="mail" id="mail">support@tutobridge.com</p><button class="lb ghost" data-copy>Copy email address</button><p class="muted small" id="copied" style="margin:10px 0 0"></p></div></div></div></section>
@@ -637,6 +693,51 @@ render();if(typeof window!=='undefined')window.__tb={signup:function(r){S.stack=
   document.querySelectorAll('.rv').forEach(function(el,i){el.style.transitionDelay=(i%3)*90+'ms';io.observe(el)})}
  else document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in')});
 })();
+</script>
+<script>
+(function(){
+var E={},b=document.getElementById('edb');if(!b)return;
+function seed(){E={tab:'req',on:true,acc:4,
+ reqs:[{id:1,n:'Sara Khan',g:'Grade 9',s:'Physics',m:'🏠 At student\'s home',a:'Johar Town',t:'Mon & Wed, 5 pm',ph:'0300 12•• •••7',st:'new'},
+       {id:2,n:'Bilal Ahmed',g:'O Levels',s:'Mathematics',m:'💻 Online',a:'Online',t:'Weekends, morning',ph:'0321 45•• •••2',st:'new'},
+       {id:3,n:'Fatima Raza',g:'Grade 5',s:'English',m:'🚪 At teacher\'s home',a:'Model Town',t:'Daily, 4 pm',ph:'0333 98•• •••1',st:'new'}],
+ pins:[{x:30,y:35,s:'Chemistry',g:'A Levels',a:'Gulberg',d:'2.1 km'},{x:68,y:28,s:'Urdu',g:'Grade 3',a:'Garden Town',d:'3.4 km'},{x:58,y:66,s:'Quran / Nazra',g:'Beginner',a:'Model Town',d:'1.2 km'},{x:22,y:72,s:'Biology',g:'FSc',a:'Johar Town',d:'4.0 km'}],pin:null,sent:{}};draw();}
+function toast(m){var t=document.getElementById('edt');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(function(){t.classList.remove('show')},2200);}
+function draw(){
+ var newN=E.reqs.filter(function(r){return r.st==='new'}).length;document.getElementById('edn').textContent=newN;
+ document.querySelectorAll('[data-edt]').forEach(function(x){x.classList.toggle('on',x.dataset.edt===E.tab)});
+ document.querySelectorAll('[data-edgo]').forEach(function(x){x.classList.toggle('on',x.dataset.edgo===E.tab)});
+ var h='';
+ if(E.tab==='req'){
+  if(!E.on)h+='<div class="ed-card" style="background:#FFF4D6">⏸ You\'re not accepting new students. Parents can\'t send new requests.</div>';
+  E.reqs.forEach(function(r){h+='<div class="ed-card '+(r.st==='declined'?'done':'')+'"><div class="ed-row"><b style="flex:1">'+r.n+'</b><span class="ed-pill'+(r.st==='accepted'?' ok':'')+'">'+(r.st==='new'?'New':r.st==='accepted'?'Accepted':'Declined')+'</span></div>'+
+   '<div class="ed-muted" style="margin-top:4px">📚 '+r.s+' · '+r.g+'</div><div class="ed-muted">'+r.m+' · '+r.a+'</div><div class="ed-muted">🗓 '+r.t+'</div>'+
+   (r.st==='new'?'<div class="ed-btns"><button class="ed-btn" data-acc="'+r.id+'">✓ Accept</button><button class="ed-btn out" data-dec="'+r.id+'">Decline</button></div>':'')+
+   (r.st==='accepted'?'<div class="ed-contact">📞 '+r.ph+'<div class="ed-btns"><span class="ed-btn out">Call</span><span class="ed-btn">WhatsApp</span></div></div>':'')+'</div>';});
+ }else if(E.tab==='map'){
+  h+='<div class="ed-map"><svg viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 50 Q30 40 50 55 T100 45" stroke="#fff" stroke-width="5" fill="none"/><path d="M45 0 Q50 50 40 100" stroke="#fff" stroke-width="4" fill="none"/><path d="M0 20 L100 85" stroke="#fff" stroke-width="3" fill="none"/><circle cx="50" cy="50" r="30" fill="#D4FF00" opacity=".18"/></svg>'+
+   '<div class="ed-me" style="left:50%;top:50%"></div>'+E.pins.map(function(p,i){return '<button class="ed-pin'+(E.pin===i?' on':'')+'" data-pin="'+i+'" style="left:'+p.x+'%;top:'+p.y+'%">'+(E.sent[i]?'✓ ':'')+p.s+'</button>'}).join('')+'</div>';
+  if(E.pin==null)h+='<p class="ed-muted" style="text-align:center;margin-top:12px">Tap a pin to see a parent\'s request.</p>';
+  else{var p=E.pins[E.pin];h+='<div class="ed-card" style="margin-top:10px"><b>'+p.s+' · '+p.g+'</b><div class="ed-muted">📍 '+p.a+' · '+p.d+' away</div><div class="ed-btns">'+(E.sent[E.pin]?'<span class="ed-btn out">✓ Message sent</span>':'<button class="ed-btn" data-con="'+E.pin+'">💬 Connect with parent</button>')+'</div></div>';}
+ }else{
+  var acc=E.reqs.filter(function(r){return r.st==='accepted'}).length;
+  h+='<div class="ed-switch"><div><b>Accepting new students</b><div class="ed-muted">'+(E.on?'Visible to parents nearby':'Hidden from parent search')+'</div></div><div class="ed-sw'+(E.on?' on':'')+'" data-sw role="switch" aria-checked="'+E.on+'"></div></div>'+
+   '<div class="ed-stats"><div class="ed-stat"><b>'+(E.acc+acc)+'</b><span class="ed-muted">Students taught</span></div><div class="ed-stat"><b>'+newN+'</b><span class="ed-muted">Waiting</span></div><div class="ed-stat"><b>4.9★</b><span class="ed-muted">Rating</span></div><div class="ed-stat"><b>128</b><span class="ed-muted">Profile views</span></div></div>'+
+   '<div class="ed-card"><b>Your profile</b><div class="ed-muted" style="margin-top:4px">📚 Physics, Mathematics · O / A Levels</div><div class="ed-muted">📍 Johar Town, Model Town · Online</div><div class="ed-muted">💰 PKR 20,000 / month</div></div>';
+ }
+ b.innerHTML=h;}
+document.getElementById('educators').addEventListener('click',function(e){
+ var t;
+ if(t=e.target.closest('[data-edt]')){E.tab=t.dataset.edt;draw();return}
+ if(t=e.target.closest('[data-edgo]')){E.tab=t.dataset.edgo;draw();return}
+ if(t=e.target.closest('[data-acc]')){E.reqs.forEach(function(r){if(r.id==t.dataset.acc)r.st='accepted'});draw();toast('Accepted! The parent\'s contact details are now visible.');return}
+ if(t=e.target.closest('[data-dec]')){E.reqs.forEach(function(r){if(r.id==t.dataset.dec)r.st='declined'});draw();toast('Declined. The parent has been notified.');return}
+ if(t=e.target.closest('[data-pin]')){E.pin=+t.dataset.pin;draw();return}
+ if(t=e.target.closest('[data-con]')){E.sent[t.dataset.con]=1;draw();toast('Chat started. The parent will see your message.');return}
+ if(e.target.closest('[data-sw]')){E.on=!E.on;draw();toast(E.on?'You\'re visible to parents again.':'Paused. No new requests until you switch back on.');return}
+ if(e.target.closest('#edreset')){seed();toast('Preview reset.')}
+});
+seed();})();
 </script>
 </body>
 </html>
