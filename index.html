@@ -222,12 +222,17 @@ footer .wrap.fcols{display:grid}
 @media(min-width:900px){.thero .stage{margin-top:-20px}}
 .tryapp{display:inline-flex;align-items:center;justify-content:center;background:#D4FF00;color:#111;border:2px solid #111;border-radius:999px;font-weight:800;font-size:26px;padding:19px 44px;text-decoration:none;box-shadow:0 10px 0 #111;transition:transform .15s,box-shadow .15s}
 .tryapp:hover{transform:translateY(3px);box-shadow:0 7px 0 #111}
-@media(min-width:900px){.phone:not(.full){width:360px!important;height:clamp(540px,calc(100dvh - 250px),620px)!important}}
+@media(min-width:900px){.phone:not(.full){width:330px!important;height:clamp(520px,calc(100dvh - 240px),580px)!important}}
 @media(max-width:899px){
  .stage{display:flex!important;height:auto!important;overflow:visible!important;margin-top:26px}
- .phone:not(.full){display:flex!important;position:relative!important;inset:auto!important;width:min(100%,320px)!important;height:520px!important;border-radius:36px!important;box-shadow:0 30px 70px rgba(17,17,17,.3),0 0 0 8px #fff,0 0 0 9px var(--line)!important;z-index:1}
+ .phone:not(.full){display:flex!important;position:relative!important;inset:auto!important;width:min(100%,330px)!important;height:560px!important;border-radius:36px!important;box-shadow:0 30px 70px rgba(17,17,17,.3),0 0 0 8px #fff,0 0 0 9px var(--line)!important;z-index:1}
  .tryapp{font-size:23px;width:min(100%,380px)}
 }
+.ctaweb{margin:26px 0 18px}
+.stores{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px}
+.stl{width:100%;text-align:center;font-weight:800;font-size:15px;color:#111}
+.stb{display:inline-flex;align-items:center;gap:8px;background:#111;color:#fff;border-radius:14px;padding:11px 18px;font-weight:800;font-size:15px}
+@media(max-width:899px){.ctaweb .tryapp{width:100%}}
 </style>
 </head>
 <body>
@@ -238,9 +243,10 @@ footer .wrap.fcols{display:grid}
 <span class="eyebrow">📍 Lahore</span>
 <h1>Find a trusted tutor <em>right in your neighbourhood.</em></h1>
 <p class="lead">Tutobridge connects parents and students with verified teachers nearby. Search by subject, grade or curriculum, chat first, then book a trial.</p>
+<div class="ctaweb"><a class="tryapp" href="/app/">Use on web →</a></div>
 
 <div class="trust"><span>✓ Verified teachers</span><span>💬 Chat before you commit</span><span>🔒 Address kept private</span></div></div>
-<div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div><a class="tryapp" href="/app/">Use on web →</a></div></div></section>
+<div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div><div class="stores"><span class="stl">Download on</span><span class="stb">▶ Play Store</span><span class="stb">● App Store</span></div></div></div></section>
 <section class="blk" id="problem"><span class="sa deco" style="right:3%;top:24px;--r:10deg;--s:1"><svg class="stk " width="64" height="64" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-pencil"/></svg></span><span class="sa deco" style="left:3%;bottom:24px;--r:0deg;--s:2"><svg class="stk " width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-star"/></svg></span><div class="wrap two" style="align-items:center"><div class="rv"><span class="lab">The problem</span><h2 style="text-align:left">Finding a good tutor shouldn't mean asking everyone you know.</h2><p class="lead2">Most families rely on word of mouth, long phone calls and guesswork. It is hard to know who is qualified, who lives nearby and what they charge.</p></div>
 <div class="aud o rv"><span class="lab">The Tutobridge way</span><ul><li>See verified teachers sorted by distance</li><li>Read qualifications, ratings and fees up front</li><li>Chat privately before sharing any details</li><li>Book a trial lesson in a few taps</li></ul></div></div></section>
 <section class="blk" id="how" style="padding-top:20px"><div class="wrap"><span class="lab c rv">How it works</span><h2 class="rv">From search to first lesson in four steps</h2><p class="sub rv">No phone tag. Everything happens in one place.</p>
