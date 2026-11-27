@@ -5,7 +5,7 @@
 
 const SUPABASE_URL = 'https://kdgyxgytcphnmsnvxdiz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_5mo3bWfClhII0ymU2asdDg_Shpsc6fh'; // publishable (client-side) key
-const SUPPORT_EMAIL = 'support@tutobridge.com';
+const SUPPORT_EMAIL = 'welcome@tutobridge.com';
 const APP_URL = location.origin + '/app/';
 
 // Read before the client starts: it consumes the tokens in a password-reset link and clears them from the URL.
