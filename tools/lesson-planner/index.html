@@ -1,0 +1,296 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free Lesson Planner for Teachers · Tutobridge</title>
+<meta name="description" content="Free lesson planning tool for teachers in Pakistan. Build a timed, printable lesson plan for any subject and class in minutes.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--lime:#D4FF00;--ink:#111;--muted:#595959;--line:#E5E5E5;--soft:#F7F7F2}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+a{color:inherit}
+button,input,select,textarea{font:inherit;color:inherit}
+.top{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .in{max-width:1180px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px;text-decoration:none}
+.brand img{width:36px;height:36px;border-radius:10px}
+.top nav{margin-left:auto;display:flex;gap:8px}
+.nb{text-decoration:none;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px}
+.nb.cta{background:var(--ink);color:#fff}
+.hero{background:var(--lime);border-bottom:2px solid var(--ink)}
+.hero .in{max-width:1180px;margin:0 auto;padding:44px 20px 38px}
+.lab{display:inline-block;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;background:#fff;border:2px solid var(--ink);border-radius:999px;padding:4px 12px}
+h1{font-size:clamp(32px,5vw,52px);line-height:1.05;letter-spacing:-1.5px;margin:14px 0 10px}
+.hero p{font-size:18px;max-width:640px;margin:0}
+main{max-width:1180px;margin:0 auto;padding:28px 20px 60px;display:grid;grid-template-columns:380px 1fr;gap:28px;align-items:start}
+.panel{border:2px solid var(--ink);border-radius:24px;padding:20px;background:#fff}
+.panel h2{margin:0 0 14px;font-size:20px}
+.f{display:block;margin-bottom:12px}
+.f>span{display:block;font-weight:800;font-size:13px;margin-bottom:5px}
+.inp{width:100%;border:2px solid var(--line);border-radius:14px;padding:10px 12px;background:#fff;outline:none;transition:border-color .15s}
+.inp:focus{border-color:var(--ink)}
+textarea.inp{min-height:70px;resize:vertical}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:5px 11px;font-size:13px;font-weight:700;cursor:pointer}
+.chip.on{background:var(--ink);color:#fff}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--ink);background:var(--lime);border-radius:999px;padding:11px 18px;font-weight:800;cursor:pointer;text-decoration:none;box-shadow:0 5px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--ink)}
+.btn.out{background:#fff}
+.btn.sm{padding:7px 12px;font-size:13px;box-shadow:0 3px 0 var(--ink)}
+.btn.full{width:100%}
+.help{font-size:12px;color:var(--muted);margin-top:4px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+.saved{border-top:1px solid var(--line);margin-top:16px;padding-top:14px}
+.saved h3{font-size:14px;margin:0 0 8px}
+.sv{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:6px;font-size:13px}
+.sv b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;cursor:pointer}
+.sv button{border:0;background:none;cursor:pointer;font-weight:800;color:var(--muted)}
+.empty{border:2px dashed #ccc;border-radius:24px;padding:50px 24px;text-align:center;color:var(--muted)}
+.empty b{display:block;font-size:44px;margin-bottom:6px}
+/* the plan */
+.plan{border:2px solid var(--ink);border-radius:24px;padding:28px;background:#fff}
+.plan-head{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;border-bottom:2px solid var(--ink);padding-bottom:16px;margin-bottom:16px}
+.plan-head h2{margin:0;font-size:28px;letter-spacing:-.6px}
+.meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pill{font-size:12px;font-weight:800;border:1.5px solid var(--ink);border-radius:999px;padding:3px 10px;background:#fff}
+.pill.l{background:var(--lime)}
+.plan .tbox{font-size:13px;color:var(--muted);text-align:right}
+.sec{margin:18px 0}
+.sec h3{font-size:15px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;display:flex;align-items:center;gap:8px}
+[contenteditable]{outline:none;border-radius:8px;padding:2px 4px;margin:-2px -4px;transition:background .15s}
+[contenteditable]:hover{background:#FAFFE0}
+[contenteditable]:focus{background:#F2FFC2}
+.plan ul{margin:0;padding-left:20px}
+.plan li{margin:3px 0}
+.timeline{border:2px solid var(--ink);border-radius:18px;overflow:hidden}
+.stage{display:grid;grid-template-columns:86px 1fr;border-top:1.5px solid var(--line)}
+.stage:first-child{border-top:0}
+.stage .tm{background:var(--soft);padding:12px;font-weight:800;text-align:center;border-right:1.5px solid var(--line)}
+.stage .tm small{display:block;font-weight:600;color:var(--muted);font-size:11px}
+.stage .bd{padding:12px 14px}
+.stage .bd b{display:block;margin-bottom:3px}
+.stage .who{font-size:12px;color:var(--muted);margin-top:4px}
+.bar{display:flex;height:10px;border-radius:999px;overflow:hidden;border:1.5px solid var(--ink);margin:6px 0 14px}
+.bar span{display:block}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.box{border:1.5px solid var(--line);border-radius:16px;padding:12px 14px}
+.notes{min-height:60px;border:1.5px dashed #bbb;border-radius:14px;padding:10px}
+.foot{margin-top:20px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--ink);color:#fff;padding:12px 18px;border-radius:14px;font-weight:700;opacity:0;transition:.25s;pointer-events:none;z-index:20}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.promo{margin-top:20px;background:var(--lime);border:2px solid var(--ink);border-radius:24px;padding:18px 20px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.promo p{margin:0;flex:1;min-width:220px}
+@media(max-width:900px){main{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}.plan{padding:18px}.top nav .hide-s{display:none}}
+@media print{
+  .top,.hero,.panel,.toolbar,.promo,.toast{display:none!important}
+  main{display:block;padding:0;max-width:none}
+  .plan{border:0;padding:0}
+  [contenteditable]:hover,[contenteditable]:focus{background:none}
+  .stage,.box,.sec{break-inside:avoid}
+  body{font-size:12px}
+}
+</style>
+</head>
+<body>
+<header class="top"><div class="in">
+  <a class="brand" href="/"><img src="/icon-192.png" alt="">Tutobridge</a>
+  <nav><a class="nb hide-s" href="/#educators">For teachers</a><a class="nb cta" href="/app/#/signup/teacher">Join as a teacher</a></nav>
+</div></header>
+
+<section class="hero"><div class="in">
+  <span class="lab">Free tool for teachers</span>
+  <h1>Lesson Planner</h1>
+  <p>Fill in your subject, class and topic, and get a complete lesson plan with timings, activities, checks for understanding and homework. Edit anything, then print it or save it as a PDF. Free, with no sign-up.</p>
+</div></section>
+
+<main>
+<form class="panel" id="form" novalidate>
+  <h2>Your lesson</h2>
+  <div class="two">
+    <label class="f"><span>Subject</span>
+      <select class="inp" name="subject">
+        <option>Mathematics</option><option>English</option><option>Urdu</option><option>Science</option><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Computer Science</option><option>Islamiat</option><option>Pakistan Studies</option><option>Social Studies</option><option>Quran / Nazra</option><option>Art & Crafts</option><option>Other</option>
+      </select></label>
+    <label class="f"><span>Class / Grade</span>
+      <select class="inp" name="grade">
+        <option>Early Years</option><option>Grade 1</option><option>Grade 2</option><option>Grade 3</option><option>Grade 4</option><option>Grade 5</option><option>Grade 6</option><option>Grade 7</option><option selected>Grade 8</option><option>Grade 9</option><option>Grade 10</option><option>O Levels</option><option>A Levels</option><option>FSc / Grade 11–12</option>
+      </select></label>
+  </div>
+  <label class="f"><span>Topic</span><input class="inp" name="topic" placeholder="e.g. Fractions: adding unlike denominators" maxlength="120"></label>
+  <div class="two">
+    <label class="f"><span>Curriculum</span>
+      <select class="inp" name="curriculum"><option>Punjab Board / Matric</option><option>Cambridge</option><option>Federal Board</option><option>IB</option><option>Montessori</option><option>Other</option></select></label>
+    <label class="f"><span>Lesson length</span>
+      <select class="inp" name="duration"><option value="30">30 minutes</option><option value="35">35 minutes</option><option value="40" selected>40 minutes</option><option value="45">45 minutes</option><option value="60">1 hour</option><option value="90">1.5 hours</option></select></label>
+  </div>
+  <div class="two">
+    <label class="f"><span>Setting</span>
+      <select class="inp" name="setting"><option value="class">Classroom</option><option value="small">Small group / academy</option><option value="one">One-to-one tuition</option><option value="online">Online</option></select></label>
+    <label class="f"><span>Students</span><input class="inp" name="students" type="number" min="1" max="80" value="25"></label>
+  </div>
+  <label class="f"><span>What should students be able to do by the end?</span>
+    <textarea class="inp" name="objectives" placeholder="One per line, e.g.&#10;Add fractions with unlike denominators&#10;Explain why we find a common denominator"></textarea>
+    <div class="help">Optional. Leave blank and we'll suggest objectives you can edit.</div></label>
+  <div class="f"><span>Teaching style</span>
+    <div class="chips" data-chips="style">
+      <button type="button" class="chip on" data-v="interactive">Interactive</button>
+      <button type="button" class="chip" data-v="activity">Activity-based</button>
+      <button type="button" class="chip" data-v="exam">Exam-focused</button>
+      <button type="button" class="chip" data-v="revision">Revision</button>
+    </div></div>
+  <label class="f"><span>Resources you have</span><input class="inp" name="resources" placeholder="e.g. whiteboard, textbook, worksheets" value="Whiteboard, textbook"></label>
+  <label class="f"><span>Teacher name (optional)</span><input class="inp" name="teacher" maxlength="60"></label>
+  <button class="btn full" id="make">✨ Create lesson plan</button>
+  <div class="saved" id="savedBox"></div>
+</form>
+
+<section>
+  <div class="toolbar" id="tools" hidden>
+    <button class="btn sm" data-do="print">🖨 Print / Save as PDF</button>
+    <button class="btn sm out" data-do="save">💾 Save to this device</button>
+    <button class="btn sm out" data-do="copy">📋 Copy text</button>
+    <button class="btn sm out" data-do="remix">🔀 Different activities</button>
+  </div>
+  <div id="out"><div class="empty"><b>📝</b>Your lesson plan will appear here.<br>Fill in the form and tap <b style="display:inline;font-size:inherit">Create lesson plan</b>.</div></div>
+  <div class="promo"><p><b>Teach tuition in Lahore?</b> Join Tutobridge free and get found by parents in your area.</p><a class="btn out sm" href="/app/#/signup/teacher">Register as a teacher →</a></div>
+</section>
+</main>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const KEY='tb_lesson_plans_v1';
+let seed=0, current=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove('show'),2200);}
+function store(){try{return JSON.parse(localStorage.getItem(KEY)||'[]')}catch(_){return []}}
+function setStore(v){try{localStorage.setItem(KEY,JSON.stringify(v));return true}catch(_){return false}}
+const pick=(arr,n)=>{const a=arr.slice(),o=[];let s=seed;while(o.length<n&&a.length){s=(s*9301+49297)%233280;o.push(a.splice(s%a.length,1)[0]);}return o;};
+
+// subject families decide which activity bank to draw from
+const FAMILY={Mathematics:'math',Physics:'sci',Chemistry:'sci',Biology:'sci',Science:'sci','Computer Science':'cs',English:'lang',Urdu:'lang',Islamiat:'hum','Pakistan Studies':'hum','Social Studies':'hum','Quran / Nazra':'quran','Art & Crafts':'art',Other:'gen'};
+const BANK={
+ math:{warm:['Quick-fire mental maths: 5 questions on the board from last lesson','Spot the mistake: show a worked example with one error and ask students to find it','Number puzzle of the day linked to {t}'],
+  teach:['Model 2–3 worked examples of {t} step by step, thinking aloud','Use a visual model (number line, area model or diagram) to show why {t} works','Show a real-life example of {t} (shopping, recipes, cricket scores) and solve it together'],
+  guided:['Pairs solve 3 graded questions on mini whiteboards; check answers together','“I do, we do, you do”: solve one together, then students try a similar one','Error-hunt: groups correct a worksheet of solved questions with planted mistakes'],
+  ind:['Practice ladder: 6 questions from easy to challenging; early finishers try the stretch question','Textbook exercise (selected questions) with self-check answers at the end','Students write and solve their own {t} word problem, then swap'],
+  check:['Exit ticket: 2 questions on {t}, collected at the door','Thumbs up / sideways / down on how confident they feel, then one quick question','Mini whiteboard show-me: everyone answers one question at the same time'],
+  hw:['5 practice questions on {t}, including one word problem','Find one place {t} is used at home and write a question about it','Correct and redo any exit-ticket mistakes, plus 3 new questions']},
+ sci:{warm:['Show a surprising picture or short demo related to {t} and ask “What do you think is happening?”','Recall quiz: 3 questions from the previous topic','Odd one out: four key words, students explain which doesn\'t belong'],
+  teach:['Explain the key idea of {t} with a labelled diagram on the board','Live demonstration or simulation of {t}, pausing for predictions','Link {t} to everyday life in Pakistan (weather, cooking, health) and build the concept from there'],
+  guided:['Groups label a diagram or complete a flow chart about {t}','Predict–observe–explain activity in pairs','Card sort: match key terms of {t} to their definitions'],
+  ind:['Answer short and structured questions on {t}','Draw and annotate a diagram explaining {t} in their own words','Past-paper style question on {t} with a mark scheme to self-assess'],
+  check:['Exit ticket: one recall question and one “explain why” question','3-2-1: three facts, two key words, one question they still have','Quick true/false round on {t}'],
+  hw:['Revise key terms of {t} and make 5 flashcards','Complete the textbook questions on {t}','Find a real-life example of {t} and explain it in 4–5 lines']},
+ cs:{warm:['Unplugged puzzle: follow a set of instructions as an “algorithm”','Recall: what does each of these terms mean? (3 terms on board)','Bug hunt: spot the error in a short piece of code or flowchart'],
+  teach:['Demonstrate {t} live, explaining each step','Break {t} into steps using a flowchart on the board','Show a real app or game that uses {t}'],
+  guided:['Pairs write or trace a short program/flowchart for {t}','Predict the output of 3 code snippets, then check','Fill-in-the-blanks code or algorithm worksheet'],
+  ind:['Small task applying {t}, with a stretch extension','Debug a broken example of {t}','Write step-by-step instructions using {t} for a daily task'],
+  check:['Exit ticket: predict the output / explain one step','Quick quiz: 3 multiple-choice questions on {t}','Students explain {t} to a partner in 30 seconds'],
+  hw:['Practise {t} with 3 short exercises','Write a flowchart for a daily routine using {t}','Research one real-world use of {t}']},
+ lang:{warm:['Word of the day linked to {t}: meaning, sentence, synonym','Picture prompt: describe what you see in 2 sentences','Spelling or vocabulary quick quiz from the last lesson'],
+  teach:['Model {t} with clear examples, highlighting key features on the board','Read a short passage together and point out how {t} is used','Explain the rule for {t}, then show common mistakes'],
+  guided:['Pairs complete a gap-fill or sentence-building activity on {t}','Shared writing: build a paragraph together using {t}','Group reading with questions; groups report back'],
+  ind:['Write 5–6 sentences / a short paragraph using {t}','Comprehension questions on a short passage','Rewrite sentences to correct errors with {t}'],
+  check:['Exit ticket: write one correct sentence using {t}','Peer check: swap work and tick one success, suggest one fix','Quick oral round: each student gives one example'],
+  hw:['Write a short paragraph using {t}','Learn 5 new words and use each in a sentence','Read a page of the textbook and underline examples of {t}']},
+ hum:{warm:['Show a picture, map or headline linked to {t} and ask what students already know','Recall quiz on last lesson\'s key facts','Think–pair–share: one question about {t}'],
+  teach:['Tell the story or key points of {t} with a timeline or mind map on the board','Explain {t} using a map, source or short reading','Connect {t} to students\' own lives and community'],
+  guided:['Groups complete a mind map or timeline of {t}','Source or passage analysis with guiding questions','Discussion circles: each group answers one question and shares'],
+  ind:['Answer short questions on {t} in complete sentences','Write a paragraph explaining the importance of {t}','Make a fact file or poster summary of {t}'],
+  check:['Exit ticket: 3 key points about {t}','Quick quiz: 4 questions on {t}','One-sentence summary of today\'s lesson'],
+  hw:['Learn key points of {t} for a short quiz','Answer the textbook questions on {t}','Ask a family member what they know about {t} and note it down']},
+ quran:{warm:['Recite the previous lesson\'s portion together','Revise letters / rules from the last lesson with flashcards','Listen to a short, clear recitation of today\'s portion'],
+  teach:['Model correct pronunciation of today\'s portion slowly, line by line','Explain the tajweed rule in {t} with examples','Point to each word while reciting so students follow along'],
+  guided:['Students repeat after the teacher, line by line','Pair recitation: partners listen and gently correct','Small-group reading with the teacher listening to each student'],
+  ind:['Each student recites individually to the teacher','Practise the portion quietly with finger-pointing','Copy or trace the letters / words for today\'s portion'],
+  check:['Each student reads one line aloud','Teacher checks pronunciation of key words','Quick recall of the rule learnt today'],
+  hw:['Practise today\'s portion 5 times at home','Recite to a parent and get it signed','Revise the previous portion as well']},
+ art:{warm:['Show 2–3 example artworks linked to {t} and discuss what students notice','Quick 2-minute sketch warm-up','Colour or shape hunt around the room'],
+  teach:['Demonstrate the technique for {t} step by step','Show the materials and explain how to use them safely','Break the final piece into simple stages'],
+  guided:['Students try the technique on a practice sheet with teacher support','Pairs create a small sample together','Follow-along demo, step by step'],
+  ind:['Students create their own piece using {t}','Complete the artwork with a personal touch','Make a final version and add a title'],
+  check:['Gallery walk: students share one thing they like in a classmate\'s work','Students explain one choice they made','Teacher circulates and gives one tip to each student'],
+  hw:['Finish the artwork at home','Find an example of {t} at home or outside and sketch it','Collect materials for the next lesson']},
+ gen:{warm:['Quick recap questions from the last lesson','Show a picture or question linked to {t}','Think–pair–share: what do you already know about {t}?'],
+  teach:['Explain the key ideas of {t} with examples on the board','Demonstrate {t} step by step','Link {t} to real life'],
+  guided:['Pairs work through an example together','Group activity on {t} with guiding questions','Worked example, then a similar one together'],
+  ind:['Individual practice task on {t}','Short written questions on {t}','Students create their own example of {t}'],
+  check:['Exit ticket: 2 questions on {t}','Thumbs up / down plus one question','One-sentence summary'],
+  hw:['Short practice task on {t}','Revise today\'s notes','Prepare one question for next lesson']}
+};
+const OBJ={math:['Understand the key idea behind {t}','Solve standard questions on {t} accurately','Apply {t} to a word problem'],
+ sci:['Describe the main idea of {t} using correct key terms','Explain {t} with the help of a diagram','Relate {t} to an everyday example'],
+ cs:['Explain what {t} is and why it is used','Use {t} to solve a simple problem','Find and fix a simple error involving {t}'],
+ lang:['Identify {t} in a text','Use {t} correctly in their own sentences','Spot and correct common mistakes with {t}'],
+ hum:['Recall the key facts about {t}','Explain why {t} matters','Express their own view about {t} with a reason'],
+ quran:['Recite today\'s portion with correct pronunciation','Apply the rule practised in {t}','Read with growing confidence and fluency'],
+ art:['Use the technique for {t} with control','Create an original piece using {t}','Talk about their work using simple art words'],
+ gen:['Understand the main idea of {t}','Practise {t} with confidence','Apply {t} in a new example']};
+// share of the lesson for each stage, by style
+const SPLIT={interactive:[.10,.25,.25,.25,.15],activity:[.10,.15,.35,.25,.15],exam:[.10,.25,.15,.35,.15],revision:[.15,.15,.25,.30,.15]};
+const SETTING={class:'Whole class',small:'Small group',one:'One-to-one',online:'Online'};
+const STAGES=[['warm','Starter / warm-up','👋','#D4FF00'],['teach','Teach the new idea','🧑‍🏫','#111'],['guided','Guided practice','🤝','#9BE15D'],['ind','Independent practice','✍️','#4C9A2A'],['check','Check understanding & wrap-up','✅','#C9C9C9']];
+
+function minutes(total,style){const sp=SPLIT[style]||SPLIT.interactive;const m=sp.map(x=>Math.max(3,Math.round(x*total)));let d=total-m.reduce((a,b)=>a+b,0);m[3]+=d;return m;}
+function adapt(text,setting){
+  if(setting==='one')return text.replace(/mini whiteboards/g,'a mini whiteboard').replace(/collected at the door/g,'checked at the end');
+  if(setting==='online')return text.replace(/mini whiteboards/g,'the chat box or a shared screen').replace(/on the board/g,'on a shared screen').replace(/collected at the door/g,'posted in the chat').replace(/Gallery walk/g,'Screen-share gallery');
+  return text;}
+function readForm(){const f=$('#form');const o=Object.fromEntries(new FormData(f).entries());o.style=($('[data-chips=style] .chip.on')||{}).dataset?.v||'interactive';o.duration=+o.duration;o.topic=o.topic.trim();return o;}
+function build(o){
+  const fam=FAMILY[o.subject]||'gen', bank=BANK[fam], t=o.topic||o.subject, fill=s=>adapt(s.replace(/\{t\}/g,t),o.setting);
+  const objs=(o.objectives||'').split('\n').map(s=>s.trim()).filter(Boolean);
+  const mins=minutes(o.duration,o.style);
+  return {id:current?.id||Date.now(),o,
+    objectives:(objs.length?objs:OBJ[fam].map(fill)),
+    stages:STAGES.map(([k,name,ic,col],i)=>({k,name,ic,col,min:mins[i],acts:pick(bank[k],k==='teach'||k==='guided'?2:1).map(fill)})),
+    hw:pick(bank.hw,1).map(fill)[0],
+    diff:{support:o.setting==='one'?'Break each step into smaller parts and give a worked example to copy first.':'Give struggling students a worked example and sentence starters; sit them near the board.',
+          stretch:'Give fast finishers a harder “challenge question” that applies '+t+' in a new way.'},
+    vocab:'', notes:''};}
+function render(p){
+  const o=p.o; let start=0;
+  const timeline=p.stages.map(s=>{const from=start;start+=s.min;return `<div class="stage" data-k="${s.k}"><div class="tm">${s.min} min<small>${from}–${start}</small></div><div class="bd"><b>${s.ic} ${esc(s.name)}</b><ul contenteditable="true">${s.acts.map(a=>`<li>${esc(a)}</li>`).join('')}</ul><div class="who">${esc(SETTING[o.setting])}${o.setting==='class'||o.setting==='small'?' · '+esc(o.students)+' students':''}</div></div></div>`}).join('');
+  $('#out').innerHTML=`<article class="plan" id="plan">
+   <div class="plan-head"><div><span class="pill l">Lesson plan</span><h2 contenteditable="true" data-f="title">${esc(o.topic||o.subject+' lesson')}</h2>
+    <div class="meta"><span class="pill">📚 ${esc(o.subject)}</span><span class="pill">🎓 ${esc(o.grade)}</span><span class="pill">🏫 ${esc(o.curriculum)}</span><span class="pill">⏱ ${o.duration} min</span><span class="pill">${esc(SETTING[o.setting])}</span></div></div>
+    <div class="tbox">${o.teacher?'Teacher: <b>'+esc(o.teacher)+'</b><br>':''}Date: <span contenteditable="true">____________</span></div></div>
+   <div class="sec"><h3>🎯 Learning objectives</h3><p style="margin:0 0 6px">By the end of the lesson, students will be able to:</p><ul contenteditable="true">${p.objectives.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+   <div class="grid2"><div class="box"><h3 style="margin:0 0 6px;font-size:14px">🧰 Resources</h3><div contenteditable="true">${esc(o.resources||'—')}</div></div>
+    <div class="box"><h3 style="margin:0 0 6px;font-size:14px">🔤 Key words</h3><div contenteditable="true">${esc(p.vocab)||'<span style="color:#999">Tap to add key words…</span>'}</div></div></div>
+   <div class="sec"><h3>⏱ Lesson flow</h3><div class="bar">${p.stages.map(s=>`<span style="width:${s.min/o.duration*100}%;background:${s.col}" title="${esc(s.name)}"></span>`).join('')}</div><div class="timeline">${timeline}</div></div>
+   <div class="grid2"><div class="box"><h3 style="margin:0 0 6px;font-size:14px">🫶 Support</h3><div contenteditable="true">${esc(p.diff.support)}</div></div>
+    <div class="box"><h3 style="margin:0 0 6px;font-size:14px">🚀 Stretch</h3><div contenteditable="true">${esc(p.diff.stretch)}</div></div></div>
+   <div class="sec"><h3>🏠 Homework</h3><div contenteditable="true">${esc(p.hw)}</div></div>
+   <div class="sec"><h3>🗒 Reflection (after the lesson)</h3><div class="notes" contenteditable="true">${esc(p.notes)||'<span style="color:#999">What went well? What would you change next time?</span>'}</div></div>
+   <div class="foot"><span>Tip: tap any text to edit it.</span><span>Made with the free Tutobridge Lesson Planner · tutobridge.com</span></div></article>`;
+  $('#tools').hidden=false;}
+function drawSaved(){const s=store();$('#savedBox').innerHTML=s.length?`<h3>Saved on this device</h3>${s.map(p=>`<div class="sv"><b data-open="${p.id}">${esc(p.title||p.o.topic||p.o.subject)}</b><span style="color:#999">${esc(p.o.grade)}</span><button data-del="${p.id}" aria-label="Delete">✕</button></div>`).join('')}`:'';}
+function snapshot(){const el=$('#plan');if(!el)return null;return {id:current.id,o:current.o,title:$('[data-f=title]',el).innerText.trim(),html:el.innerHTML,saved:Date.now()};}
+
+$('[data-chips=style]').addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;$$('.chip',c.parentElement).forEach(x=>x.classList.toggle('on',x===c));});
+$('#form').addEventListener('submit',e=>{e.preventDefault();const o=readForm();if(!o.topic){$('[name=topic]').focus();$('[name=topic]').style.borderColor='#d33';return toast('Add a topic first.');}$('[name=topic]').style.borderColor='';seed=Date.now()%9973;current=null;current=build(o);render(current);if(innerWidth<900)$('#tools').scrollIntoView({behavior:'smooth'});});
+$('#tools').addEventListener('click',e=>{const b=e.target.closest('[data-do]');if(!b||!current)return;const d=b.dataset.do;
+  if(d==='print')window.print();
+  if(d==='remix'){seed=(seed+7919)%9973;current=build(current.o);render(current);toast('New activities picked.');}
+  if(d==='copy'){const txt=$('#plan').innerText;(navigator.clipboard?navigator.clipboard.writeText(txt):Promise.reject()).then(()=>toast('Copied. Paste it into WhatsApp, Word or Google Docs.'),()=>toast('Could not copy. Select the text and copy it manually.'));}
+  if(d==='save'){const snap=snapshot();const s=store().filter(x=>x.id!==snap.id);s.unshift(snap);if(setStore(s.slice(0,30))){drawSaved();toast('Saved on this device.');}else toast('Could not save in this browser.');}
+});
+$('#savedBox').addEventListener('click',e=>{const op=e.target.closest('[data-open]'),del=e.target.closest('[data-del]');
+  if(op){const p=store().find(x=>String(x.id)===op.dataset.open);if(!p)return;current={id:p.id,o:p.o};$('#out').innerHTML=`<article class="plan" id="plan">${p.html}</article>`;$('#tools').hidden=false;toast('Opened your saved plan.');}
+  if(del){setStore(store().filter(x=>String(x.id)!==del.dataset.del));drawSaved();toast('Deleted.');}
+});
+drawSaved();
+})();
+</script>
+</body>
+</html>

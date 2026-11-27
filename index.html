@@ -274,6 +274,8 @@ footer .wrap.fcols{display:grid}
 .ed-note{font-size:13px;color:#595959}.ed-note button{border:0;background:none;text-decoration:underline;font-weight:800;cursor:pointer;padding:0}
 @keyframes edIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media(max-width:899px){.ed-wrap{grid-template-columns:1fr;gap:28px}.ed-phone{height:600px}.ed-copy .tryapp{width:100%}}
+.ed-free{display:flex;align-items:center;gap:12px;margin-top:22px;padding:14px 16px;border:2px dashed #111;border-radius:18px;text-decoration:none;color:#111;font-size:14px;transition:background .2s}
+.ed-free:hover{background:#F2FFC2}.ed-free span{flex:1}.ed-free b{display:block;font-size:15px}
 </style>
 </head>
 <body>
@@ -315,7 +317,8 @@ footer .wrap.fcols{display:grid}
 <li data-edgo="req"><b>📥 Trial requests</b><span>Parents send requests. Accept to see their phone and WhatsApp, or decline politely.</span></li>
 <li data-edgo="map"><b>📍 Parents near you</b><span>See open tuition requests around your area and reach out first.</span></li>
 <li data-edgo="me"><b>⚙️ Your profile and availability</b><span>Pause new requests when you're full, and track your numbers.</span></li></ul>
-<a class="tryapp" href="/app/#/signup/teacher" style="margin-top:8px">Register as a teacher →</a></div>
+<a class="tryapp" href="/app/#/signup/teacher" style="margin-top:8px">Register as a teacher →</a>
+<a class="ed-free" href="/tools/lesson-planner/">📝 <span><b>New: free Lesson Planner</b> Build a timed, printable lesson plan in minutes. No sign-up.</span> →</a></div>
 <div class="ed-stage"><div class="ed-phone" id="edp">
 <div class="ed-top"><div class="ed-av">AM</div><div style="flex:1;min-width:0"><b>Salam, Ayesha 👋</b><div class="ed-badges"><span class="ed-pill ok">✓ Verified</span><span class="ed-pill">★ Star Teacher</span></div></div></div>
 <div class="ed-tabs"><button data-edt="req" class="on">Requests <i id="edn">3</i></button><button data-edt="map">Map</button><button data-edt="me">Profile</button></div>
