@@ -610,7 +610,7 @@ render();if(typeof window!=='undefined')window.__tb={signup:function(r){S.stack=
  function openApp(role,login){ph.classList.add('full');if(window.innerWidth>=900){document.getElementById('stage').scrollIntoView({behavior:'smooth',block:'start'})}
   if(window.__tb){if(login)window.__tb.login();else if(role)window.__tb.signup(role)}}
  function closeApp(){ph.classList.remove('full')}
- document.addEventListener('click',function(e){var o=e.target.closest('[data-open]');if(o){openApp(o.getAttribute('data-role'),o.hasAttribute('data-login'));return}
+ document.addEventListener('click',function(e){var o=e.target.closest('[data-open]');if(o){var r=o.getAttribute('data-role');location.href=o.hasAttribute('data-login')?'/app/#/login':(r?'/app/#/signup/'+r:'/app/');return}
   if(e.target.closest('[data-close]')){closeApp();return}var c=e.target.closest('[data-copy]');if(c){var m=document.getElementById('copied');try{navigator.clipboard.writeText('support@tutobridge.com').then(function(){m.textContent='Copied.'},function(){m.textContent='Select the address above to copy it.'})}catch(x){m.textContent='Select the address above to copy it.'}}});
  document.addEventListener('keydown',function(e){if(e.key==='Escape')closeApp()});
  if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(x){if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}})},{threshold:.12});
