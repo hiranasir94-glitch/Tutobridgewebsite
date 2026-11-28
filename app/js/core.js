@@ -144,13 +144,16 @@ document.addEventListener('click', (e) => {
   group.dispatchEvent(new CustomEvent('chips', { bubbles: true }));
 });
 
-/* ------------------------------------------------------------------ location input (GPS + optional label lookup) */
+/* ------------------------------------------------------------------ location input (GPS, typed area, map with movable pin) */
+const LOC_CENTER = [31.5204, 74.3587]; // Lahore
 function locationField(id, { label = 'Current location', value = '', lat = null, lng = null } = {}) {
   return `<div class="f" data-loc="${id}" data-lat="${lat ?? ''}" data-lng="${lng ?? ''}" style="margin-bottom:14px">
     <label class="f" style="margin-bottom:6px"><span>${esc(label)}</span>
       <input class="inp" name="${id}_label" maxlength="200" placeholder="e.g. Gulberg III, Lahore" value="${esc(value)}"></label>
     <div class="row wrap"><button type="button" class="btn out sm" data-locate="${id}">📍 Use Current Location</button>
       <span class="small muted" data-locmsg>${lat != null ? '✓ Location saved' : 'Optional. Used to show approximate distances.'}</span></div>
+    <div class="locmap" data-locmap aria-label="Map: tap or drag the pin to set your location"></div>
+    <div class="small muted" data-lochint style="margin-top:6px">${lat != null ? '📌 Drag the pin or tap the map to fine-tune your spot.' : '👆 Tap the map, type your area above, or use your current location to drop a pin.'}</div>
   </div>`;
 }
 function readLocation(root, id) {
@@ -160,30 +163,75 @@ function readLocation(root, id) {
   const lng = box.dataset.lng === '' ? null : Number(box.dataset.lng);
   return { label: $('input', box).value.trim(), lat, lng };
 }
+async function reverseLabel(lat, lng) {
+  let label = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+  try {
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=16&lat=${lat}&lon=${lng}`, { headers: { 'Accept-Language': 'en' } });
+    const a = (await r.json()).address || {};
+    const parts = [...new Set([a.road && (a.suburb || a.neighbourhood) ? null : a.road, a.suburb || a.neighbourhood || a.quarter || a.residential, a.city || a.town || a.county].filter(Boolean))];
+    if (parts.length) label = parts.join(', ');
+  } catch (_) { /* fall back to coordinates */ }
+  return label;
+}
+/* Put the pin at lat/lng, store it on the field, and (optionally) refresh the area label. */
+async function setLocPin(box, lat, lng, { fly = true, relabel = true, zoom = 16 } = {}) {
+  box.dataset.lat = lat; box.dataset.lng = lng;
+  const m = box._locmap;
+  if (m) {
+    if (!m.pin) {
+      m.pin = L.marker([lat, lng], { draggable: true, autoPan: true, icon: L.divIcon({ className: '', html: '<div class="mpin me"><span>📍</span></div>', iconSize: [30, 30], iconAnchor: [15, 30] }) }).addTo(m.map);
+      m.pin.on('dragend', () => { const p = m.pin.getLatLng(); setLocPin(box, p.lat, p.lng, { fly: false }); });
+    } else m.pin.setLatLng([lat, lng]);
+    if (fly) m.map.setView([lat, lng], Math.max(m.map.getZoom(), zoom));
+  }
+  $('[data-lochint]', box).textContent = '📌 Pin set. Drag it or tap the map to fine-tune your exact spot.';
+  $('[data-locmsg]', box).textContent = '✓ Location saved';
+  if (relabel) {
+    const input = $('input', box);
+    const auto = !input.value.trim() || input.dataset.auto === '1' || /^-?\d+\.\d+, -?\d+\.\d+$/.test(input.value.trim());
+    if (auto) { input.value = await reverseLabel(lat, lng); input.dataset.auto = '1'; }
+  }
+}
+function initLocMap(el) {
+  if (el.dataset.ready || !window.L || !el.isConnected) return;
+  el.dataset.ready = '1';
+  const box = el.closest('[data-loc]');
+  const lat = box.dataset.lat === '' ? null : Number(box.dataset.lat);
+  const lng = box.dataset.lng === '' ? null : Number(box.dataset.lng);
+  const map = L.map(el, { scrollWheelZoom: false, tap: true }).setView(lat != null ? [lat, lng] : LOC_CENTER, lat != null ? 16 : 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(map);
+  box._locmap = { map, pin: null };
+  if (lat != null) setLocPin(box, lat, lng, { fly: false, relabel: false });
+  map.on('click', (e) => setLocPin(box, e.latlng.lat, e.latlng.lng, { fly: false }));
+  [150, 500].forEach((t) => setTimeout(() => map.invalidateSize(), t));
+  /* typed area -> move the pin there (only if the user typed it) */
+  const input = $('input', box);
+  input.addEventListener('input', () => { input.dataset.auto = ''; });
+  input.addEventListener('change', async () => {
+    const q = input.value.trim();
+    if (q.length < 3 || /^-?\d+\.\d+, -?\d+\.\d+$/.test(q)) return;
+    try {
+      const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&countrycodes=pk&viewbox=74.0,31.75,74.65,31.25&q=${encodeURIComponent(/lahore/i.test(q) ? q : q + ', Lahore')}`, { headers: { 'Accept-Language': 'en' } });
+      const j = await r.json();
+      if (j[0]) { await setLocPin(box, +j[0].lat, +j[0].lon, { relabel: false, zoom: 15 }); $('[data-lochint]', box).textContent = '📌 Found it. Drag the pin to your exact street or house.'; }
+      else $('[data-lochint]', box).textContent = "Couldn't find that area on the map. Tap the map to drop the pin yourself.";
+    } catch (_) { /* map lookup is optional */ }
+  });
+}
+new MutationObserver(() => $$('[data-locmap]:not([data-ready])').forEach(initLocMap)).observe(document.documentElement, { childList: true, subtree: true });
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-locate]');
   if (!b) return;
   const box = b.closest('[data-loc]');
   const msg = $('[data-locmsg]', box);
-  if (!navigator.geolocation) { msg.textContent = 'Location is not available in this browser. Type it instead.'; return; }
+  if (!navigator.geolocation) { msg.textContent = 'Location is not available in this browser. Tap the map instead.'; return; }
   setBusy(b, true, 'Finding you...');
   navigator.geolocation.getCurrentPosition(async (pos) => {
-    const { latitude: lat, longitude: lng } = pos.coords;
-    box.dataset.lat = lat; box.dataset.lng = lng;
-    let label = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
-    try {
-      const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=15&lat=${lat}&lon=${lng}`, { headers: { 'Accept-Language': 'en' } });
-      const j = await r.json();
-      const a = j.address || {};
-      const parts = [...new Set([a.suburb || a.neighbourhood || a.quarter || a.residential, a.city || a.town || a.county].filter(Boolean))];
-      if (parts.length) label = parts.join(', ');
-    } catch (_) { /* coordinates are used as the label instead */ }
-    const input = $('input', box);
-    if (!input.value.trim() || /^-?\d+\.\d+, -?\d+\.\d+$/.test(input.value.trim())) input.value = label;
+    await setLocPin(box, pos.coords.latitude, pos.coords.longitude);
     msg.textContent = '✓ Location saved. You can edit the label.';
     setBusy(b, false);
   }, (err) => {
-    msg.textContent = err.code === 1 ? 'Location permission was denied. You can type your location instead.' : 'Could not get your location. Try again or type it.';
+    msg.textContent = err.code === 1 ? 'Location permission was denied. Tap the map or type your area instead.' : 'Could not get your location. Tap the map or type your area.';
     setBusy(b, false);
   }, { enableHighAccuracy: true, timeout: 15000 });
 });
