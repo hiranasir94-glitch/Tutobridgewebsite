@@ -479,10 +479,29 @@ ROUTES.signup = ([role]) => {
     });
     setBusy(b, false);
     if (error) return toast(errText(error), true);
+    const email = f.email.value.trim();
+    // Supabase hides whether an email is taken: for an existing account it returns a user with no identities and sends nothing.
+    if (!data.session && data.user && Array.isArray(data.user.identities) && data.user.identities.length === 0) {
+      view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:52px">👋</div><h1>You already have an account</h1>
+        <p class="muted"><b>${esc(email)}</b> is already registered with Tutobridge, so no new link was sent. Log in instead, or reset your password if you have forgotten it.</p>
+        <a class="btn" href="#/login" style="width:100%">Log in</a>
+        <a class="btn out" href="#/forgot" style="width:100%;margin-top:10px">Forgot password?</a>
+        <p class="small muted" style="margin-top:14px">Want a separate teacher account? Sign up with a different email address.</p></div>`);
+      return;
+    }
     if (!data.session) {
-      view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:52px">📬</div><h1>Check your email</h1>
-        <p class="muted">We sent a confirmation link to <b>${esc(f.email.value.trim())}</b>. Open it to activate your account, then log in.</p>
-        <a class="btn" href="#/login">Go to log in</a></div>`);
+      const a2 = view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:52px">📬</div><h1>Check your email</h1>
+        <p class="muted">We sent a confirmation link to <b>${esc(email)}</b>. Open it to activate your account, then log in.</p>
+        <p class="small muted">It can take a few minutes. Check your Spam or Promotions folder too. The email comes from ${SUPPORT_EMAIL}.</p>
+        <a class="btn" href="#/login" style="width:100%">Go to log in</a>
+        <button class="btn out" id="resend" style="width:100%;margin-top:10px">Resend the link</button></div>`);
+      $('#resend', a2).onclick = async (e) => {
+        const btn = e.currentTarget;
+        setBusy(btn, true, 'Sending...');
+        const r = await sb.auth.resend({ type: 'signup', email, options: { emailRedirectTo: APP_URL } });
+        setBusy(btn, false);
+        toast(r.error ? errText(r.error) : 'Sent again. Check your inbox and Spam folder.', !!r.error);
+      };
     } else go('#/home');
   };
 };
