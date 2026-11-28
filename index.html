@@ -248,13 +248,19 @@ footer .wrap.fcols{display:grid}
 @media(min-width:900px){.thero .stage{margin-top:-20px}}
 .tryapp{display:inline-flex;align-items:center;justify-content:center;background:#D4FF00;color:#111;border:2px solid #111;border-radius:999px;font-weight:800;font-size:26px;padding:19px 44px;text-decoration:none;box-shadow:0 10px 0 #111;transition:transform .15s,box-shadow .15s}
 .tryapp:hover{transform:translateY(3px);box-shadow:0 7px 0 #111}
-@media(min-width:900px){.phone:not(.full){width:300px!important;height:530px!important;zoom:.74}}
+@media(min-width:900px){.phone:not(.full){width:300px!important;height:530px!important;zoom:.6}.thero .wrap{padding-top:28px;padding-bottom:40px}.thero .wrap>div>h1{font-size:clamp(34px,4.2vw,50px);margin:12px 0 10px}.ctaweb{margin:12px 0 14px}.ctaweb .tryapp{font-size:21px;padding:13px 32px;box-shadow:0 7px 0 #111}.thero p.lead{font-size:17px;margin-bottom:16px}.hfeat{margin-top:16px}.thero .stage{margin-top:-40px}}
 @media(max-width:899px){
  .stage{display:flex!important;height:auto!important;overflow:visible!important;margin-top:26px}
- .phone:not(.full){display:flex!important;position:relative!important;inset:auto!important;width:290px!important;height:500px!important;zoom:.74;border-radius:36px!important;box-shadow:0 30px 70px rgba(17,17,17,.3),0 0 0 8px #fff,0 0 0 9px var(--line)!important;z-index:1}
+ .phone:not(.full){display:flex!important;position:relative!important;inset:auto!important;width:290px!important;height:500px!important;zoom:.56;border-radius:36px!important;box-shadow:0 30px 70px rgba(17,17,17,.3),0 0 0 8px #fff,0 0 0 9px var(--line)!important;z-index:1}
  .tryapp{font-size:23px;width:min(100%,380px)}
 }
 .ctaweb{margin:20px 0 20px}
+.hfeat{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:22px;max-width:560px}
+.hfl{grid-column:1/-1;font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:#111}
+.hfeat a{display:flex;align-items:center;gap:10px;background:#fff;border:2px solid #111;border-radius:16px;padding:10px 12px;text-decoration:none;color:#111;box-shadow:0 4px 0 #111;transition:transform .15s,box-shadow .15s}
+.hfeat a:hover{transform:translateY(2px);box-shadow:0 2px 0 #111}
+.hfeat b{font-size:22px;line-height:1}.hfeat span{display:flex;flex-direction:column;font-size:12.5px;color:#555;line-height:1.3}.hfeat strong{font-size:15px;color:#111}
+@media(max-width:899px){.hfeat{gap:8px;margin-top:18px}.hfeat a{padding:9px 10px}.hfeat strong{font-size:14px}.hfeat span{font-size:11.5px}}
 .stores{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px}
 .stl{width:100%;text-align:center;font-weight:800;font-size:18px;color:#111}
 .stb{display:inline-flex;align-items:center;gap:5px;background:#111;color:#fff;border-radius:10px;padding:5px 10px;font-weight:700;font-size:11px}
@@ -322,7 +328,12 @@ footer .wrap.fcols{display:grid}
 <div class="ctaweb"><a class="tryapp" href="/app/">Use on web →</a></div>
 <p class="lead">Tutobridge connects parents and students with verified teachers nearby. Search by subject, grade or curriculum, chat first, then book a trial.</p>
 
-<div class="trust"><span>✓ Verified teachers</span><span>💬 Chat before you commit</span><span>🔒 Address kept private</span></div></div>
+<div class="trust"><span>✓ Verified teachers</span><span>💬 Chat before you commit</span><span>🔒 Address kept private</span></div>
+<div class="hfeat"><span class="hfl">More than a tutor app</span>
+<a href="/tutors/"><b>🔎</b><span><strong>Find a Tutor</strong>Subjects &amp; star ratings</span></a>
+<a href="/notice-board/"><b>📌</b><span><strong>Notice Board</strong>Lahore education events</span></a>
+<a href="/tools/"><b>🧰</b><span><strong>Tools</strong>AI tools for teaching</span></a>
+<a href="/app/#/signup/teacher"><b>👩‍🏫</b><span><strong>For Teachers</strong>Get verified, get students</span></a></div></div>
 <div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div><div class="stores"><span class="stl">Launching soon</span><span class="stb">▶ Play Store</span><span class="stb">● App Store</span></div></div></div></section>
 <section class="blk soft" id="explore"><div class="wrap"><span class="lab c rv">Explore Tutobridge</span><h2 class="rv">More than a tutor app</h2><p class="sub rv">Find tutors, keep up with education events in Lahore, and discover the tools teachers and families use today.</p>
 <div class="hub">
