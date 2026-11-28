@@ -5,7 +5,7 @@
     ['/tutors/', 'Find a Tutor', 'tutors', [
       ['/tutors/?mode=online', '💻 Online tutor', 'Classes over video call'],
       ['/tutors/?mode=home', '🏠 Home tutor', 'Tutor comes to your home'],
-      ['/academies/', '🏫 Academies / Centres near me', 'Tuition centres on a map']
+      ['/academies/', '🏫 Academies / Centers near me', 'Tuition centers on a map']
     ]],
     ['/notice-board/', 'Notice Board', 'notice'],
     ['/tools/', 'Latest AI tools', 'tools'],
@@ -31,7 +31,7 @@
     '<nav class="mnav d-only">' + nav + '</nav></div><nav class="mnav m-only">' + nav + '</nav></div></header>' +
     '<style>@media(min-width:900px){.m-only{display:none!important}}@media(max-width:899px){.d-only{display:none!important}}</style>';
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centres near me</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {

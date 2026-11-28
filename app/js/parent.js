@@ -112,7 +112,7 @@ function renderParentHome() {
   const a = view(`
     <div class="row st"><div class="grow"><h1>Salam, ${esc(firstName(p.full_name))} 👋</h1><div class="muted" style="font-weight:700">📍 Teachers near ${esc(where)}</div></div></div>
     <section class="card st" style="--i:1;margin-top:14px">
-      <div class="row wrap" style="margin-bottom:10px"><b class="grow">Teachers &amp; tuition centres near you</b><button class="btn out sm" data-p="post">📌 Post a request</button></div>
+      <div class="row wrap" style="margin-bottom:10px"><b class="grow">Teachers &amp; tuition centers near you</b><button class="btn out sm" data-p="post">📌 Post a request</button></div>
       <div id="pmap" class="map"></div><div class="small muted" style="margin-top:6px">Locations shown are approximate.</div>
     </section>
     <input class="inp st" style="--i:2" id="q" placeholder="Search by subject, grade, curriculum, or teacher name..." value="${esc(PF.q)}">
@@ -322,7 +322,7 @@ async function drawParentMap(el) {
     pts.push(ll);
     BOARD.byId[r.teacher_id] = BOARD.byId[r.teacher_id] || { id: r.teacher_id, profiles: { full_name: r.name }, subjects: r.subjects, curricula: r.curricula, is_star_teacher: r.is_star, rating_avg: r.rating };
     L.marker(ll, { icon: pin('', r.kind === 'centre' ? '🏫' : r.is_star ? '★' : '🎓') }).addTo(map).bindPopup(
-      `<b>${esc(r.name)}</b>${r.is_star ? ' ★' : ''}<br><span class="small">${r.kind === 'centre' ? 'Tuition centre / home academy' : 'Teacher'}${r.distance_km != null ? ` · ${r.distance_km} km` : ''}</span>
+      `<b>${esc(r.name)}</b>${r.is_star ? ' ★' : ''}<br><span class="small">${r.kind === 'centre' ? 'Tuition center / home academy' : 'Teacher'}${r.distance_km != null ? ` · ${r.distance_km} km` : ''}</span>
        <br><span class="small">${esc((r.subjects || []).join(', '))}</span><br><span class="small muted">Location shown is approximate.</span>
        <button class="btn" data-t="connect" data-id="${esc(r.teacher_id)}">💬 Connect</button>`);
   }
