@@ -2,15 +2,18 @@
 /* Teacher side: 4-step profile setup / edit, dashboard, booking requests, requests map. */
 
 /* ------------------------------------------------------------------ onboarding / edit profile */
-function renderOnboarding(isEdit) {
+async function renderOnboarding(isEdit) {
   const p = S.profile;
   const t = S.teacher || {};
+  const vr = await sb.from('teacher_verification').select('*').eq('id', p.id).maybeSingle();
+  const v = vr.data || {};
+  const others = [...(v.other_doc_urls || [])];
   const has = (m) => (t.teaching_modes || []).includes(m);
   const st = {
     step: 0,
     online: has('online'), academy: !!t.available_at_teacher_home, home: !!t.available_at_student_home, school: !!t.available_at_school,
     now: !!t.is_immediately_available, rateType: t.rate_type || 'per_month',
-    avatar: null, cnic: null, degree: null,
+    avatar: null, cnic: null, cnicBack: null, degree: null, extra: [],
   };
   const degrees = (t.qualifications || []).map((q) => { const i = q.indexOf(' - '); return i < 0 ? [q, ''] : [q.slice(0, i), q.slice(i + 3)]; });
   if (!degrees.length) degrees.push(['', '']);
@@ -55,9 +58,13 @@ function renderOnboarding(isEdit) {
         <h3>Lahore neighbourhoods you cover</h3>${chipGroup('hoods', HOODS, t.neighborhoods || [])}
       </section>
       <section data-step="3" hidden>
-        <h3>Verification</h3><p class="muted small" style="margin-top:-4px">Optional, but verified teachers get the badge and appear to parents. Files are private to you and our verification team.</p>
-        <div class="upl"><span style="font-size:24px">🪪</span><div class="grow"><b>CNIC (front)</b><div class="small muted" id="cnicname">${t.cnic_doc_url ? 'Already uploaded' : 'JPG, PNG, WEBP or PDF, under 5 MB'}</div></div><label class="btn out sm" style="cursor:pointer">Choose file<input type="file" id="cnic" accept="image/jpeg,image/png,image/webp,application/pdf" hidden></label></div>
-        <div class="upl"><span style="font-size:24px">🎓</span><div class="grow"><b>Highest degree certificate</b><div class="small muted" id="degname">${t.degree_doc_url ? 'Already uploaded' : 'JPG, PNG, WEBP or PDF, under 5 MB'}</div></div><label class="btn out sm" style="cursor:pointer">Choose file<input type="file" id="degree" accept="image/jpeg,image/png,image/webp,application/pdf" hidden></label></div>
+        <h3>Verification</h3><p class="muted small" style="margin-top:-4px">Parents only see verified teachers. Your CNIC number and documents are private to you and our verification team, and are never shown on your profile.</p>
+        <label class="f"><span>CNIC number</span><input class="inp" name="cnicno" inputmode="numeric" autocomplete="off" maxlength="15" placeholder="35202-1234567-1" value="${esc(v.cnic_number || '')}"><div class="help">13 digits from your National Identity Card. Dashes are added for you.</div></label>
+        <div class="upl"><span style="font-size:24px">🪪</span><div class="grow"><b>CNIC (front)</b><div class="small muted" id="cnicname">${t.cnic_doc_url ? 'Already uploaded' : 'JPG, PNG, WEBP or PDF, under 5 MB'}</div></div><label class="btn out sm" style="cursor:pointer">Choose file<input type="file" id="cnic" accept="image/jpeg,image/png,image/webp,application/pdf"  hidden></label></div>
+        <div class="upl"><span style="font-size:24px">🪪</span><div class="grow"><b>CNIC (back)</b><div class="small muted" id="cnicbackname">${v.cnic_back_doc_url ? 'Already uploaded' : 'JPG, PNG, WEBP or PDF, under 5 MB'}</div></div><label class="btn out sm" style="cursor:pointer">Choose file<input type="file" id="cnicback" accept="image/jpeg,image/png,image/webp,application/pdf"  hidden></label></div>
+        <div class="upl"><span style="font-size:24px">🎓</span><div class="grow"><b>Highest degree certificate</b><div class="small muted" id="degreename">${t.degree_doc_url ? 'Already uploaded' : 'JPG, PNG, WEBP or PDF, under 5 MB'}</div></div><label class="btn out sm" style="cursor:pointer">Choose file<input type="file" id="degree" accept="image/jpeg,image/png,image/webp,application/pdf"  hidden></label></div>
+        <div class="upl"><span style="font-size:24px">📄</span><div class="grow"><b>Other documents <span class="muted small">(optional)</span></b><div class="small muted" id="extraname">Experience letters, teaching certificates, transcripts. Up to 5 files.</div></div><label class="btn out sm" style="cursor:pointer">Choose files<input type="file" id="extra" accept="image/jpeg,image/png,image/webp,application/pdf" multiple hidden></label></div>
+        <div id="extralist"></div>
         <h3>How parents will see you</h3><div id="preview"></div>
         ${isEdit ? '' : '<p class="small muted">After you submit, your status is Pending Verification until our team reviews your documents.</p>'}
       </section>
@@ -97,7 +104,30 @@ function renderOnboarding(isEdit) {
   });
   pickFile($('#avfile', a), 2 * 1048576, (file) => { st.avatar = file; $('#avprev', a).innerHTML = avatar(p.full_name, URL.createObjectURL(file), 96); });
   pickFile($('#cnic', a), 5 * 1048576, (file) => { st.cnic = file; $('#cnicname', a).textContent = '✓ ' + file.name; });
-  pickFile($('#degree', a), 5 * 1048576, (file) => { st.degree = file; $('#degname', a).textContent = '✓ ' + file.name; });
+  pickFile($('#degree', a), 5 * 1048576, (file) => { st.degree = file; $('#degreename', a).textContent = '✓ ' + file.name; });
+  pickFile($('#cnicback', a), 5 * 1048576, (file) => { st.cnicBack = file; $('#cnicbackname', a).textContent = '✓ ' + file.name; });
+  const drawExtra = () => {
+    $('#extralist', a).innerHTML = [...others.map((path, i) => `<div class="row small" style="margin:4px 0"><span class="grow">📎 ${esc(path.split('/').pop())} <span class="muted">(uploaded)</span></span><button type="button" class="link small" data-delold="${i}">Remove</button></div>`),
+      ...st.extra.map((file, i) => `<div class="row small" style="margin:4px 0"><span class="grow">✓ ${esc(file.name)}</span><button type="button" class="link small" data-delnew="${i}">Remove</button></div>`)].join('');
+  };
+  drawExtra();
+  $('#extra', a).addEventListener('change', (e) => {
+    for (const file of e.target.files) {
+      if (others.length + st.extra.length >= 5) { toast('You can add up to 5 other documents.', true); break; }
+      if (file.size > 5 * 1048576) { toast(`${file.name} is over 5 MB.`, true); continue; }
+      st.extra.push(file);
+    }
+    e.target.value = '';
+    drawExtra();
+  });
+  a.addEventListener('click', (e) => {
+    const o = e.target.closest('[data-delold]'), n = e.target.closest('[data-delnew]');
+    if (o) { others.splice(+o.dataset.delold, 1); drawExtra(); }
+    if (n) { st.extra.splice(+n.dataset.delnew, 1); drawExtra(); }
+  });
+  // CNIC number: digits only, dashes added as 5-7-1.
+  const fmtCnic = (raw) => { const d = raw.replace(/\D/g, '').slice(0, 13); return [d.slice(0, 5), d.slice(5, 12), d.slice(12)].filter(Boolean).join('-'); };
+  f.cnicno.addEventListener('input', () => { f.cnicno.value = fmtCnic(f.cnicno.value); if (/^\d{5}-\d{7}-\d$/.test(f.cnicno.value)) { fieldError(f.cnicno, ''); $('#steperr', a).classList.add('hidden'); } });
 
   const validate = (step) => {
     let err = '';
@@ -126,6 +156,10 @@ function renderOnboarding(isEdit) {
       if (!st.school && !st.online && !st.home && !st.academy) err = 'Choose at least one teaching mode.';
       else if ((st.school && !okNum(f.salary.value)) || (needsRate() && !okNum(f.rate.value)) || (f.cursal.value.trim() && (num(f.cursal.value) ?? -1) < 0)) err = 'Please fix the highlighted fields.';
       else if (!readChips(a, 'hoods').length) err = 'Choose at least one Lahore neighbourhood.';
+    } else if (step === 3) {
+      const ok = /^\d{5}-\d{7}-\d$/.test(f.cnicno.value.trim());
+      fieldError(f.cnicno, ok ? '' : 'Enter your 13-digit CNIC number, like 35202-1234567-1');
+      if (!ok) err = 'Please enter your CNIC number.';
     }
     const box = $('#steperr', a);
     box.classList.toggle('hidden', !err);
@@ -160,7 +194,7 @@ function renderOnboarding(isEdit) {
   $('#prev', a).onclick = () => (st.step === 0 ? go('#/home') : show(st.step - 1));
   $('#next', a).onclick = async () => {
     if (st.step < 3) { if (validate(st.step)) show(st.step + 1); return; }
-    for (let s = 0; s < 3; s++) if (!validate(s)) { show(s); validate(s); return; }
+    for (let s = 0; s < 4; s++) if (!validate(s)) { show(s); validate(s); return; }
     const b = $('#next', a);
     setBusy(b, true, 'Saving...');
     try {
@@ -178,6 +212,9 @@ function renderOnboarding(isEdit) {
       }
       const cnicPath = st.cnic ? await up('teacher_documents', `${uid}/cnic.${ext(st.cnic)}`, st.cnic) : null;
       const degreePath = st.degree ? await up('teacher_documents', `${uid}/degree.${ext(st.degree)}`, st.degree) : null;
+      const cnicBackPath = st.cnicBack ? await up('teacher_documents', `${uid}/cnic-back.${ext(st.cnicBack)}`, st.cnicBack) : null;
+      for (const [i, file] of st.extra.entries()) others.push(await up('teacher_documents', `${uid}/other-${Date.now()}-${i}.${ext(file)}`, file));
+      st.extra = [];
       const loc = readLocation(a, 'loc');
       const pr = await sb.from('profiles').update({
         full_name: f.name.value.trim(), phone_number: f.phone.value.trim(), address: f.address.value.trim(),
@@ -198,6 +235,12 @@ function renderOnboarding(isEdit) {
         ...(cnicPath ? { cnic_doc_url: cnicPath } : {}), ...(degreePath ? { degree_doc_url: degreePath } : {}),
       });
       if (tr.error) throw tr.error;
+      const vv = await sb.from('teacher_verification').upsert({
+        id: uid, cnic_number: f.cnicno.value.trim(), other_doc_urls: others,
+        ...(cnicBackPath ? { cnic_back_doc_url: cnicBackPath } : {}),
+      });
+      if (vv.error) throw vv.error.code === '23505' ? new Error('This CNIC number is already registered with another Tutobridge account. Email ' + SUPPORT_EMAIL + ' if this is a mistake.') : vv.error;
+      setSetupSkipped(false);
       await loadMe();
       toast(isEdit ? 'Profile updated.' : 'Profile submitted. We will verify it soon.');
       go('#/home');
@@ -207,12 +250,43 @@ function renderOnboarding(isEdit) {
     }
   };
 }
-ROUTES.onboarding = () => renderOnboarding(!!S.teacher && onboardingComplete(S.teacher));
-ROUTES.edit = () => (S.profile.role === 'teacher' ? renderOnboarding(true) : go('#/home'));
+function renderSetupChoice() {
+  const first = esc((S.profile.full_name || '').split(' ')[0]);
+  view(`<div class="narrow center" style="padding-top:24px">
+    <div style="font-size:52px">🎉</div>
+    <h1>Welcome to Tutobridge${first ? ', ' + first : ''}!</h1>
+    <p class="muted">Set up your teacher profile so parents in Lahore can find you. It takes about 5 minutes.</p>
+    <div class="card" style="text-align:left;margin:18px 0">
+      <b>You'll need</b>
+      <div class="tc-line"><i>📚</i><span>Your subjects, degrees and the areas you teach in</span></div>
+      <div class="tc-line"><i>🪪</i><span>Your CNIC number, plus a photo of the front and back of your CNIC</span></div>
+      <div class="tc-line"><i>🎓</i><span>Your highest degree certificate, and any experience letters or teaching certificates</span></div>
+      <div class="small muted" style="margin-top:8px">Your CNIC and documents are only seen by our verification team.</div>
+    </div>
+    <button class="btn" style="width:100%" id="now">Set up profile now</button>
+    <button class="btn out" style="width:100%;margin-top:10px" id="skip">Skip for now</button>
+    <p class="small muted" style="margin-top:10px">If you skip, parents won't see you until your profile is complete and verified.</p>
+  </div>`);
+  $('#now').onclick = () => go('#/onboarding/form');
+  $('#skip').onclick = () => { setSetupSkipped(true); go('#/home'); };
+}
+function renderSetupReminder() {
+  view(`<div class="mid">
+    <div class="card st"><div class="row">${avatar(S.profile.full_name, S.profile.avatar_url, 72)}<div class="grow"><h2>${esc(S.profile.full_name)}</h2>
+      <div class="pills"><span class="pill">⚠ Profile not set up</span></div></div></div></div>
+    <div class="card lime st" style="--i:1"><b>Finish your profile to start getting students</b>
+      <p class="small" style="margin:6px 0 12px">Parents can't see you yet. Add your subjects and areas, your CNIC number and your documents, and our team will verify you.</p>
+      <button class="btn" data-a="go" data-v="#/onboarding/form">Set up profile now</button></div>
+  </div>`);
+}
+const isSetUp = () => !!S.teacher && onboardingComplete(S.teacher);
+ROUTES.onboarding = (params = []) => (isSetUp() ? renderOnboarding(true) : params[0] === 'form' ? renderOnboarding(false) : renderSetupChoice());
+ROUTES.edit = () => (S.profile.role !== 'teacher' ? go('#/home') : renderOnboarding(isSetUp()));
 
 /* ------------------------------------------------------------------ dashboard */
 async function renderTeacherDashboard() {
   await loadMe();
+  if (!isSetUp()) return renderSetupReminder();
   const p = S.profile, t = S.teacher;
   let bookings = [];
   let filter = 'pending';

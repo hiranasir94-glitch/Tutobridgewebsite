@@ -212,7 +212,7 @@ const FAQS = [
   ['Students', 'Can a student use Tutobridge?', 'Students should use Tutobridge together with a parent or guardian, who creates the account, chats with teachers and books lessons.'],
   ['Students', 'How do I know a teacher is safe?', 'Teachers show a Verified badge only after our team has reviewed their documents. We still recommend that a parent is at home for the first lesson.'],
   ['Students', 'What is a Star Teacher?', 'A Star Teacher has a 4.8+ rating, many parent reviews and verified student results.'],
-  ['Teachers', 'How do I get verified?', 'Complete your profile and upload your CNIC and highest degree certificate. Your status shows as Pending until our team reviews them. Parents can find you once you are verified.'],
+  ['Teachers', 'How do I get verified?', 'Complete your profile, enter your CNIC number and upload the front and back of your CNIC and your highest degree certificate (experience letters help too). You can skip setup after sign-up and finish it later from your dashboard. Your status shows as Pending until our team reviews them. Parents can find you once you are verified.'],
   ['Teachers', 'How do I set my fees?', 'In your profile choose whether you charge per day or per month and enter the amount for home and online tuition. School positions use an expected monthly salary. You can change these any time from the dashboard.'],
   ['Teachers', 'When do parents see my contact details?', 'Never before you accept a request. Your address is never shown to parents, only the neighbourhoods you cover.'],
   ['Teachers', 'How do I pause new requests?', 'Switch off Accepting New Students on your dashboard. You will be hidden from search until you switch it back on.'],
@@ -388,8 +388,11 @@ async function adminTeachers(a) {
       <div class="tc-line"><i>📚</i><span>${esc((t.subjects || []).join(', '))} · ${esc((t.curricula || []).join(', '))}</span></div>
       <div class="tc-line"><i>📍</i><span>${esc((t.neighborhoods || []).join(', '))}</span></div>
       ${t.bio_description ? `<div class="tc-line"><i>💬</i><span>${esc(t.bio_description)}</span></div>` : ''}
+      <div class="tc-line"><i>🪪</i><span>CNIC: ${t.v.cnic_number ? `<b>${esc(t.v.cnic_number)}</b>` : '<span class="muted">not given</span>'}</span></div>
       <div class="row wrap" style="margin-top:10px">${t.cnic_doc_url ? `<button class="btn out sm" data-doc="${esc(t.cnic_doc_url)}">🪪 CNIC</button>` : '<span class="pill">No CNIC</span>'}
-        ${t.degree_doc_url ? `<button class="btn out sm" data-doc="${esc(t.degree_doc_url)}">🎓 Degree</button>` : '<span class="pill">No degree</span>'}</div>
+        ${t.v.cnic_back_doc_url ? `<button class="btn out sm" data-doc="${esc(t.v.cnic_back_doc_url)}">🪪 CNIC back</button>` : '<span class="pill">No CNIC back</span>'}
+        ${t.degree_doc_url ? `<button class="btn out sm" data-doc="${esc(t.degree_doc_url)}">🎓 Degree</button>` : '<span class="pill">No degree</span>'}
+        ${(t.v.other_doc_urls || []).map((d, i) => `<button class="btn out sm" data-doc="${esc(d)}">📄 Document ${i + 1}</button>`).join('')}</div>
       <div class="row wrap" style="margin-top:10px">${t.verification_status !== 'verified' ? `<button class="btn sm" data-set="verified" data-id="${t.id}">✓ Verify</button>` : ''}
         ${t.verification_status !== 'rejected' ? `<button class="btn out sm" data-set="rejected" data-id="${t.id}">Reject</button>` : ''}
         ${t.verification_status === 'verified' ? `<button class="btn out sm" data-star="${t.is_star_teacher ? 0 : 1}" data-id="${t.id}">${t.is_star_teacher ? 'Remove ★' : '★ Make Star'}</button>` : ''}</div></div>`).join('')}</div>`
@@ -398,7 +401,9 @@ async function adminTeachers(a) {
   const load = async () => {
     const { data, error } = await sb.from('teacher_profiles').select('*, profiles!inner(full_name, avatar_url)').order('updated_at', { ascending: false });
     if (error) { $('#list', a).innerHTML = `<p>${esc(errText(error))}</p>`; return; }
-    rows = data || [];
+    const ver = await sb.from('teacher_verification').select('*');
+    const byId = Object.fromEntries((ver.data || []).map((x) => [x.id, x]));
+    rows = (data || []).map((r) => ({ ...r, v: byId[r.id] || {} }));
     draw();
   };
   await load();

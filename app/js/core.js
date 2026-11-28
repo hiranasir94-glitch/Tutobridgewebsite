@@ -314,6 +314,10 @@ async function loadMe() {
     S.teacher = t.data;
   } else S.teacher = null;
 }
+/* A new teacher can choose "Skip for now" after sign-up; remembered per account on this device. */
+const skipKey = () => 'tb_setup_skipped_' + (S.profile?.id || '');
+function setupSkipped() { try { return localStorage.getItem(skipKey()) === '1'; } catch { return false; } }
+function setSetupSkipped(v) { try { v ? localStorage.setItem(skipKey(), '1') : localStorage.removeItem(skipKey()); } catch { /* storage blocked */ } }
 function onboardingComplete(t) {
   if (!t) return false;
   const modes = [t.available_at_school, t.available_at_student_home, t.available_at_teacher_home, (t.teaching_modes || []).includes('online')].filter(Boolean).length;
@@ -346,7 +350,7 @@ async function route() {
   }
   renderNav();
   if (['', 'welcome', 'login', 'signup', 'forgot'].includes(name)) name = 'home';
-  if (S.profile.role === 'teacher' && !onboardingComplete(S.teacher) && !['help', 'terms', 'admin'].includes(name)) name = 'onboarding';
+  if (S.profile.role === 'teacher' && !onboardingComplete(S.teacher) && !setupSkipped() && !['help', 'terms', 'admin', 'onboarding'].includes(name)) name = 'onboarding';
   const fn = ROUTES[name] || ROUTES.home;
   try { await fn(params); } catch (e) { console.error(e); view(`<div class="narrow center" style="padding:40px 0"><p>${esc(errText(e))}</p><button class="btn" data-a="reload">Try again</button></div>`); }
   renderNav();
