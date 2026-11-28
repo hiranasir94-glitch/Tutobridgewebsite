@@ -22,17 +22,28 @@
 .cta-band{border:2px solid var(--ink);border-radius:24px;background:var(--ink);color:#fff;padding:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-top:30px}
 .cta-band b{font-size:20px}
 .cta-band .btns{display:flex;gap:10px;flex-wrap:wrap}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 18px}
+.modes a{display:flex;align-items:center;gap:10px;padding:14px 16px;border:1.5px solid var(--line);border-radius:16px;font-weight:800;color:var(--ink);text-decoration:none;background:#fff}
+.modes a b{font-size:22px}
+.modes a:hover{border-color:var(--ink)}
+.modes a.on{background:var(--lime);border-color:var(--ink)}
+@media(max-width:640px){.modes{grid-template-columns:1fr}.modes a{padding:12px 14px}}
 </style>
 </head>
 <body data-page="tutors">
 <div id="site-header"></div>
 <section class="phero"><div class="wrap">
   <span class="lab">Find a tutor</span>
-  <h1>Tutors in Lahore</h1>
+  <h1 id="ttl">Tutors in Lahore</h1>
   <p>Browse verified teachers by subject and rating. Sign up free as a parent, student or teacher to see full profiles, fees and contact options.</p>
 </div></section>
 
 <section class="pblk"><div class="wrap">
+  <div class="modes" id="modes">
+    <a href="?mode=online" data-m="online"><b>💻</b>Online tutor</a>
+    <a href="?mode=home" data-m="home"><b>🏠</b>Home tutor</a>
+    <a href="/academies/"><b>🏫</b>Academies / Centres near me</a>
+  </div>
   <div class="tools-row">
     <input class="inp" id="q" type="search" placeholder="Search a subject, e.g. Mathematics, Chemistry, Urdu" aria-label="Search tutors by subject">
     <div class="chips" id="subj"></div>
@@ -50,6 +61,13 @@
 <script>
 (function () {
   var all = [], subj = 'All', q = '';
+  var mode = new URLSearchParams(location.search).get('mode');
+  if (mode !== 'online' && mode !== 'home') mode = '';
+  var MT = { online: 'Online tutors', home: 'Home tutors in Lahore' };
+  if (mode) { document.getElementById('ttl').textContent = MT[mode]; document.title = MT[mode] + ' | Tutobridge'; }
+  document.querySelectorAll('#modes [data-m]').forEach(function (a) {
+    if (a.getAttribute('data-m') === mode) { a.classList.add('on'); a.setAttribute('href', '/tutors/'); a.title = 'Show all tutors'; }
+  });
   var EXAMPLES = [
     { display_name: 'Example: Ayesha K.', subjects: ['Mathematics', 'Physics'], rating_avg: 4.9, reviews_count: 31, is_star_teacher: true, years_experience: 8 },
     { display_name: 'Example: Sana M.', subjects: ['Chemistry', 'Biology'], rating_avg: 4.8, reviews_count: 24, is_star_teacher: true, years_experience: 6 },
@@ -72,15 +90,17 @@
     }).join('');
     var shown = all.filter(function (t) {
       var ss = (t.subjects || []).join(' ').toLowerCase();
+      if (mode === 'online' && !t.teaches_online) return false;
+      if (mode === 'home' && !t.teaches_home) return false;
       return (subj === 'All' || (t.subjects || []).indexOf(subj) > -1) && (!q || ss.indexOf(q) > -1);
     });
     var el = document.getElementById('list');
     if (!all.length) {
       el.innerHTML = '<div class="note" style="margin-bottom:16px">📣 <b>Our first verified teachers are being reviewed now.</b> They will appear here as soon as our team approves them. Here is what a profile card looks like:</div><div class="grid">' + EXAMPLES.map(function (t) { return card(t, true); }).join('') + '</div>';
     } else if (!shown.length) {
-      el.innerHTML = '<div class="empty"><b>🔍</b>No tutors match that subject yet. Try another one.</div>';
+      el.innerHTML = '<div class="empty"><b>🔍</b>' + (mode ? 'No ' + (mode === 'online' ? 'online' : 'home') + ' tutors match yet. <a href="/tutors/">See all tutors</a>.' : 'No tutors match that subject yet. Try another one.') + '</div>';
     } else {
-      el.innerHTML = '<p class="muted small" style="margin:0 0 12px">' + shown.length + ' verified tutor' + (shown.length === 1 ? '' : 's') + '</p><div class="grid">' + shown.map(function (t) { return card(t); }).join('') + '</div>';
+      el.innerHTML = '<p class="muted small" style="margin:0 0 12px">' + shown.length + ' verified ' + (mode ? (mode === 'online' ? 'online ' : 'home ') : '') + 'tutor' + (shown.length === 1 ? '' : 's') + '</p><div class="grid">' + shown.map(function (t) { return card(t); }).join('') + '</div>';
     }
   }
   document.addEventListener('click', function (e) { var c = e.target.closest('[data-s]'); if (c) { subj = c.getAttribute('data-s'); draw(); } });

@@ -76,3 +76,16 @@ footer.pfoot a{text-decoration:none;font-weight:700}
 footer.pfoot a:hover{color:var(--ink)}
 footer.pfoot .cp{margin-left:auto}
 @media(max-width:599px){footer.pfoot .cp{margin-left:0;width:100%}}
+
+/* Find a Tutor dropdown */
+.dd{position:relative}
+.dd summary{list-style:none;cursor:pointer;font-weight:800;font-size:14.5px;color:var(--muted);padding:8px 12px;border-radius:999px;white-space:nowrap;user-select:none}
+.dd summary::-webkit-details-marker{display:none}
+.dd summary i{font-style:normal;font-size:11px}
+.dd summary:hover,.dd[open] summary{color:var(--ink);background:var(--soft)}
+.dd summary.on{color:var(--ink);background:var(--lime)}
+.ddm{position:absolute;top:calc(100% + 6px);left:0;z-index:50;background:#fff;border:1.5px solid var(--line);border-radius:16px;box-shadow:0 14px 34px rgba(0,0,0,.12);padding:6px;min-width:310px;display:grid;gap:2px}
+.ddm a{display:grid!important;gap:1px;padding:10px 12px!important;border-radius:11px!important;background:none!important;color:var(--ink)!important;text-decoration:none;white-space:normal!important}
+.ddm a:hover{background:var(--soft)!important}
+.ddm b{font-size:14.5px}.ddm span{font-size:12.5px;color:var(--muted);font-weight:600}
+@media(max-width:899px){.dd{position:static}.tnav .mnav{position:relative}.dd summary{font-size:13.5px;padding:7px 11px;background:var(--soft);color:var(--ink)}.ddm{left:14px;right:14px;top:auto;margin-top:6px;min-width:0}}
