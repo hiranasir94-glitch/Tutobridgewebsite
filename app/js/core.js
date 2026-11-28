@@ -436,6 +436,7 @@ ROUTES.signup = ([role]) => {
     <button class="back" data-a="go" data-v="#/">← Back</button>
     <h1 class="st">${isT ? 'Register as a Teacher' : 'Parent / Student Sign Up'}</h1>
     <p class="muted st" style="--i:1">${isT ? 'Create your teacher account. You will add your subjects and rates next.' : 'Create an account to find teachers near you.'}</p>
+    ${isT ? '<div class="card lime st" style="--i:1;padding:12px 14px"><b>🎁 Free for our first 1,000 teachers</b><div class="small" id="spots">No fees and no commission.</div></div>' : ''}
     <form id="f" class="st" style="--i:2;margin-top:16px" novalidate>
       <label class="f"><span>Full name</span><input class="inp" name="name" autocomplete="name"></label>
       <label class="f"><span>${isT ? 'Phone / WhatsApp number' : 'Phone number'}</span><input class="inp" name="phone" type="tel" placeholder="03XX XXXXXXX" autocomplete="tel"></label>
@@ -447,6 +448,7 @@ ROUTES.signup = ([role]) => {
       <button class="btn full" id="go">${isT ? 'Create Teacher Account' : 'Create Account'}</button>
       <p class="center muted">Already have an account? <a href="#/login" style="font-weight:800">Log in</a></p>
     </form></div>`);
+  if (isT) sb.rpc('teacher_free_spots_left').then(({ data }) => { const el = $('#spots'); if (el && typeof data === 'number') el.textContent = data > 0 ? `${data.toLocaleString('en-US')} of 1,000 free spots left. No fees and no commission.` : 'All free spots are taken.'; });
   $('#f', a).onsubmit = async (e) => {
     e.preventDefault();
     const f = e.target;
