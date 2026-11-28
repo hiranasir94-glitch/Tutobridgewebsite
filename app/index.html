@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tutobridge – Find trusted tutors in Lahore</title>
 <meta name="description" content="Find verified tutors near you in Lahore. Chat, book a trial, and manage your tuition in one place.">
-<meta name="theme-color" content="#D4FF00">
+<meta name="theme-color" content="#A9D6CB">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
-:root{--brand:#D4FF00;--brandD:#B8E600;--soft:#F2F2F2;--ink:#111;--muted:#595959;--line:#E5E5E5;--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
+:root{--brand:#A9D6CB;--brandD:#7FBFB0;--soft:#F2F2F2;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--ease:cubic-bezier(.22,1,.36,1);--spring:cubic-bezier(.34,1.56,.64,1)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0}
 body{background:#fff;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);min-height:100vh}
@@ -59,7 +59,7 @@ h3{font-size:16px;margin:18px 0 8px}
 
 /* cards & pills */
 .card{background:#fff;border:1.5px solid var(--line);border-radius:22px;padding:16px;margin-bottom:14px;transition:box-shadow .25s,transform .25s var(--ease)}
-.card:hover{box-shadow:0 10px 28px rgba(17,17,17,.07)}
+.card:hover{box-shadow:0 10px 28px rgba(31,42,55,.07)}
 .card.star{border:2.5px solid var(--ink)}
 .card.lime{background:var(--brand);border-color:var(--ink)}
 .card.soft{background:var(--soft);border-color:transparent}
@@ -91,7 +91,7 @@ textarea.inp{resize:vertical;min-height:84px}
 .switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;transition:transform .25s var(--spring)}
 .switch.on{background:var(--ink)}.switch.on::after{transform:translateX(22px)}
 .check{display:flex;gap:10px;align-items:center;font-weight:700;cursor:pointer;margin:6px 0 14px}
-.check input{width:20px;height:20px;accent-color:#111}
+.check input{width:20px;height:20px;accent-color:#1F2A37}
 
 /* avatar */
 .av{border-radius:50%;background:var(--brand);display:grid;place-items:center;font-weight:800;flex:none;overflow:hidden;border:2px solid var(--ink)}
@@ -105,7 +105,7 @@ textarea.inp{resize:vertical;min-height:84px}
 .hero h1 em{font-style:normal;background:var(--brand);padding:0 8px;border-radius:10px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 .wcards{display:grid;gap:12px}
 .wcard{border:2px solid var(--ink);border-radius:24px;padding:20px;cursor:pointer;background:#fff;text-align:left;transition:transform .25s var(--spring),box-shadow .25s}
-.wcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(17,17,17,.12)}
+.wcard:hover{transform:translateY(-3px);box-shadow:0 14px 30px rgba(31,42,55,.12)}
 .wcard.lime{background:var(--brand)}
 .wcard b{display:block;font-size:19px;margin-bottom:4px}
 
@@ -128,7 +128,7 @@ textarea.inp{resize:vertical;min-height:84px}
 @media(max-width:640px){.map{height:260px}}
 .leaflet-popup-content{font-family:"Plus Jakarta Sans",system-ui,sans-serif;margin:12px 14px}
 .leaflet-popup-content .btn{margin-top:8px;width:100%;min-height:38px;font-size:13px}
-.locmap{height:220px;margin-top:10px;border:2px solid var(--ink);border-radius:16px;overflow:hidden;z-index:0;background:#EEF2E6}
+.locmap{height:220px;margin-top:10px;border:2px solid var(--ink);border-radius:16px;overflow:hidden;z-index:0;background:#E7F0ED}
 .locmap .leaflet-control-attribution{font-size:9px}
 .mpin{width:30px;height:30px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--brand);border:2.5px solid var(--ink);display:grid;place-items:center}
 .mpin span{transform:rotate(45deg);font-size:13px}
@@ -178,7 +178,7 @@ details.q p{margin:10px 0 2px;color:var(--muted);line-height:1.5}
 /* overlays */
 #over{position:fixed;inset:0;z-index:100;display:none}
 #over.open{display:block}
-.scrim{position:absolute;inset:0;background:rgba(17,17,17,.45);animation:fade .25s}
+.scrim{position:absolute;inset:0;background:rgba(31,42,55,.45);animation:fade .25s}
 @keyframes fade{from{opacity:0}}
 .sheet{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:min(100%,560px);max-height:92vh;overflow-y:auto;background:#fff;border-radius:26px 26px 0 0;padding:22px 20px 26px;animation:up .35s var(--ease)}
 @media(min-width:700px){.sheet{bottom:auto;top:50%;transform:translate(-50%,-50%);border-radius:26px;animation:pop .3s var(--ease)}}
@@ -206,15 +206,15 @@ details.q p{margin:10px 0 2px;color:var(--muted);line-height:1.5}
 .sec h2,.sec h3{margin:0}
 footer.ft{max-width:1080px;margin:0 auto;padding:20px 16px 40px;color:var(--muted);font-size:13px;display:flex;gap:16px;flex-wrap:wrap}
 footer.ft a{text-decoration:none;font-weight:700}
-.atable{width:100%;border-collapse:collapse;background:#fff;border:2px solid #111;border-radius:16px;overflow:hidden;font-size:14px}
-.atable th{background:#111;color:#fff;text-align:left;padding:10px 12px;font-weight:800;white-space:nowrap}
+.atable{width:100%;border-collapse:collapse;background:#fff;border:2px solid #1F2A37;border-radius:16px;overflow:hidden;font-size:14px}
+.atable th{background:#1F2A37;color:#fff;text-align:left;padding:10px 12px;font-weight:800;white-space:nowrap}
 .atable td{padding:10px 12px;border-top:1px solid #eee;vertical-align:top}
 .atable tr:nth-child(even) td{background:#fafafa}
 </style>
 </head>
 <body>
 <header class="top"><div class="in">
-  <a class="brand" href="/"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 18h19"/><path d="M4.5 18c0-5.5 3.4-9 7.5-9s7.5 3.5 7.5 9"/><path d="M8 18v-5M12 18V9M16 18v-5"/><circle cx="12" cy="5" r="1.6" fill="#111"/></svg></i>Tutobridge</a>
+  <a class="brand" href="/"><i><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F2A37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 18h19"/><path d="M4.5 18c0-5.5 3.4-9 7.5-9s7.5 3.5 7.5 9"/><path d="M8 18v-5M12 18V9M16 18v-5"/><circle cx="12" cy="5" r="1.6" fill="#1F2A37"/></svg></i>Tutobridge</a>
   <nav id="nav"></nav>
 </div></header>
 <main id="app"><div class="spin"></div></main>

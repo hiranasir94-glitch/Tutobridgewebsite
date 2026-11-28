@@ -1,6 +1,6 @@
 /* Shared header/footer + Supabase helper for Tutobridge sub-pages. */
 (function () {
-  var LOGO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 18h19"/><path d="M4.5 18c0-5.5 3.4-9 7.5-9s7.5 3.5 7.5 9"/><path d="M8 18v-5M12 18V9M16 18v-5"/><circle cx="12" cy="5" r="1.6" fill="#111"/></svg>';
+  var LOGO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#1F2A37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 18h19"/><path d="M4.5 18c0-5.5 3.4-9 7.5-9s7.5 3.5 7.5 9"/><path d="M8 18v-5M12 18V9M16 18v-5"/><circle cx="12" cy="5" r="1.6" fill="#1F2A37"/></svg>';
   var NAV = [
     ['/tutors/', 'Find a Tutor', 'tutors', [
       ['/tutors/?mode=online', '💻 Online tutor', 'Classes over video call'],

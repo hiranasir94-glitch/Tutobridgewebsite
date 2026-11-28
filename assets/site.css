@@ -1,5 +1,5 @@
 /* Shared styles for Tutobridge sub-pages: Find a Tutor, Notice Board, Tools */
-:root{--lime:#D4FF00;--limeD:#B8E600;--ink:#111;--muted:#595959;--line:#E5E5E5;--soft:#F7F7F2}
+:root{--lime:#A9D6CB;--limeD:#7FBFB0;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--soft:#F4F7F6}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
@@ -11,7 +11,7 @@ button,input,select{font:inherit;color:inherit}
 .tnav{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.95);backdrop-filter:blur(12px);border-bottom:1.5px solid var(--line)}
 .tnav .row1{display:flex;align-items:center;gap:18px;height:72px}
 .brand{display:flex;align-items:center;gap:12px;font-weight:800;text-decoration:none;font-size:clamp(22px,3vw,30px);letter-spacing:.04em;white-space:nowrap}
-.brand i{flex:none;border:2px solid var(--ink);width:44px;height:44px;border-radius:13px;background:var(--lime);display:grid;place-items:center;box-shadow:0 5px 12px rgba(17,17,17,.3)}
+.brand i{flex:none;border:2px solid var(--ink);width:44px;height:44px;border-radius:13px;background:var(--lime);display:grid;place-items:center;box-shadow:0 5px 12px rgba(31,42,55,.3)}
 .brand i svg{width:58%;height:58%}
 .mnav{display:flex;gap:6px;margin-left:auto;align-items:center}
 .mnav a{text-decoration:none;font-weight:800;font-size:14.5px;color:var(--muted);padding:8px 12px;border-radius:999px;white-space:nowrap;transition:background .15s,color .15s}
