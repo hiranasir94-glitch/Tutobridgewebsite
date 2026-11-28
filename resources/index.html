@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Teaching Resources · Worksheets, test papers & lesson plans · Tutobridge</title>
+<meta name="description" content="Premium teaching resources from Tutobridge: ready lesson plans, worksheets, test papers with answer keys and past-paper packs for Pakistani classrooms.">
+<meta name="theme-color" content="#FFD60A">
+<link rel="icon" href="/favicon.svg?v=yellow" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico?v=yellow" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.packs{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+@media(max-width:899px){.packs{grid-template-columns:1fr 1fr}}@media(max-width:599px){.packs{grid-template-columns:1fr}}
+.pk{border:2px solid var(--ink);border-radius:20px;background:#fff;padding:18px;display:flex;flex-direction:column;gap:8px;box-shadow:0 5px 0 var(--ink)}
+.pk .ic{width:50px;height:50px;border-radius:15px;border:2px solid var(--ink);background:var(--lime);display:grid;place-items:center;font-size:24px}
+.pk h3{margin:4px 0 0;font-size:18px}.pk p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
+.pk .ft{margin-top:auto;padding-top:8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.soon{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:#fff;border-radius:999px;padding:4px 10px}
+.free{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:30px}@media(max-width:699px){.free{grid-template-columns:1fr}}
+.free a{display:flex;gap:14px;align-items:center;border:2px solid var(--ink);border-radius:18px;padding:14px 16px;background:var(--soft);color:var(--ink);text-decoration:none}
+.free a b{font-size:26px}.free a strong{display:block}.free a span{font-size:13.5px;color:var(--muted)}
+.rf{border:2px solid var(--ink);border-radius:22px;background:#fff;padding:20px;display:grid;gap:12px;max-width:720px}
+.rf label.f{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:14px}
+.rf .help{font-weight:500;font-size:12.5px;color:var(--muted)}
+.rf .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.rf .g2{grid-template-columns:1fr}}
+.rf .chips{display:flex;flex-wrap:wrap;gap:6px}
+.rf .chip{border:2px solid var(--ink);background:#fff;border-radius:999px;padding:6px 12px;font-size:13.5px;font-weight:700;cursor:pointer}
+.rf .chip.on{background:var(--ink);color:#fff}
+.rf .err{color:#B42318;font-weight:700;font-size:13px}.rf .inp.bad{border-color:#B42318}
+.rf .hp{position:absolute;left:-9999px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body data-page="resources">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">🧰 Tools · 📚 Resources</span>
+  <h1>Teaching resources that save you hours</h1>
+  <p>Ready-to-use lesson plans, worksheets, test papers and past-paper packs made for Pakistani classrooms: Matric, O and A Level, and Early Years.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <h2>Start with our free tools</h2>
+  <div class="free">
+    <a href="/tools/lesson-planner/"><b>📝</b><div><strong>Free Lesson Plan Generator</strong><span>Build a timed, printable lesson plan in minutes.</span></div></a>
+    <a href="/tools/cv-maker/"><b>📄</b><div><strong>Free CV Maker</strong><span>A professional one-page CV as a PDF.</span></div></a>
+  </div>
+
+  <h2>Premium resource packs</h2>
+  <p class="sub">Our first paid packs are being prepared by experienced Lahore teachers. Tap <b>I'm interested</b> and we'll tell you as soon as they're ready.</p>
+  <div class="packs" id="packs"></div>
+</div></section>
+
+<section class="pblk soft" id="interest"><div class="wrap">
+  <h2>Tell us what you need</h2>
+  <p class="sub">We'll contact you on WhatsApp or email when your resources are ready, with prices and early-bird offers.</p>
+  <div id="rbox">
+  <form class="rf" id="rf" novalidate>
+    <div class="g2">
+      <label class="f">Your name<input class="inp" name="full_name" maxlength="100" required autocomplete="name"></label>
+      <label class="f">Phone / WhatsApp<input class="inp" name="phone" type="tel" maxlength="16" required placeholder="03XX XXXXXXX" autocomplete="tel"></label>
+    </div>
+    <div class="g2">
+      <label class="f">Email <span class="help">Optional</span><input class="inp" name="email" type="email" maxlength="200" autocomplete="email"></label>
+      <label class="f">I am a<select class="inp" name="role"><option value="teacher">Teacher</option><option value="school">School / academy</option><option value="parent">Parent</option><option value="student">Student</option><option value="other">Other</option></select></label>
+    </div>
+    <div class="f" style="display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:14px">I'm interested in <span class="help">Pick one or more</span><div class="chips" id="chips"></div></div>
+    <label class="f">Anything specific? <span class="help">Optional. e.g. "Class 9 Chemistry test papers, Punjab Board"</span><textarea class="inp" name="message" rows="3" maxlength="1000"></textarea></label>
+    <input class="hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="err" id="rerr" hidden></div>
+    <button class="btn" id="rsend" style="justify-self:start">Notify me when ready</button>
+  </form>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var $ = function (q) { return document.querySelector(q); }, esc = TB.esc;
+  var PACKS = [
+    ['📘', 'Ready-made lesson plans', 'Complete, timed lesson plans for every chapter, by class and subject. Print and teach.'],
+    ['📝', 'Worksheets & activity sheets', 'Practice sheets from Primary to Matric, with fun activities and answer keys.'],
+    ['📄', 'Test papers with answer keys', 'Monthly, mid-term and final papers in board and Cambridge styles, with marking schemes.'],
+    ['🎯', 'Past-paper packs', 'Topic-wise solved past papers for Matric, O Level and A Level.'],
+    ['🧒', 'Early Years activity packs', 'Montessori and kindergarten phonics, numbers and craft activities.'],
+    ['🎓', 'Teacher training mini-courses', 'Short video courses on classroom management, lesson planning and using AI tools.']
+  ], picked = [];
+  $('#packs').innerHTML = PACKS.map(function (p) {
+    return '<div class="pk"><div class="ic">' + p[0] + '</div><h3>' + esc(p[1]) + '</h3><p>' + esc(p[2]) + '</p><div class="ft"><span class="soon">Coming soon</span><button class="btn sm" data-want="' + esc(p[1]) + '">I\'m interested</button></div></div>';
+  }).join('');
+  function chips() { $('#chips').innerHTML = PACKS.map(function (p) { return '<button type="button" class="chip' + (picked.indexOf(p[1]) > -1 ? ' on' : '') + '" data-chip="' + esc(p[1]) + '">' + p[0] + ' ' + esc(p[1]) + '</button>'; }).join(''); }
+  chips();
+  document.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-want]');
+    if (b) { var n = b.getAttribute('data-want'); if (picked.indexOf(n) < 0) picked.push(n); chips(); $('#interest').scrollIntoView({ behavior: 'smooth' }); setTimeout(function () { var f = $('#rf'); if (f) f.full_name.focus({ preventScroll: true }); }, 500); return; }
+    var c = e.target.closest('[data-chip]');
+    if (c) { var k = c.getAttribute('data-chip'), i = picked.indexOf(k); if (i > -1) picked.splice(i, 1); else picked.push(k); chips(); }
+  });
+  $('#rf').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target; if (f.company.value) return;
+    var v = function (n) { return f[n].value.trim(); }, phone = v('phone').replace(/[^0-9+]/g, ''), err = $('#rerr');
+    [].forEach.call(f.querySelectorAll('.bad'), function (x) { x.classList.remove('bad'); });
+    function bad(el, c) { if (c) el.classList.add('bad'); return c; }
+    var msg = bad(f.full_name, v('full_name').length < 2) && 'Enter your name.' ||
+      bad(f.phone, !/^(\+92|0)\d{9,10}$/.test(phone)) && 'Enter a Pakistani phone number, like 0300 1234567.' ||
+      bad(f.email, v('email') && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))) && 'Check your email address, or leave it empty.' ||
+      (!picked.length && 'Pick at least one kind of resource.');
+    if (msg) { err.textContent = msg; err.hidden = false; return; }
+    err.hidden = true;
+    var btn = $('#rsend'); btn.disabled = true; btn.textContent = 'Sending...';
+    fetch(TB.URL + '/rest/v1/resource_requests', { method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+      body: JSON.stringify({ full_name: v('full_name'), phone: v('phone'), email: v('email') || null, role: v('role'), interests: picked, message: v('message') || null }) })
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        $('#rbox').innerHTML = '<div class="rf" style="text-align:center"><b style="font-size:42px">🎉</b><h3 style="margin:0">You\'re on the list!</h3><p class="muted" style="margin:0">We\'ll message you as soon as your resources are ready. Meanwhile, try our <a href="/tools/lesson-planner/"><b>free Lesson Plan Generator</b></a>.</p></div>';
+      })
+      .catch(function () { btn.disabled = false; btn.textContent = 'Notify me when ready'; err.textContent = 'Could not send. Check your internet and try again.'; err.hidden = false; });
+  });
+})();
+</script>
+</body>
+</html>

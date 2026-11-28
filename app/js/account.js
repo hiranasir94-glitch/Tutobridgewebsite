@@ -260,7 +260,7 @@ const TERMS = [
   ['8. Changes', 'We may update these terms. If a change is significant we will tell you in the app or on the website. Continuing to use Tutobridge means you accept the updated terms.'],
 ];
 const PRIVACY = [
-  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; your chosen subscription plan; and, for academies listed through our website, the academy details plus the owner name, CNIC number and phone number, which are used only to verify the academy and are never shown publicly; and, if you apply for a job at Tutobridge, the details and CV link you send us.'],
+  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; your chosen subscription plan; and, for academies listed through our website, the academy details plus the owner name, CNIC number and phone number, which are used only to verify the academy and are never shown publicly; if you apply for a job at Tutobridge, the details and CV link you send us; and, if you ask to hear about paid resources, your name, contact details and interests.'],
   ['How we use it', 'To create your account, show teachers near you, let you chat and book, verify teachers, provide support, keep the service safe, and improve Tutobridge.'],
   ['Location', 'We use your location only when you tap Use Current Location or save an address. It is used to sort teachers by approximate distance. Other users never see your exact coordinates.'],
   ['Who can see what', "Teachers see a parent's phone number, address and location only after accepting that parent's request. Parents never see a teacher's address or exact location, only the neighbourhoods they cover and an approximate distance. Messages are visible only to the two people in the conversation. Verification documents are private to the teacher and our review team."],
@@ -283,7 +283,7 @@ ROUTES.terms = () => {
 
 /* ------------------------------------------------------------------ admin review (admins only; enforced by RLS) */
 /* ------------------------------------------------------------------ admin panel */
-const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests'], ['academies', '🏫 Academies'], ['jobs', '💼 Jobs']];
+const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests'], ['academies', '🏫 Academies'], ['jobs', '💼 Jobs'], ['resources', '📚 Resources']];
 let ADMIN_TAB = 'overview';
 function stat(n, label) { return `<div class="card center"><div style="font-size:30px;font-weight:800">${n}</div><div class="small muted">${label}</div></div>`; }
 function table(cols, rows) {
@@ -520,6 +520,51 @@ const ADMIN_PANES = {
         const { error } = await sb.from('job_applications').update({ status: b.dataset.aset }).eq('id', b.dataset.id);
         if (error) { setBusy(b, false); return toast(errText(error), true); }
         toast('Updated.');
+        return load();
+      }
+    });
+  },
+  async resources(p) {
+    const ROLE = { teacher: 'Teacher', school: 'School / academy', parent: 'Parent', student: 'Student', other: 'Other' };
+    let rows = [], tab = 'new';
+    p.innerHTML = `<p class="muted">People who tapped "I'm interested" on the Resources (Paid) page. Contact them when packs are ready.</p><div id="rsum" class="row wrap" style="gap:8px;margin:6px 0 10px"></div>
+      <div class="seg" id="rtabs" style="margin:8px 0 14px"></div><div id="rlist"><div class="spin"></div></div>`;
+    const draw = () => {
+      const count = {};
+      rows.forEach((r) => r.interests.forEach((i) => { count[i] = (count[i] || 0) + 1; }));
+      $('#rsum', p).innerHTML = Object.keys(count).sort((a, b) => count[b] - count[a]).map((k) => `<span class="pill">${esc(k)}: <b>${count[k]}</b></span>`).join('');
+      const nNew = rows.filter((r) => !r.handled).length;
+      $('#rtabs', p).innerHTML = `<button data-rtab="new" class="${tab === 'new' ? 'on' : ''}">To contact ${nNew}</button><button data-rtab="done" class="${tab === 'done' ? 'on' : ''}">Contacted ${rows.length - nNew}</button>`;
+      const list = rows.filter((r) => (tab === 'new' ? !r.handled : r.handled));
+      $('#rlist', p).innerHTML = list.length ? `<div class="tgrid">${list.map((r) => `<div class="card">
+        <div class="row"><b class="grow" style="font-size:17px">${esc(r.full_name)}</b><span class="pill">${ROLE[r.role] || r.role}</span></div>
+        <div class="small muted">${fmtTime(r.created_at)}</div>
+        <div class="tc-line"><i>📞</i><span><a href="tel:${esc(r.phone.replace(/[^0-9+]/g, ''))}">${esc(r.phone)}</a> · <a href="https://wa.me/${toIntl(r.phone)}" target="_blank" rel="noopener">WhatsApp</a></span></div>
+        ${r.email ? `<div class="tc-line"><i>✉️</i><a href="mailto:${esc(r.email)}">${esc(r.email)}</a></div>` : ''}
+        <div class="pills" style="margin-top:6px">${r.interests.map((i) => `<span class="pill lime">${esc(i)}</span>`).join('')}</div>
+        ${r.message ? `<div class="small" style="margin-top:6px"><b>Note:</b> ${esc(r.message)}</div>` : ''}
+        <div class="row wrap" style="margin-top:10px"><button class="btn ${r.handled ? 'out' : ''} sm" data-rdone="${r.id}" data-v="${r.handled ? '0' : '1'}">${r.handled ? 'Move back to “To contact”' : '✓ Mark as contacted'}</button><button class="btn out sm" data-rdel="${r.id}">Delete</button></div></div>`).join('')}</div>`
+        : '<div class="empty"><b>📚</b><span class="muted">Nothing here yet.</span></div>';
+    };
+    const load = async () => {
+      const { data, error } = await sb.from('resource_requests').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      rows = data || []; draw();
+    };
+    await load();
+    p.addEventListener('click', async (e) => {
+      let b;
+      if ((b = e.target.closest('[data-rtab]'))) { tab = b.dataset.rtab; return draw(); }
+      if ((b = e.target.closest('[data-rdone]'))) {
+        setBusy(b, true, '...');
+        const { error } = await sb.from('resource_requests').update({ handled: b.dataset.v === '1' }).eq('id', b.dataset.rdone);
+        if (error) { setBusy(b, false); return toast(errText(error), true); }
+        return load();
+      }
+      if ((b = e.target.closest('[data-rdel]'))) {
+        if (!(await confirmBox('Delete this request?', 'This cannot be undone.', 'Delete', 'Keep it'))) return;
+        const { error } = await sb.from('resource_requests').delete().eq('id', b.dataset.rdel);
+        if (error) return toast(errText(error), true);
         return load();
       }
     });

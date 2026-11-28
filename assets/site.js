@@ -19,6 +19,11 @@
       ['/academies/#list', '🏫 Register my Learning Center', 'Get your academy on the map'],
       ['/tools/cv-maker/', '📄 Free CV Maker', 'Professional CV as a PDF, no sign-up']
     ]],
+    ['/tools/lesson-planner/', 'Tools', 'toolsnav', [
+      ['/tools/lesson-planner/', '📝 Free Lesson Plan Generator', 'Timed, printable lesson plans'],
+      ['/tools/cv-maker/', '📄 Free CV Maker', 'Professional CV as a PDF'],
+      ['/resources/', '📚 Resources (Paid)', 'Worksheets, test papers and more']
+    ]],
     ['/subscriptions/', 'Subscriptions', 'subs'],
     ['/#faq', 'FAQ', 'faq'],
     ['/app/#/login', 'Log in', 'login']
@@ -26,7 +31,7 @@
   var page = document.body.getAttribute('data-page') || '';
   var nav = NAV.map(function (n) {
     if (n[3]) {
-      var on = ({ tutors: ['tutors', 'academies'], notice: ['notice', 'best-teachers', 'tools', 'best-centers'], jobs: ['jobs', 'cv'] })[n[2]].indexOf(page) > -1;
+      var on = ({ tutors: ['tutors', 'academies'], notice: ['notice', 'best-teachers', 'tools', 'best-centers'], jobs: ['jobs'], toolsnav: ['cv', 'resources', 'lesson'] })[n[2]].indexOf(page) > -1;
       return '<details class="dd"><summary class="' + (on ? 'on' : '') + '">' + n[1] + ' <i>▾</i></summary><div class="ddm">' +
         n[3].map(function (m) { return '<a href="' + m[0] + '"><b>' + m[1] + '</b><span>' + m[2] + '</span></a>'; }).join('') + '</div></details>';
     }
@@ -47,7 +52,7 @@
       return '<a class="' + (g[1][i] === page ? 'on' : '') + '" href="' + m[0] + '">' + m[1] + '</a>'; }).join('') + '</div></nav>');
   });
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/best-teachers/">Best Teachers in Lahore</a><a href="/notice-board/">Upcoming events</a><a href="/tools/">AI Tool Magazine</a><a href="/notice-board/best-centers/">Best Learning Centers</a><a href="/jobs/">Work for Tutobridge</a><a href="/academies/#list">Register my Learning Center</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/tools/cv-maker/">Free CV Maker</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/best-teachers/">Best Teachers in Lahore</a><a href="/notice-board/">Upcoming events</a><a href="/tools/">AI Tool Magazine</a><a href="/notice-board/best-centers/">Best Learning Centers</a><a href="/jobs/">Work for Tutobridge</a><a href="/academies/#list">Register my Learning Center</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/tools/cv-maker/">Free CV Maker</a><a href="/resources/">Resources</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {
