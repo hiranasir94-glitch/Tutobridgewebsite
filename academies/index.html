@@ -10,6 +10,7 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
 <link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <style>
 .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
 .bar .inp{flex:1 1 260px}
@@ -26,6 +27,12 @@
 .ac .src{font-size:12px;color:var(--muted)}
 .dist{font-weight:800;font-size:13px}
 .count{font-weight:800;margin:6px 0 14px}
+#amap{height:400px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;margin:6px 0 10px;background:#EEF2E6;z-index:0}
+@media(max-width:699px){#amap{height:330px}}
+.mpin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#D4FF00;border:2.5px solid #111;display:grid;place-items:center}
+.mpin span{transform:rotate(45deg);font-size:12px}.mpin.v{background:#111}.mpin.v span{color:#D4FF00}.mpin.me{background:#3B82F6}.mpin.me span{color:#fff}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-bottom:12px}.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid #111;vertical-align:-2px;margin-right:5px}
+.status{font-weight:800;margin:6px 0 14px}
 .listcta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--lime);border:2px solid var(--ink);border-radius:22px;padding:20px 22px;box-shadow:0 6px 0 var(--ink);margin-top:28px}
 .listcta h3{margin:0 0 4px}
 </style>
@@ -35,87 +42,197 @@
 <section class="phero"><div class="wrap">
   <span class="lab">🏫 Academies</span>
   <h1>Tuition centres &amp; academies in Lahore</h1>
-  <p>Search academies by area or course, or find the ones closest to you. Prefer one-to-one lessons? <a href="/tutors/" style="font-weight:800;color:inherit">Find a tutor</a> instead.</p>
+  <p>See every tuition centre and academy around you on a map, then filter by course. Prefer one-to-one lessons? <a href="/tutors/" style="font-weight:800;color:inherit">Find a tutor</a> instead.</p>
 </div></section>
 
 <section class="pblk"><div class="wrap">
   <div class="bar">
-    <input class="inp" id="q" type="search" placeholder="Search by name, course or area, e.g. MDCAT, Johar Town" aria-label="Search academies">
-    <select class="inp" id="area" aria-label="Area"><option value="">All areas</option></select>
+    <input class="inp" id="where" list="areas" placeholder="Type your area, e.g. Johar Town" aria-label="Your area" autocomplete="off">
+    <select class="inp" id="rad" aria-label="Distance" style="flex:0 1 150px"><option value="2">Within 2 km</option><option value="4" selected>Within 4 km</option><option value="8">Within 8 km</option></select>
     <button class="btn near" id="near">📍 Near me</button>
   </div>
+  <datalist id="areas"></datalist>
+  <div class="bar"><input class="inp" id="q" type="search" placeholder="Filter results by name or course, e.g. MDCAT, O Level" aria-label="Filter academies"></div>
   <div class="chips" id="types">
     <button class="chip on" data-t="">All</button>
-    <button class="chip" data-t="school">Matric &amp; Inter coaching</button>
+    <button class="chip" data-t="school">Matric, O Level &amp; Inter</button>
     <button class="chip" data-t="entry">Entry tests (MDCAT, ECAT)</button>
-    <button class="chip" data-t="intl">SAT, IELTS &amp; university tests</button>
+    <button class="chip" data-t="intl">SAT, IELTS &amp; languages</button>
   </div>
-  <div class="count" id="count"></div>
+  <div class="status" id="count">Tap <b>Near me</b> or type your area to see every academy around you.</div>
+  <div id="amap" role="region" aria-label="Map of academies"></div>
+  <div class="legend"><span><i style="background:#111"></i>Checked by Tutobridge (pin shows the area)</span><span><i style="background:#D4FF00"></i>From OpenStreetMap</span><span><i style="background:#3B82F6"></i>You</span></div>
   <div id="list"><div class="spin"></div></div>
 
   <div class="listcta">
     <div><h3>Run a tuition centre or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Send us your academy's name, address, phone and courses.</div></div>
     <a class="btn" href="mailto:support@tutobridge.com?subject=List%20my%20academy%20on%20Tutobridge&amp;body=Academy%20name%3A%0AArea%20and%20full%20address%3A%0APhone%20%2F%20WhatsApp%3A%0AWebsite%20or%20Facebook%20page%3A%0ACourses%20and%20classes%20(e.g.%20Matric%2C%20FSc%2C%20O%20Level%2C%20MDCAT)%3A%0A">List my academy</a>
   </div>
-  <p class="muted small" style="margin-top:18px">Details come from each academy's website and public education directories, and can change. Please call the academy to confirm courses, timings and fees before you visit. Distances are approximate, based on the area. Spotted a mistake? Email support@tutobridge.com.</p>
+  <p class="muted small" style="margin-top:18px">Details come from each academy's website and public education directories, and can change. Please call the academy to confirm courses, timings and fees before you visit. Academies marked "From OpenStreetMap" come from the free community map and have not been checked by our team. Distances are straight-line. Spotted a mistake? Email support@tutobridge.com.</p>
 </div></section>
 
 <div id="site-footer"></div>
 <script src="/assets/site.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (function () {
-  // Approximate area centres, for "Near me" sorting only.
-  var AREAS = {
+  var LAHORE = [31.52, 74.34];
+  var AREA_NAMES = ["Abdalian Society", "Al Kabir Town", "Al Rehman Garden", "Allama Iqbal Town", "Architects Engineers Society", "Askari 10", "Askari 11", "Bahria Orchard", "Bahria Town", "Bankers Town", "Canal Garden", "Canal View Society", "Cantt", "Cavalry Ground", "Central Park Housing Scheme", "Citi Housing", "DHA Phase 1", "DHA Phase 2", "DHA Phase 3", "DHA Phase 4", "DHA Phase 5", "DHA Phase 6", "DHA Phase 7", "DHA Phase 8", "DHA Phase 9 Town", "DHA Phase 9 Prism", "DHA Rahbar", "Eden City", "EME Housing Society", "Engineers Town", "Etihad Town", "Expo Avenue Society", "Faisal Town", "Fazaia Housing Scheme", "Garden Town", "Green City", "Gulberg I", "Gulberg II", "Gulberg III", "Gulshan-e-Ravi", "Ichhra", "Izmir Town", "Johar Town", "Jubilee Town", "Lake City", "LDA Avenue", "Model Town", "Muslim Town", "Mustafa Town", "NESPAK Society", "NFC Society", "Pak Arab Housing Society", "Paragon City", "Park View City", "PCSIR Housing Society", "PIA Housing Society", "Punjab Cooperative Housing Society", "Revenue Society", "Sabzazar", "Samanabad", "Shadman", "State Life Housing Society", "Sui Gas Housing Society", "Tariq Gardens", "Township", "University Town", "Valencia Town", "Wapda Town", "Wapda Town Phase 2"];
+  // Approximate centres of the areas used by our checked listings.
+  var CENTRES = {
     'Allama Iqbal Town': [31.5106, 74.2880], 'Cantt': [31.5360, 74.3900], 'DHA': [31.4830, 74.4500], 'Ferozepur Road': [31.5050, 74.3320],
     'Garhi Shahu': [31.5600, 74.3460], 'Gulberg': [31.5170, 74.3440], 'Johar Town': [31.4690, 74.2720], 'Lower Mall': [31.5670, 74.3140],
     'Mughalpura': [31.5600, 74.3800], 'New Muslim Town': [31.5100, 74.3150], 'Shadbagh': [31.5800, 74.3330], 'Shadman': [31.5380, 74.3300],
     'Township': [31.4520, 74.3110]
   };
-  var TYPE = { school: 'Matric & Inter', entry: 'Entry tests', intl: 'SAT / IELTS' };
-  var all = [], type = '', me = null;
+  var TYPE = { school: 'Matric / O Level / Inter', entry: 'Entry tests', intl: 'SAT / IELTS / languages' };
+  var curated = [], osm = [], center = null, type = '', busy = 0;
   var $ = function (s) { return document.querySelector(s); };
+  var esc = TB.esc;
+  $('#areas').innerHTML = AREA_NAMES.map(function (a) { return '<option value="' + esc(a) + '">'; }).join('');
+
+  var map = L.map('amap', { scrollWheelZoom: false }).setView(LAHORE, 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors' }).addTo(map);
+  var layer = L.layerGroup().addTo(map), ring = null, meMk = null;
+  var pin = function (cls, emo) { return L.divIcon({ className: '', html: '<div class="mpin ' + cls + '"><span>' + emo + '</span></div>', iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -26] }); };
+
   function km(a, b) { var R = 6371, r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
     var h = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2); return 2 * R * Math.asin(Math.sqrt(h)); }
-  function draw() {
-    var q = $('#q').value.trim().toLowerCase(), area = $('#area').value;
-    var rows = all.filter(function (x) {
-      if (type && x.types.indexOf(type) < 0) return false;
-      if (area && x.area !== area) return false;
-      if (!q) return true;
-      return [x.name, x.brand, x.area, x.address, (x.offers || []).join(' ')].join(' ').toLowerCase().indexOf(q) >= 0;
-    });
-    rows.forEach(function (x) { x._d = me && AREAS[x.area] ? km(me, AREAS[x.area]) : null; });
-    if (me) rows.sort(function (a, b) { return (a._d == null ? 1e9 : a._d) - (b._d == null ? 1e9 : b._d); });
-    $('#count').textContent = rows.length + ' academ' + (rows.length === 1 ? 'y' : 'ies') + (me ? ', closest first' : '');
-    $('#list').innerHTML = rows.length ? '<div class="alist">' + rows.map(function (x) {
-      var maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.name.replace(/ – .*/, '') + ', ' + x.address);
-      return '<article class="ac"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>' + TB.esc(x.name) + '</h3>' +
-        (x._d != null ? '<span class="dist">~' + (x._d < 1 ? '<1' : Math.round(x._d)) + ' km</span>' : '') + '</div>' +
-        '<div class="pills"><span class="pill lime">📍 ' + TB.esc(x.area) + '</span>' + x.types.map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') + (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + '</div>' +
-        '<div><b>Courses:</b> ' + TB.esc((x.offers || []).join(', ')) + '</div><div class="addr">' + TB.esc(x.address) + '</div>' +
-        '<div class="acts">' + (x.phone ? '<a class="pri" href="tel:' + x.phone.replace(/[^0-9+]/g, '') + '">📞 ' + TB.esc(x.phone) + '</a>' : '') +
-        '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Map</a>' + (x.website ? '<a href="' + TB.esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>' +
-        (x.source ? '<a class="src" href="' + TB.esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '') + '</article>';
-    }).join('') + '</div>' : '<div class="empty"><b>🔎</b>No academies match yet. Try another area or course, or <a href="/tutors/">find a tutor</a> near you.</div>';
+  function guessTypes(t) {
+    var out = [];
+    if (/matric|f\.?sc|inter|o[\s-]?level|a[\s-]?level|igcse|cambridge|tuition|tution|coaching|science academy|home tutor/i.test(t)) out.push('school');
+    if (/mdcat|ecat|entry test|kips|stars academy|nums|nust|step institute/i.test(t)) out.push('entry');
+    if (/\bsat\b|ielts|toefl|gre\b|gmat|language|english|spoken|french|german|chinese|arabic/i.test(t)) out.push('intl');
+    return out;
   }
-  fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
-    all = d.academies || [];
-    var areas = Object.keys(all.reduce(function (o, x) { o[x.area] = 1; return o; }, {})).sort();
-    $('#area').insertAdjacentHTML('beforeend', areas.map(function (a) { return '<option>' + TB.esc(a) + '</option>'; }).join(''));
+  var NOISE = /cricket|football|martial|karate|taekwondo|gym|fitness|dance|beauty|salon|parlou?r|driving|cooking|culinary|sports|swim|police|army|hockey|tennis|boxing|squash|snooker|music|hotel|restaurant|cafe|hospital|clinic|mosque|masjid|madrasa|church/i;
+
+  function overpass(c, r) {
+    var a = '(around:' + Math.round(r * 1000) + ',' + c[0].toFixed(5) + ',' + c[1].toFixed(5) + ')';
+    var q = '[out:json][timeout:25];(' +
+      'nwr["amenity"~"^(prep_school|tutoring|training|language_school)$"]' + a + ';' +
+      'nwr["office"~"^(educational_institution|tutoring)$"]' + a + ';' +
+      'nwr["name"~"academy|academi|tuition|tution|coaching|tutor|tutorial|learning cent|test prep|science institute",i]' + a + ';' +
+      ');out center tags 300;';
+    var hosts = ['https://overpass-api.de/api/interpreter', 'https://overpass.kumi.systems/api/interpreter'];
+    var tryHost = function (i) {
+      return fetch(hosts[i], { method: 'POST', body: 'data=' + encodeURIComponent(q), headers: { 'Content-Type': 'application/x-www-form-urlencoded' } })
+        .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+        .catch(function (e) { if (i + 1 < hosts.length) return tryHost(i + 1); throw e; });
+    };
+    return tryHost(0).then(function (d) {
+      var seen = {};
+      return (d.elements || []).map(function (e) {
+        var t = e.tags || {}, lat = e.lat != null ? e.lat : e.center && e.center.lat, lng = e.lon != null ? e.lon : e.center && e.center.lon;
+        var name = t.name || t['name:en'];
+        if (!name || lat == null) return null;
+        if (/^(university|hospital|clinic|place_of_worship|pharmacy|kindergarten)$/.test(t.amenity || '') || t.shop || t.leisure || t.sport) return null;
+        if ((t.amenity === 'school' || t.amenity === 'college') && !/academy|academi|tuition|tution|coaching|tutor/i.test(name)) return null;
+        if (NOISE.test(name)) return null;
+        var key = name.toLowerCase().replace(/[^a-z0-9]/g, '') + Math.round(lat * 500) + Math.round(lng * 500);
+        if (seen[key]) return null; seen[key] = 1;
+        var addr = [t['addr:housenumber'], t['addr:street'], t['addr:suburb'] || t['addr:neighbourhood']].filter(Boolean).join(', ');
+        return { name: name, lat: lat, lng: lng, address: addr, phone: t.phone || t['contact:phone'] || '', website: t.website || t['contact:website'] || '',
+          types: guessTypes(name + ' ' + (t.description || '')), osm: 'https://www.openstreetmap.org/' + e.type + '/' + e.id };
+      }).filter(Boolean);
+    });
+  }
+
+  function rows() {
+    var q = $('#q').value.trim().toLowerCase(), r = +$('#rad').value;
+    var list = curated.map(function (x) { var c = CENTRES[x.area]; return Object.assign({}, x, { lat: c && c[0], lng: c && c[1], verified: true }); });
+    if (center) {
+      list = list.filter(function (x) { return x.lat != null && km(center, [x.lat, x.lng]) <= r + 1; });
+      var brands = list.filter(function (x) { return x.brand; });
+      osm.forEach(function (o) {
+        var dup = brands.some(function (c) { return o.name.toLowerCase().indexOf(c.brand.split(' ')[0].toLowerCase()) >= 0 && km([o.lat, o.lng], [c.lat, c.lng]) < 2.5; });
+        if (!dup) list.push(o);
+      });
+    }
+    list = list.filter(function (x) {
+      if (type && (x.types || []).indexOf(type) < 0) return false;
+      return !q || [x.name, x.brand, x.area, x.address, (x.offers || []).join(' ')].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    list.forEach(function (x) { x._d = center && x.lat != null ? km(center, [x.lat, x.lng]) : null; });
+    if (center) list.sort(function (a, b) { return a._d - b._d; });
+    return list;
+  }
+
+  function card(x) {
+    var maps = x.verified ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.name.replace(/ – .*/, '') + ', ' + x.address)
+      : 'https://www.google.com/maps/search/?api=1&query=' + x.lat + ',' + x.lng;
+    var fix = 'mailto:support@tutobridge.com?subject=' + encodeURIComponent('Academy listing: ' + x.name);
+    return '<article class="ac"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>' + esc(x.name) + '</h3>' +
+      (x._d != null ? '<span class="dist">' + (x._d < 1 ? (Math.round(x._d * 10) * 100 || 100) + ' m' : x._d.toFixed(1) + ' km') + '</span>' : '') + '</div>' +
+      '<div class="pills">' + (x.verified ? '<span class="pill ink">✓ Checked by Tutobridge</span>' : '<span class="pill">From OpenStreetMap</span>') +
+      (x.area ? '<span class="pill lime">📍 ' + esc(x.area) + '</span>' : '') + (x.types || []).map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') +
+      (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + '</div>' +
+      (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') + (x.address ? '<div class="addr">' + esc(x.address) + '</div>' : '') +
+      '<div class="acts">' + (x.phone ? '<a class="pri" href="tel:' + x.phone.replace(/[^0-9+]/g, '') + '">📞 ' + esc(x.phone) + '</a>' : '') +
+      '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Directions</a>' + (x.website ? '<a href="' + esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>' +
+      (x.verified ? (x.source ? '<a class="src" href="' + esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '')
+        : '<a class="src" href="' + fix + '">Is this your academy? Add your phone and courses →</a>') + '</article>';
+  }
+
+  function draw() {
+    var list = rows();
+    layer.clearLayers();
+    list.forEach(function (x) {
+      if (x.lat == null) return;
+      L.marker([x.lat, x.lng], { icon: pin(x.verified ? 'v' : '', x.verified ? '✓' : '🏫'), title: x.name })
+        .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified ? '<br><small>Pin shows the area, not the building.</small>' : '') + (x.phone ? '<br>📞 ' + esc(x.phone) : '')).addTo(layer);
+    });
+    if (!busy) {
+      $('#count').innerHTML = center ? '<b>' + list.length + '</b> academ' + (list.length === 1 ? 'y' : 'ies') + ' within ' + $('#rad').value + ' km of ' + esc(center.label) + ', closest first'
+        : 'Showing academies checked by our team. Tap <b>Near me</b> or type your area to see every academy around you.';
+    }
+    $('#list').innerHTML = list.length ? '<div class="alist">' + list.map(card).join('') + '</div>'
+      : '<div class="empty"><b>🔎</b>No academies found here yet. Try a bigger distance or a nearby area, or <a href="/tutors/">find a tutor</a> instead.</div>';
+  }
+
+  function search(c, label) {
+    center = c; center.label = label;
+    var r = +$('#rad').value;
+    if (ring) map.removeLayer(ring); if (meMk) map.removeLayer(meMk);
+    ring = L.circle(c, { radius: r * 1000, color: '#111', weight: 1.5, fillColor: '#D4FF00', fillOpacity: 0.08 }).addTo(map);
+    meMk = L.marker(c, { icon: pin('me', '●'), zIndexOffset: 1000, title: label }).addTo(map);
+    map.fitBounds(ring.getBounds(), { padding: [10, 10] });
+    busy++; osm = [];
+    $('#count').textContent = 'Searching for academies around ' + label + '…';
     draw();
-  }).catch(function () { $('#list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load academies. Please refresh.</div>'; });
+    overpass(c, r).then(function (res) { osm = res; }).catch(function () {
+      $('#count').textContent = 'The map service is busy, so only academies checked by our team are shown. Please try again in a minute.';
+    }).then(function () { busy--; draw(); });
+  }
+
+  fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) { curated = d.academies || []; draw(); })
+    .catch(function () { $('#list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load academies. Please refresh.</div>'; });
+
+  $('#near').addEventListener('click', function () {
+    var b = this;
+    if (!navigator.geolocation) { $('#count').textContent = 'Location is not available on this device. Type your area instead.'; return; }
+    b.textContent = 'Finding you…';
+    navigator.geolocation.getCurrentPosition(function (p) { b.textContent = '📍 Near me'; $('#where').value = ''; search([p.coords.latitude, p.coords.longitude], 'you'); },
+      function () { b.textContent = '📍 Near me'; $('#count').textContent = 'Could not get your location. Type your area instead.'; }, { timeout: 10000, maximumAge: 60000 });
+  });
+  function geocodeArea() {
+    var v = $('#where').value.trim(); if (v.length < 3) return;
+    $('#count').textContent = 'Finding ' + v + '…';
+    fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&bounded=1&viewbox=74.0,31.75,74.65,31.25&q=' + encodeURIComponent(v + ', Lahore'))
+      .then(function (r) { return r.json(); }).then(function (d) {
+        if (!d || !d.length) { $('#count').textContent = 'Could not find "' + v + '" in Lahore. Try a nearby area name.'; return; }
+        search([+d[0].lat, +d[0].lon], v);
+      }).catch(function () { $('#count').textContent = 'Could not look up that area. Please try again.'; });
+  }
+  var t;
+  $('#where').addEventListener('change', geocodeArea);
+  $('#where').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); geocodeArea(); } });
+  $('#where').addEventListener('input', function () { clearTimeout(t); if (AREA_NAMES.indexOf($('#where').value) >= 0) t = setTimeout(geocodeArea, 50); });
+  $('#rad').addEventListener('change', function () { if (center) search(center, center.label); });
   $('#q').addEventListener('input', draw);
-  $('#area').addEventListener('change', draw);
   $('#types').addEventListener('click', function (e) {
     var b = e.target.closest('[data-t]'); if (!b) return;
     type = b.dataset.t; Array.prototype.forEach.call(document.querySelectorAll('#types .chip'), function (c) { c.classList.toggle('on', c === b); }); draw();
-  });
-  $('#near').addEventListener('click', function () {
-    var b = this;
-    if (!navigator.geolocation) { $('#count').textContent = 'Location is not available on this device. Choose your area instead.'; return; }
-    b.textContent = 'Finding you…';
-    navigator.geolocation.getCurrentPosition(function (p) { me = [p.coords.latitude, p.coords.longitude]; b.textContent = '📍 Sorted by distance'; draw(); },
-      function () { b.textContent = '📍 Near me'; $('#count').textContent = 'Could not get your location. Choose your area from the list instead.'; }, { timeout: 10000 });
   });
 })();
 </script>
