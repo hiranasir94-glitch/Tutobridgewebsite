@@ -9,7 +9,7 @@
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
 <style>
-:root{--lime:#A9D6CB;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--soft:#F4F7F6}
+:root{--lime:#F6C9D4;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--soft:#FBF6F7}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
 a{color:inherit}
@@ -63,8 +63,8 @@ textarea.inp{min-height:70px;resize:vertical}
 .sec{margin:18px 0}
 .sec h3{font-size:15px;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;display:flex;align-items:center;gap:8px}
 [contenteditable]{outline:none;border-radius:8px;padding:2px 4px;margin:-2px -4px;transition:background .15s}
-[contenteditable]:hover{background:#EEF7F4}
-[contenteditable]:focus{background:#E3F2EE}
+[contenteditable]:hover{background:#FDF1F4}
+[contenteditable]:focus{background:#FBE6EC}
 .plan ul{margin:0;padding-left:20px}
 .plan li{margin:3px 0}
 .timeline{border:2px solid var(--ink);border-radius:18px;overflow:hidden}
@@ -237,7 +237,7 @@ const OBJ={math:['Understand the key idea behind {t}','Solve standard questions 
 // share of the lesson for each stage, by style
 const SPLIT={interactive:[.10,.25,.25,.25,.15],activity:[.10,.15,.35,.25,.15],exam:[.10,.25,.15,.35,.15],revision:[.15,.15,.25,.30,.15]};
 const SETTING={class:'Whole class',small:'Small group',one:'One-to-one',online:'Online'};
-const STAGES=[['warm','Starter / warm-up','👋','#A9D6CB'],['teach','Teach the new idea','🧑‍🏫','#1F2A37'],['guided','Guided practice','🤝','#9CC9A8'],['ind','Independent practice','✍️','#4C9A2A'],['check','Check understanding & wrap-up','✅','#C9C9C9']];
+const STAGES=[['warm','Starter / warm-up','👋','#F6C9D4'],['teach','Teach the new idea','🧑‍🏫','#1F2A37'],['guided','Guided practice','🤝','#E9B4C4'],['ind','Independent practice','✍️','#4C9A2A'],['check','Check understanding & wrap-up','✅','#C9C9C9']];
 
 function minutes(total,style){const sp=SPLIT[style]||SPLIT.interactive;const m=sp.map(x=>Math.max(3,Math.round(x*total)));let d=total-m.reduce((a,b)=>a+b,0);m[3]+=d;return m;}
 function adapt(text,setting){

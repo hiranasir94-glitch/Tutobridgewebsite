@@ -326,7 +326,7 @@ const ADMIN_PANES = {
       ${stat(users.filter((x) => x.role === 'teacher').length, 'Teachers')}${stat(users.filter((x) => x.verification_status === 'verified').length, 'Verified teachers')}
       ${stat(users.filter((x) => new Date(x.created_at) > week).length, 'New sign-ups (7 days)')}${stat(bk.length, 'Bookings')}
       ${stat(bk.filter((x) => x.status === 'pending').length, 'Bookings waiting')}${stat(rq.filter((x) => x.status === 'open').length, 'Open tuition requests')}</div>
-      ${pending ? `<div class="card" style="margin-top:16px;background:#A9D6CB"><b>${pending} teacher${pending > 1 ? 's' : ''} waiting for verification.</b> <button class="btn sm" data-jump="teachers" style="margin-left:8px">Review now →</button></div>` : ''}`;
+      ${pending ? `<div class="card" style="margin-top:16px;background:#F6C9D4"><b>${pending} teacher${pending > 1 ? 's' : ''} waiting for verification.</b> <button class="btn sm" data-jump="teachers" style="margin-left:8px">Review now →</button></div>` : ''}`;
   },
   async teachers(p) { await adminTeachers(p); },
   async users(p) {
@@ -375,13 +375,13 @@ const ADMIN_PANES = {
         <div class="tc-line"><i>📍</i><span>${esc(x.area)} · ${esc(x.address)} ${x.lat != null ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${x.lat},${x.lng}">(pin)</a>` : ''}</span></div>
         ${x.star_reason ? `<div class="tc-line"><i>💬</i><span><b>Why it stands out:</b> ${esc(x.star_reason)}</span></div>` : ''}
         ${x.website ? `<div class="tc-line"><i>🌐</i><a href="${esc(x.website)}" target="_blank" rel="noopener">${esc(x.website)}</a></div>` : ''}
-        <div class="card" style="margin:10px 0 0;background:#F3F6F5"><b>Owner (private)</b>
+        <div class="card" style="margin:10px 0 0;background:#FAF4F6"><b>Owner (private)</b>
           <div class="tc-line"><i>👤</i><span>${esc(x.owner_name)}</span></div>
           <div class="tc-line"><i>🪪</i><span>CNIC: <b>${esc(x.owner_cnic)}</b></span></div>
           <div class="tc-line"><i>📞</i><span><a href="tel:${esc(x.owner_phone.replace(/[^0-9+]/g, ''))}">${esc(x.owner_phone)}</a> · <a href="https://wa.me/${toIntl(x.owner_phone)}" target="_blank" rel="noopener">WhatsApp</a> ${x.show_phone ? '· shown to parents' : '· hidden from parents'}</span></div></div>
         <div class="row wrap" style="margin-top:10px">${x.status !== 'approved' ? `<button class="btn sm" data-acset="approved" data-id="${x.id}">✓ Approve</button>` : ''}
           ${x.status !== 'rejected' ? `<button class="btn out sm" data-acset="rejected" data-id="${x.id}">${x.status === 'approved' ? 'Remove from map' : 'Reject'}</button>` : ''}
-          ${x.is_star ? `<button class="btn out sm" data-acstar="0" data-id="${x.id}">Remove ⭐ star</button>` : x.status !== 'rejected' ? `<button class="btn sm" data-acstar="1" data-id="${x.id}" style="background:#1F2A37;color:#A9D6CB">⭐ Make Best Learning Center</button>` : ''}</div></div>`).join('')}</div>`
+          ${x.is_star ? `<button class="btn out sm" data-acstar="0" data-id="${x.id}">Remove ⭐ star</button>` : x.status !== 'rejected' ? `<button class="btn sm" data-acstar="1" data-id="${x.id}" style="background:#1F2A37;color:#F6C9D4">⭐ Make Best Learning Center</button>` : ''}</div></div>`).join('')}</div>`
         : '<div class="empty"><b>🏫</b><span class="muted">Nothing here.</span></div>';
     };
     const load = async () => {

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tuition centers &amp; academies in Lahore · Tutobridge</title>
 <meta name="description" content="Search tuition centers and academies in Lahore by area and course: Matric, FSc, MDCAT, ECAT, SAT, IELTS and more.">
-<meta name="theme-color" content="#A9D6CB">
+<meta name="theme-color" content="#F6C9D4">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
@@ -27,10 +27,10 @@
 .ac .src{font-size:12px;color:var(--muted)}
 .dist{font-weight:800;font-size:13px}
 .count{font-weight:800;margin:6px 0 14px}
-#amap{height:400px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;margin:6px 0 10px;background:#E7F0ED;z-index:0}
+#amap{height:400px;border:2px solid var(--ink);border-radius:20px;overflow:hidden;margin:6px 0 10px;background:#F8EBEF;z-index:0}
 @media(max-width:699px){#amap{height:330px}}
-.mpin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#A9D6CB;border:2.5px solid #1F2A37;display:grid;place-items:center}
-.mpin span{transform:rotate(45deg);font-size:12px}.mpin.v{background:#1F2A37}.mpin.v span{color:#A9D6CB}.mpin.me{background:#3B82F6}.mpin.me span{color:#fff}
+.mpin{width:28px;height:28px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#F6C9D4;border:2.5px solid #1F2A37;display:grid;place-items:center}
+.mpin span{transform:rotate(45deg);font-size:12px}.mpin.v{background:#1F2A37}.mpin.v span{color:#F6C9D4}.mpin.me{background:#3B82F6}.mpin.me span{color:#fff}
 .legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);margin-bottom:12px}.legend i{display:inline-block;width:12px;height:12px;border-radius:50%;border:2px solid #1F2A37;vertical-align:-2px;margin-right:5px}
 .status{font-weight:800;margin:6px 0 14px}
 .listcta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--lime);border:2px solid var(--ink);border-radius:22px;padding:20px 22px;box-shadow:0 6px 0 var(--ink);margin-top:28px}
@@ -50,7 +50,7 @@ dialog.jf::backdrop{background:rgba(31,42,55,.55)}
 .jf .hp{position:absolute;left:-9999px}
 .ac .lock{border:1.5px dashed #bbb;border-radius:12px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
 .ac .lock span{filter:blur(3.5px);user-select:none}
-.starbox{border:2px solid var(--ink);background:#EEF7F4;border-radius:14px;padding:10px 12px;display:grid;gap:8px}
+.starbox{border:2px solid var(--ink);background:#FDF1F4;border-radius:14px;padding:10px 12px;display:grid;gap:8px}
 </style>
 </head>
 <body data-page="academies">
@@ -78,7 +78,7 @@ dialog.jf::backdrop{background:rgba(31,42,55,.55)}
   <div class="note" id="authnote" style="margin:0 0 12px">🔒 Academy names and areas are free to browse. <a href="/app/#/signup/parent"><b>Sign up free</b></a> or <a href="/app/#/login"><b>log in</b></a> to see address, phone, website and directions.</div>
   <div class="status" id="count">Tap <b>Near me</b> or type your area to see every academy around you.</div>
   <div id="amap" role="region" aria-label="Map of academies"></div>
-  <div class="legend"><span><i style="background:#1F2A37"></i>Checked by Tutobridge (pin shows the area)</span><span><i style="background:#A9D6CB"></i>From OpenStreetMap</span><span><i style="background:#3B82F6"></i>You</span></div>
+  <div class="legend"><span><i style="background:#1F2A37"></i>Checked by Tutobridge (pin shows the area)</span><span><i style="background:#F6C9D4"></i>From OpenStreetMap</span><span><i style="background:#3B82F6"></i>You</span></div>
   <div id="list"><div class="spin"></div></div>
 
   <div class="listcta">
@@ -250,7 +250,7 @@ dialog.jf::backdrop{background:rgba(31,42,55,.55)}
     center = c; center.label = label;
     var r = +$('#rad').value;
     if (ring) map.removeLayer(ring); if (meMk) map.removeLayer(meMk);
-    ring = L.circle(c, { radius: r * 1000, color: '#1F2A37', weight: 1.5, fillColor: '#A9D6CB', fillOpacity: 0.08 }).addTo(map);
+    ring = L.circle(c, { radius: r * 1000, color: '#1F2A37', weight: 1.5, fillColor: '#F6C9D4', fillOpacity: 0.08 }).addTo(map);
     meMk = L.marker(c, { icon: pin('me', '●'), zIndexOffset: 1000, title: label }).addTo(map);
     map.fitBounds(ring.getBounds(), { padding: [10, 10] });
     busy++; osm = [];
