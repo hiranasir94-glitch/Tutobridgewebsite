@@ -423,7 +423,7 @@ ROUTES.forgot = () => {
     <button class="back" data-a="go" data-v="#/login">← Back to log in</button>
     <h1>Forgot your password?</h1><p class="muted">Enter your email and we'll send you a link to set a new one.</p>
     <form id="f" novalidate style="margin-top:16px"><label class="f"><span>Email</span><input class="inp" name="email" type="email" autocomplete="email"></label>
-    <button class="btn full" id="go">Send reset link</button></form></div>`);
+    <button class="btn full" id="go">Send reset link</button></form><p class="muted center" style="margin-top:18px;font-size:14px">Still can't get in? Email <a href="mailto:support@tutobridge.com?subject=Password%20help" style="font-weight:800">support@tutobridge.com</a> from your account email and we'll help you recover it.</p></div>`);
   $('#f', a).onsubmit = async (e) => {
     e.preventDefault();
     const email = e.target.email.value.trim();
@@ -433,9 +433,13 @@ ROUTES.forgot = () => {
     setBusy(b, true, 'Sending...');
     const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: APP_URL });
     setBusy(b, false);
-    if (error) return toast(errText(error), true);
+    if (error) {
+      toast(/rate|limit|429/i.test(error.message || '') ? errText(error) : "We couldn't send the email right now. Please email support@tutobridge.com and we'll help.", true);
+      return;
+    }
     view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:52px">📬</div><h1>Check your email</h1>
-      <p class="muted">If an account exists for <b>${esc(email)}</b>, a reset link is on its way. Open it on this device to choose a new password.</p>
+      <p class="muted">If an account exists for <b>${esc(email)}</b>, a reset link is on its way. Open it on this device to choose a new password. Check your spam folder too.</p>
+      <p class="muted" style="font-size:14px">No email after 10 minutes? Write to <a href="mailto:support@tutobridge.com?subject=Password%20help" style="font-weight:800">support@tutobridge.com</a>.</p>
       <a class="btn out" href="#/login">Back to log in</a></div>`);
   };
 };
