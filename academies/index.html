@@ -48,6 +48,8 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
 .jf .err{color:#B42318;font-weight:700;font-size:13px}.jf .inp.bad{border-color:#B42318}
 .jf .chk{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:14px}.jf .chk input{width:20px;height:20px;margin-top:1px;flex:none}
 .jf .hp{position:absolute;left:-9999px}
+.ac .lock{border:1.5px dashed #bbb;border-radius:12px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.ac .lock span{filter:blur(3.5px);user-select:none}
 </style>
 </head>
 <body data-page="academies">
@@ -72,6 +74,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     <button class="chip" data-t="entry">Entry tests (MDCAT, ECAT)</button>
     <button class="chip" data-t="intl">SAT, IELTS &amp; languages</button>
   </div>
+  <div class="note" id="authnote" style="margin:0 0 12px">🔒 Academy names and areas are free to browse. <a href="/app/#/signup/parent"><b>Sign up free</b></a> or <a href="/app/#/login"><b>log in</b></a> to see address, phone, website and directions.</div>
   <div class="status" id="count">Tap <b>Near me</b> or type your area to see every academy around you.</div>
   <div id="amap" role="region" aria-label="Map of academies"></div>
   <div class="legend"><span><i style="background:#111"></i>Checked by Tutobridge (pin shows the area)</span><span><i style="background:#D4FF00"></i>From OpenStreetMap</span><span><i style="background:#3B82F6"></i>You</span></div>
@@ -119,6 +122,8 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (function () {
+  var AUTH = !!TB.session();
+  if (AUTH) document.getElementById('authnote').hidden = true;
   var LAHORE = [31.52, 74.34];
   var AREA_NAMES = ["Abdalian Society", "Al Kabir Town", "Al Rehman Garden", "Allama Iqbal Town", "Architects Engineers Society", "Askari 10", "Askari 11", "Bahria Orchard", "Bahria Town", "Bankers Town", "Canal Garden", "Canal View Society", "Cantt", "Cavalry Ground", "Central Park Housing Scheme", "Citi Housing", "DHA Phase 1", "DHA Phase 2", "DHA Phase 3", "DHA Phase 4", "DHA Phase 5", "DHA Phase 6", "DHA Phase 7", "DHA Phase 8", "DHA Phase 9 Town", "DHA Phase 9 Prism", "DHA Rahbar", "Eden City", "EME Housing Society", "Engineers Town", "Etihad Town", "Expo Avenue Society", "Faisal Town", "Fazaia Housing Scheme", "Garden Town", "Green City", "Gulberg I", "Gulberg II", "Gulberg III", "Gulshan-e-Ravi", "Ichhra", "Izmir Town", "Johar Town", "Jubilee Town", "Lake City", "LDA Avenue", "Model Town", "Muslim Town", "Mustafa Town", "NESPAK Society", "NFC Society", "Pak Arab Housing Society", "Paragon City", "Park View City", "PCSIR Housing Society", "PIA Housing Society", "Punjab Cooperative Housing Society", "Revenue Society", "Sabzazar", "Samanabad", "Shadman", "State Life Housing Society", "Sui Gas Housing Society", "Tariq Gardens", "Township", "University Town", "Valencia Town", "Wapda Town", "Wapda Town Phase 2"];
   // Approximate centres of the areas used by our checked listings.
@@ -210,10 +215,13 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
       '<div class="pills">' + (x.verified ? '<span class="pill ink">✓ Checked by Tutobridge</span>' : '<span class="pill">From OpenStreetMap</span>') +
       (x.area ? '<span class="pill lime">📍 ' + esc(x.area) + '</span>' : '') + (x.types || []).map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') +
       (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + (x.teachers ? '<span class="pill">👩‍🏫 ' + esc(x.teachers) + '</span>' : '') + '</div>' +
-      (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') + (x.address ? '<div class="addr">' + esc(x.address) + '</div>' : '') +
+      (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') +
+      (!AUTH ? '<div class="lock">🔒 <span>Address · Phone · Website · Directions</span></div>' +
+        '<div class="acts"><a class="pri" href="/app/#/signup/parent">Sign up free to see details</a><a href="/app/#/login">Log in</a></div>' :
+      (x.address ? '<div class="addr">' + esc(x.address) + '</div>' : '') +
       '<div class="acts">' + (x.phone ? '<a class="pri" href="tel:' + x.phone.replace(/[^0-9+]/g, '') + '">📞 ' + esc(x.phone) + '</a>' : '') +
-      '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Directions</a>' + (x.website ? '<a href="' + esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>' +
-      (x.verified ? (x.source ? '<a class="src" href="' + esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '')
+      '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Directions</a>' + (x.website ? '<a href="' + esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>') +
+      (x.verified ? (AUTH && x.source ? '<a class="src" href="' + esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '')
         : '<a class="src" href="#list" data-join>Is this your academy? List it with your phone and courses →</a>') + '</article>';
   }
 
@@ -223,7 +231,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     list.forEach(function (x) {
       if (x.lat == null) return;
       L.marker([x.lat, x.lng], { icon: pin(x.verified ? 'v' : '', x.verified ? '✓' : '🏫'), title: x.name })
-        .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified && !x.exact ? '<br><small>Pin shows the area, not the building.</small>' : '') + (x.phone ? '<br>📞 ' + esc(x.phone) : '')).addTo(layer);
+        .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified && !x.exact ? '<br><small>Pin shows the area, not the building.</small>' : '') + (AUTH ? (x.phone ? '<br>📞 ' + esc(x.phone) : '') : '<br><a href="/app/#/signup/parent">Sign up free</a> to see address &amp; phone')).addTo(layer);
     });
     if (!busy) {
       $('#count').innerHTML = center ? '<b>' + list.length + '</b> academ' + (list.length === 1 ? 'y' : 'ies') + ' within ' + $('#rad').value + ' km of ' + esc(center.label) + ', closest first'
@@ -250,7 +258,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
 
   var GROUP = function (cls) { var t = []; cls.forEach(function (c) { if (/Primary|Middle|Matric|Intermediate|O Level|A Level|IGCSE/.test(c) && t.indexOf('school') < 0) t.push('school'); if (/MDCAT/.test(c)) t.push('entry'); if (/SAT/.test(c)) t.push('intl'); }); return t; };
   var TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
-  var approved = fetch(TB.URL + '/rest/v1/rpc/public_academies', { method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json' }, body: '{}' })
+  var approved = fetch(TB.URL + '/rest/v1/rpc/public_academies', { method: 'POST', headers: TB.authHeaders(), body: '{}' })
     .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
   Promise.all([fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }), approved]).then(function (res) {
     curated = (res[0].academies || []).concat((res[1] || []).map(function (a) {

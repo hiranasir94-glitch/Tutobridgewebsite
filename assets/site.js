@@ -37,6 +37,19 @@
 window.TB = {
   URL: 'https://kdgyxgytcphnmsnvxdiz.supabase.co',
   KEY: 'sb_publishable_5mo3bWfClhII0ymU2asdDg_Shpsc6fh',
+  /* Logged-in session saved by the app (/app/), if still valid. */
+  session: function () {
+    try {
+      var j = JSON.parse(localStorage.getItem('sb-kdgyxgytcphnmsnvxdiz-auth-token') || 'null');
+      if (j && j.access_token && (!j.expires_at || j.expires_at * 1000 > Date.now() + 30000)) return j;
+    } catch (e) { /* storage blocked */ }
+    return null;
+  },
+  authHeaders: function () {
+    var s = this.session(), h = { apikey: this.KEY, 'Content-Type': 'application/json' };
+    if (s) h.Authorization = 'Bearer ' + s.access_token;
+    return h;
+  },
   /* Verified teachers, public-safe fields only (first name + initial, subjects, rating). */
   teachers: function () {
     return fetch(this.URL + '/rest/v1/rpc/public_teacher_cards_v2', {

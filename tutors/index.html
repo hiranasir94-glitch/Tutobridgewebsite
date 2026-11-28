@@ -80,7 +80,8 @@
       '<div><b class="small">Subjects</b><div class="pills" style="margin-top:4px">' + (t.subjects || []).map(function (s) { return '<span class="pill">' + TB.esc(s) + '</span>'; }).join('') + '</div></div>' +
       '<div>' + TB.stars(t.rating_avg, t.reviews_count) + '</div>' +
       '<div class="lock">🔒 <span>Fees · Qualifications · Areas · Chat</span></div>' +
-      '<a class="btn sm" href="/app/#/signup/parent" style="align-self:flex-start">Sign up to see details</a></div>';
+      (example ? '' : TB.session() ? '<a class="btn sm" href="/app/#/home" style="align-self:flex-start">See details &amp; chat in the app →</a>'
+        : '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><a class="btn sm" href="/app/#/signup/parent">Sign up free to see details</a><a class="small" href="/app/#/login"><b>Log in</b></a></div>') + '</div>';
   }
   function draw() {
     var subs = {};
