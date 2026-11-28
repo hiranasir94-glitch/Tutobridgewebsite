@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Free CV Maker · Professional CV in minutes · Tutobridge</title>
+<meta name="description" content="Free CV maker for teachers and job seekers in Pakistan. Pick a professional layout, fill in your details and download a PDF. No sign-up.">
+<meta name="theme-color" content="#FFD60A">
+<link rel="icon" href="/favicon.svg?v=yellow" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico?v=yellow" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.cvwrap{display:grid;grid-template-columns:minmax(330px,420px) 1fr;gap:26px;align-items:start}
+@media(max-width:959px){.cvwrap{grid-template-columns:1fr}}
+.cvform{display:grid;gap:14px}
+.box{border:2px solid var(--ink);border-radius:20px;background:#fff;padding:16px}
+.box>summary{list-style:none;cursor:pointer;font-weight:800;font-size:16px;display:flex;align-items:center;gap:8px}
+.box>summary::-webkit-details-marker{display:none}
+.box>summary::after{content:"▾";margin-left:auto;font-size:13px;transition:transform .2s}
+.box[open]>summary::after{transform:rotate(180deg)}
+.box .in{display:grid;gap:10px;margin-top:12px}
+.lf{display:flex;flex-direction:column;gap:4px;font-weight:800;font-size:13px}
+.lf .h{font-weight:500;color:var(--muted);font-size:12px}
+.cvform .inp{border-width:1.5px;border-radius:12px;padding:9px 11px;font-size:14.5px}
+.cvform textarea.inp{min-height:74px;resize:vertical}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.item{border:1.5px dashed #c9c9c9;border-radius:14px;padding:12px;display:grid;gap:8px;position:relative}
+.item .tools{display:flex;gap:6px;justify-content:flex-end}
+.item .tools button{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:700;cursor:pointer}
+.add{border:2px dashed var(--ink);background:var(--soft);border-radius:12px;padding:9px;font-weight:800;cursor:pointer}
+.tpls{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tpls button{border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 6px;font-weight:800;font-size:13px;cursor:pointer;display:grid;gap:6px;justify-items:center}
+.tpls button.on{border-color:var(--ink);background:var(--lime)}
+.tpls i{display:block;width:44px;height:56px;border:1.5px solid var(--ink);border-radius:4px;background:#fff;position:relative;overflow:hidden}
+.tpls i.t-classic::before{content:"";position:absolute;left:8px;right:8px;top:7px;height:5px;background:var(--ink)}
+.tpls i.t-classic::after{content:"";position:absolute;left:8px;right:8px;top:18px;height:26px;background:repeating-linear-gradient(#bbb 0 2px,transparent 2px 6px)}
+.tpls i.t-modern::before{content:"";position:absolute;left:0;top:0;bottom:0;width:15px;background:var(--ink)}
+.tpls i.t-modern::after{content:"";position:absolute;left:20px;right:5px;top:8px;height:38px;background:repeating-linear-gradient(#bbb 0 2px,transparent 2px 6px)}
+.tpls i.t-minimal::before{content:"";position:absolute;left:5px;top:8px;width:10px;height:38px;background:repeating-linear-gradient(var(--ink) 0 2px,transparent 2px 10px)}
+.tpls i.t-minimal::after{content:"";position:absolute;left:19px;right:5px;top:8px;height:38px;background:repeating-linear-gradient(#bbb 0 2px,transparent 2px 6px)}
+.cols{display:flex;gap:8px;flex-wrap:wrap}
+.cols button{width:32px;height:32px;border-radius:50%;border:3px solid #fff;outline:2px solid var(--line);cursor:pointer}
+.cols button.on{outline:3px solid var(--ink)}
+.bar{display:flex;flex-wrap:wrap;gap:8px}
+.photo{display:flex;gap:12px;align-items:center}
+.photo img{width:64px;height:64px;border-radius:50%;object-fit:cover;border:2px solid var(--ink)}
+.side{position:sticky;top:90px}
+@media(max-width:959px){.side{position:static}}
+.pvhead{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pv{background:#E9E7E1;border-radius:20px;padding:16px;overflow:hidden}
+.pvin{transform-origin:top left}
+.saved{font-size:12.5px;color:var(--muted)}
+.mtabs{display:none}
+@media(max-width:959px){.mtabs{display:flex;gap:8px;position:sticky;top:0;z-index:20;background:#fff;padding:10px 0;margin-bottom:6px}.mtabs button{flex:1}
+ body.m-preview .cvform{display:none} body:not(.m-preview) .side{display:none}}
+
+/* ---------- the CV sheet (A4 at 96dpi: 794 x 1123) ---------- */
+.cv{--a:#1F2A37;width:794px;min-height:1123px;background:#fff;color:#222;font-family:"Plus Jakarta Sans","Inter",Arial,sans-serif;font-size:13px;line-height:1.5;box-shadow:0 8px 30px rgba(0,0,0,.15)}
+.cv *{box-sizing:border-box}
+.cv h1{margin:0;font-size:32px;line-height:1.1;letter-spacing:-.5px;color:#111}
+.cv .ttl{font-size:15px;font-weight:700;color:var(--a);margin-top:4px}
+.cv .ct{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12px;color:#444;margin-top:10px}
+.cv h2{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--a);margin:22px 0 8px;font-weight:800}
+.cv .ent{margin-bottom:12px;break-inside:avoid}
+.cv .eh{display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+.cv .eh b{font-size:13.5px;color:#111}
+.cv .dt{font-size:12px;color:#555;white-space:nowrap}
+.cv .org{color:#444;font-size:12.5px;margin:0;text-align:left}
+.cv ul{margin:5px 0 0;padding-left:18px}.cv li{margin:2px 0}
+.cv p{margin:0}
+.cv .tags{display:flex;flex-wrap:wrap;gap:6px}
+.cv .tags span{border:1px solid #ccc;border-radius:4px;padding:2px 8px;font-size:12px}
+.cv .ph{width:110px;height:110px;border-radius:50%;object-fit:cover;flex:none}
+/* classic */
+.cv.classic{padding:52px 58px}
+.cv.classic .hd{display:flex;gap:24px;align-items:center;border-bottom:3px solid var(--a);padding-bottom:18px}
+.cv.classic .hd .ph{width:96px;height:96px}
+.cv.classic h2{border-bottom:1px solid #ddd;padding-bottom:5px}
+/* modern */
+.cv.modern{display:grid;grid-template-columns:262px 1fr}
+.cv.modern .sb{background:var(--a);color:#fff;padding:44px 26px}
+.cv.modern .sb .ph{display:block;margin:0 auto 20px;border:4px solid rgba(255,255,255,.35)}
+.cv.modern .sb h2{color:#fff;opacity:.85;border-bottom:1px solid rgba(255,255,255,.3);padding-bottom:5px}
+.cv.modern .sb .ct{flex-direction:column;color:#fff;gap:6px;margin:0}
+.cv.modern .sb .tags span{border-color:rgba(255,255,255,.45)}
+.cv.modern .sb li,.cv.modern .sb p{color:#fff}
+.cv.modern .mn{padding:44px 38px}
+.cv.modern .mn h1{font-size:34px}
+.cv.modern .mn h2:first-of-type{margin-top:26px}
+/* minimal */
+.cv.minimal{padding:56px 60px}
+.cv.minimal h1{font-size:36px;font-weight:800}
+.cv.minimal .hd{display:flex;justify-content:space-between;gap:20px;align-items:flex-start;padding-bottom:10px}
+.cv.minimal .sec{display:grid;grid-template-columns:150px 1fr;gap:18px;border-top:1px solid #e3e3e3;padding-top:14px;margin-top:14px}
+.cv.minimal .sec h2{margin:2px 0 0}
+.cv .empty-hint{color:#999;font-style:italic}
+
+#printcv{display:none}
+[hidden]{display:none!important}
+@media print{
+  @page{size:A4;margin:0}
+  html,body{background:#fff!important;margin:0!important;padding:0!important}
+  body>*{display:none!important}
+  body>#printcv{display:block!important}
+  #printcv .cv{width:210mm;min-height:297mm;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+</style>
+</head>
+<body data-page="cv">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">📄 Free tool · No sign-up</span>
+  <h1>Free CV Maker</h1>
+  <p>Make a professional CV in minutes. Pick a layout, fill in your details, and download it as a PDF. Great for teachers and anyone applying for jobs in Pakistan.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="mtabs"><button class="btn" id="mt-edit">✏️ Edit</button><button class="btn out" id="mt-prev">👀 Preview</button></div>
+  <div class="cvwrap">
+    <form class="cvform" id="f" autocomplete="on" onsubmit="return false">
+      <div class="box"><b>1. Choose a layout</b>
+        <div class="in">
+          <div class="tpls" id="tpls">
+            <button type="button" data-tpl="classic"><i class="t-classic"></i>Classic</button>
+            <button type="button" data-tpl="modern"><i class="t-modern"></i>Modern</button>
+            <button type="button" data-tpl="minimal"><i class="t-minimal"></i>Minimal</button>
+          </div>
+          <div class="lf">Colour<div class="cols" id="cols"></div></div>
+          <div class="bar"><button type="button" class="btn sm out" id="sample">✨ Fill with a teacher example</button><button type="button" class="btn sm out" id="clear">Start over</button></div>
+        </div>
+      </div>
+
+      <details class="box" open><summary>👤 Personal details</summary><div class="in">
+        <div class="photo"><img id="phimg" alt="" hidden><label class="btn sm out" style="cursor:pointer">📷 Add photo (optional)<input type="file" id="phin" accept="image/*" hidden></label><button type="button" class="btn sm out" id="phrm" hidden>Remove</button></div>
+        <label class="lf">Full name<input class="inp" data-k="name" placeholder="e.g. Ayesha Khan" autocomplete="name"></label>
+        <label class="lf">Job title<input class="inp" data-k="title" placeholder="e.g. O Level Mathematics Teacher"></label>
+        <div class="g2"><label class="lf">Phone<input class="inp" data-k="phone" placeholder="0300 1234567" autocomplete="tel"></label>
+        <label class="lf">Email<input class="inp" data-k="email" placeholder="you@email.com" autocomplete="email"></label></div>
+        <div class="g2"><label class="lf">City / area<input class="inp" data-k="city" placeholder="Johar Town, Lahore"></label>
+        <label class="lf">LinkedIn or website <span class="h">Optional</span><input class="inp" data-k="link" placeholder="linkedin.com/in/you"></label></div>
+      </div></details>
+
+      <details class="box" open><summary>📝 Professional summary</summary><div class="in">
+        <label class="lf"><span class="h">2–3 lines about who you are and what you're great at.</span><textarea class="inp" data-k="summary" placeholder="e.g. Mathematics teacher with 6 years of O and A Level experience..."></textarea></label>
+      </div></details>
+
+      <details class="box" open><summary>💼 Work experience</summary><div class="in"><div id="exp" class="in" style="margin:0"></div><button type="button" class="add" data-add="exp">＋ Add a job</button></div></details>
+      <details class="box" open><summary>🎓 Education</summary><div class="in"><div id="edu" class="in" style="margin:0"></div><button type="button" class="add" data-add="edu">＋ Add education</button></div></details>
+
+      <details class="box"><summary>⭐ Skills, languages & more</summary><div class="in">
+        <label class="lf">Skills <span class="h">Separate with commas</span><textarea class="inp" data-k="skills" placeholder="Lesson planning, Classroom management, MS Office, Google Classroom"></textarea></label>
+        <label class="lf">Languages <span class="h">Separate with commas</span><input class="inp" data-k="langs" placeholder="English (fluent), Urdu (native), Punjabi"></label>
+        <label class="lf">Certificates & training <span class="h">One per line</span><textarea class="inp" data-k="certs" placeholder="B.Ed – Allama Iqbal Open University, 2019&#10;Cambridge Teacher training, 2022"></textarea></label>
+        <label class="lf">Achievements <span class="h">Optional, one per line</span><textarea class="inp" data-k="awards" placeholder="Best Teacher Award 2023&#10;92% A grades in O Level Maths"></textarea></label>
+        <label class="lf">References<input class="inp" data-k="refs" placeholder="Available on request"></label>
+      </div></details>
+      <p class="saved" id="saved">Your CV is saved on this device only. Nothing is uploaded.</p>
+    </form>
+
+    <div class="side">
+      <div class="pvhead"><b style="font-size:17px">Preview</b><div class="bar"><button class="btn" id="pdf">⬇️ Download PDF</button></div></div>
+      <div class="pv" id="pv"><div class="pvin" id="pvin"><div id="cv" class="cv classic"></div></div></div>
+      <p class="saved" style="margin-top:10px">Tip: when the print window opens, choose <b>Save as PDF</b> as the printer. On a phone, tap <b>Share → Print</b> or <b>Save as PDF</b>.</p>
+    </div>
+  </div>
+
+  <div class="cta-band">
+    <div><b>CV ready? Put it to work.</b><div style="opacity:.8;font-size:14.5px">Teachers can join Tutobridge free with early access. Or apply to work with our team.</div></div>
+    <div class="btns"><a class="btn" href="/app/#/signup/teacher">Register as a teacher</a><a class="btn out" href="/jobs/">See jobs at Tutobridge</a></div>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<div id="printcv"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var KEY = 'tb_cv_v1', $ = function (q) { return document.querySelector(q); }, esc = TB.esc;
+  var COLORS = ['#1F2A37', '#1E3A8A', '#0F766E', '#9F1239', '#7C3AED', '#B45309'];
+  var BLANK = { tpl: 'classic', color: '#1F2A37', photo: '', name: '', title: '', phone: '', email: '', city: '', link: '', summary: '',
+    exp: [{ role: '', org: '', place: '', start: '', end: '', points: '' }], edu: [{ degree: '', inst: '', year: '', grade: '' }],
+    skills: '', langs: '', certs: '', awards: '', refs: 'Available on request' };
+  var SAMPLE = { tpl: 'modern', color: '#1E3A8A', photo: '', name: 'Ayesha Khan', title: 'O & A Level Mathematics Teacher', phone: '0300 1234567', email: 'ayesha.khan@email.com', city: 'Johar Town, Lahore', link: 'linkedin.com/in/ayeshakhan',
+    summary: 'Mathematics teacher with 6 years of experience teaching O and A Level students in Lahore. Known for clear explanations, exam-focused practice and regular progress updates for parents. 90% of my 2025 O Level students scored an A or A*.',
+    exp: [
+      { role: 'Senior Mathematics Teacher', org: 'The City School, Gulberg Campus', place: 'Lahore', start: 'Aug 2021', end: 'Present', points: 'Teach O Level Mathematics and Additional Mathematics to Grades 9–11\nRaised the A/A* rate from 68% to 90% in three years\nLead the maths department\'s weekly test and past-paper programme\nMentor two new teachers each year' },
+      { role: 'Mathematics Teacher', org: 'Beaconhouse School System', place: 'Lahore', start: 'Jul 2019', end: 'Jul 2021', points: 'Taught Grades 6–8 Mathematics using the Cambridge Lower Secondary curriculum\nMoved lessons online during school closures using Google Classroom' }],
+    edu: [{ degree: 'MSc Mathematics', inst: 'University of the Punjab', year: '2019', grade: 'CGPA 3.6 / 4.0' }, { degree: 'B.Ed', inst: 'Allama Iqbal Open University', year: '2020', grade: 'First Division' }],
+    skills: 'Lesson planning, Cambridge O/A Level syllabus, Past-paper analysis, Classroom management, Google Classroom, MS Excel, Parent communication',
+    langs: 'English (fluent), Urdu (native), Punjabi', certs: 'Cambridge Professional Development – Teaching Mathematics, 2022\nGoogle Certified Educator Level 1, 2021',
+    awards: 'Best Teacher Award, The City School, 2023\nCoached the school team to 2nd place in the Lahore Maths Olympiad, 2024', refs: 'Available on request' };
+  var S;
+  try { S = JSON.parse(localStorage.getItem(KEY)) || JSON.parse(JSON.stringify(BLANK)); } catch (e) { S = JSON.parse(JSON.stringify(BLANK)); }
+
+  var tm;
+  function save() { clearTimeout(tm); tm = setTimeout(function () { try { localStorage.setItem(KEY, JSON.stringify(S)); $('#saved').textContent = 'Saved on this device ✓ Nothing is uploaded.'; } catch (e) { $('#saved').textContent = 'Could not save on this device (storage full or blocked). Download your PDF before leaving.'; } }, 300); }
+  function lines(t) { return (t || '').split(/\n+/).map(function (x) { return x.replace(/^[-•*]\s*/, '').trim(); }).filter(Boolean); }
+  function list(t) { return (t || '').split(/,|\n/).map(function (x) { return x.trim(); }).filter(Boolean); }
+
+  /* ---------- form ---------- */
+  function fillSimple() {
+    [].forEach.call(document.querySelectorAll('[data-k]'), function (el) { el.value = S[el.getAttribute('data-k')] || ''; });
+    [].forEach.call(document.querySelectorAll('[data-tpl]'), function (b) { b.classList.toggle('on', b.getAttribute('data-tpl') === S.tpl); });
+    $('#cols').innerHTML = COLORS.map(function (c) { return '<button type="button" aria-label="Colour ' + c + '" data-col="' + c + '" class="' + (c === S.color ? 'on' : '') + '" style="background:' + c + '"></button>'; }).join('');
+    $('#phimg').hidden = !S.photo; $('#phrm').hidden = !S.photo; if (S.photo) $('#phimg').src = S.photo;
+  }
+  var DEF = {
+    exp: [['role', 'Job title', 'e.g. Mathematics Teacher'], ['org', 'School / company', 'e.g. Beaconhouse School System'], ['place', 'City', 'Lahore'], ['start', 'From', 'Aug 2021'], ['end', 'To', 'Present'], ['points', 'What you did <span class="h">One point per line</span>', 'Taught Grades 9–10 Mathematics\nImproved results by 20%']],
+    edu: [['degree', 'Degree / certificate', 'e.g. MSc Mathematics'], ['inst', 'Institute', 'e.g. University of the Punjab'], ['year', 'Year', '2019'], ['grade', 'Grade / CGPA <span class="h">Optional</span>', 'CGPA 3.6 / 4.0']]
+  };
+  function drawItems(kind) {
+    var d = DEF[kind];
+    $('#' + kind).innerHTML = S[kind].map(function (it, i) {
+      var f = function (k, lab, ph, ta) { return '<label class="lf">' + lab + (ta ? '<textarea class="inp" data-i="' + i + '" data-f="' + k + '" data-l="' + kind + '" placeholder="' + esc(ph) + '">' + esc(it[k] || '') + '</textarea>' : '<input class="inp" data-i="' + i + '" data-f="' + k + '" data-l="' + kind + '" placeholder="' + esc(ph) + '" value="' + esc(it[k] || '') + '">') + '</label>'; };
+      var body = kind === 'exp'
+        ? f(d[0][0], d[0][1], d[0][2]) + f(d[1][0], d[1][1], d[1][2]) + '<div class="g2">' + f(d[3][0], d[3][1], d[3][2]) + f(d[4][0], d[4][1], d[4][2]) + '</div>' + f(d[2][0], d[2][1], d[2][2]) + f(d[5][0], d[5][1], d[5][2], true)
+        : f(d[0][0], d[0][1], d[0][2]) + f(d[1][0], d[1][1], d[1][2]) + '<div class="g2">' + f(d[2][0], d[2][1], d[2][2]) + f(d[3][0], d[3][1], d[3][2]) + '</div>';
+      return '<div class="item"><div class="tools">' + (i > 0 ? '<button type="button" data-mv="' + kind + ',' + i + ',-1">↑ Up</button>' : '') + (i < S[kind].length - 1 ? '<button type="button" data-mv="' + kind + ',' + i + ',1">↓ Down</button>' : '') + '<button type="button" data-rm="' + kind + ',' + i + '">✕ Remove</button></div>' + body + '</div>';
+    }).join('');
+  }
+  function fillAll() { fillSimple(); drawItems('exp'); drawItems('edu'); render(); }
+
+  /* ---------- CV render ---------- */
+  function contact(sep) {
+    return [S.phone && '📞 ' + esc(S.phone), S.email && '✉️ ' + esc(S.email), S.city && '📍 ' + esc(S.city), S.link && '🔗 ' + esc(S.link)].filter(Boolean).map(function (x) { return '<span>' + x + '</span>'; }).join(sep || '');
+  }
+  function expHTML() {
+    var ex = S.exp.filter(function (e) { return e.role || e.org; });
+    return ex.map(function (e) {
+      var pts = lines(e.points);
+      return '<div class="ent"><div class="eh"><b>' + esc(e.role) + '</b><span class="dt">' + esc([e.start, e.end].filter(Boolean).join(' – ')) + '</span></div>' +
+        '<div class="org">' + esc([e.org, e.place].filter(Boolean).join(', ')) + '</div>' + (pts.length ? '<ul>' + pts.map(function (p) { return '<li>' + esc(p) + '</li>'; }).join('') + '</ul>' : '') + '</div>';
+    }).join('');
+  }
+  function eduHTML() {
+    return S.edu.filter(function (e) { return e.degree || e.inst; }).map(function (e) {
+      return '<div class="ent"><div class="eh"><b>' + esc(e.degree) + '</b><span class="dt">' + esc(e.year) + '</span></div><div class="org">' + esc([e.inst, e.grade].filter(Boolean).join(' · ')) + '</div></div>';
+    }).join('');
+  }
+  function sec(title, body, cls) { return body ? (S.tpl === 'minimal' ? '<div class="sec"><h2>' + title + '</h2><div>' + body + '</div></div>' : '<h2>' + title + '</h2>' + body) : ''; }
+  function render() {
+    var cv = $('#cv'); cv.className = 'cv ' + S.tpl; cv.style.setProperty('--a', S.color);
+    var name = S.name ? esc(S.name) : '<span class="empty-hint">Your name</span>';
+    var photo = S.photo ? '<img class="ph" src="' + S.photo + '" alt="">' : '';
+    var skills = list(S.skills), langs = list(S.langs), certs = lines(S.certs), awards = lines(S.awards);
+    var tags = function (a) { return a.length ? '<div class="tags">' + a.map(function (x) { return '<span>' + esc(x) + '</span>'; }).join('') + '</div>' : ''; };
+    var ul = function (a) { return a.length ? '<ul>' + a.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : ''; };
+    var summary = S.summary ? '<p>' + esc(S.summary) + '</p>' : '';
+    var refs = S.refs ? '<p>' + esc(S.refs) + '</p>' : '';
+    if (S.tpl === 'modern') {
+      cv.innerHTML = '<aside class="sb">' + photo + sec('Contact', contact() ? '<div class="ct">' + contact() + '</div>' : '') + sec('Skills', ul(skills)) + sec('Languages', ul(langs)) + sec('References', refs) + '</aside>' +
+        '<main class="mn"><h1>' + name + '</h1>' + (S.title ? '<div class="ttl">' + esc(S.title) + '</div>' : '') + sec('Profile', summary) + sec('Experience', expHTML()) + sec('Education', eduHTML()) + sec('Certificates & training', ul(certs)) + sec('Achievements', ul(awards)) + '</main>';
+    } else if (S.tpl === 'minimal') {
+      cv.innerHTML = '<div class="hd"><div><h1>' + name + '</h1>' + (S.title ? '<div class="ttl">' + esc(S.title) + '</div>' : '') + '<div class="ct">' + contact() + '</div></div>' + photo + '</div>' +
+        sec('Profile', summary) + sec('Experience', expHTML()) + sec('Education', eduHTML()) + sec('Skills', tags(skills)) + sec('Certificates', ul(certs)) + sec('Achievements', ul(awards)) + sec('Languages', langs.length ? '<p>' + esc(langs.join(' · ')) + '</p>' : '') + sec('References', refs);
+    } else {
+      cv.innerHTML = '<div class="hd">' + photo + '<div><h1>' + name + '</h1>' + (S.title ? '<div class="ttl">' + esc(S.title) + '</div>' : '') + '<div class="ct">' + contact() + '</div></div></div>' +
+        sec('Profile', summary) + sec('Experience', expHTML()) + sec('Education', eduHTML()) + sec('Skills', tags(skills)) + sec('Certificates & training', ul(certs)) + sec('Achievements', ul(awards)) + sec('Languages', langs.length ? '<p>' + esc(langs.join(' · ')) + '</p>' : '') + sec('References', refs);
+    }
+    fit();
+  }
+  function fit() {
+    var pv = $('#pv'), w = pv.clientWidth - 32; if (w <= 0) return;
+    var sc = Math.min(1, w / 794), cv = $('#cv');
+    $('#pvin').style.transform = 'scale(' + sc + ')';
+    $('#pvin').style.width = '794px';
+    $('#pvin').style.height = (cv.offsetHeight * sc) + 'px';
+    pv.style.height = (cv.offsetHeight * sc + 32) + 'px';
+  }
+  window.addEventListener('resize', fit);
+  function preparePrint() { var p = $('#printcv'), c = $('#cv').cloneNode(true); c.id = 'cvp'; p.innerHTML = ''; p.appendChild(c); }
+  window.addEventListener('beforeprint', preparePrint);
+  window.__preparePrint = preparePrint;
+
+  /* ---------- events ---------- */
+  var f = $('#f');
+  f.addEventListener('input', function (e) {
+    var t = e.target;
+    if (t.hasAttribute('data-k')) S[t.getAttribute('data-k')] = t.value;
+    else if (t.hasAttribute('data-l')) S[t.getAttribute('data-l')][+t.getAttribute('data-i')][t.getAttribute('data-f')] = t.value;
+    else return;
+    render(); save();
+  });
+  document.addEventListener('click', function (e) {
+    var b;
+    if ((b = e.target.closest('[data-tpl]'))) { S.tpl = b.getAttribute('data-tpl'); fillSimple(); render(); save(); }
+    else if ((b = e.target.closest('[data-col]'))) { S.color = b.getAttribute('data-col'); fillSimple(); render(); save(); }
+    else if ((b = e.target.closest('[data-add]'))) { var k = b.getAttribute('data-add'); S[k].push(k === 'exp' ? { role: '', org: '', place: '', start: '', end: '', points: '' } : { degree: '', inst: '', year: '', grade: '' }); drawItems(k); render(); save(); var last = $('#' + k).lastElementChild; if (last) last.querySelector('input').focus(); }
+    else if ((b = e.target.closest('[data-rm]'))) { var p = b.getAttribute('data-rm').split(','); S[p[0]].splice(+p[1], 1); drawItems(p[0]); render(); save(); }
+    else if ((b = e.target.closest('[data-mv]'))) { var m = b.getAttribute('data-mv').split(','), a = S[m[0]], i = +m[1], j = i + +m[2]; var x = a[i]; a[i] = a[j]; a[j] = x; drawItems(m[0]); render(); save(); }
+  });
+  $('#sample').onclick = function () { if ((S.name || S.summary) && !confirm('Replace what you have typed with the teacher example?')) return; var ph = S.photo; S = JSON.parse(JSON.stringify(SAMPLE)); S.photo = ph; fillAll(); save(); };
+  $('#clear').onclick = function () { if (!confirm('Clear your CV and start over?')) return; S = JSON.parse(JSON.stringify(BLANK)); fillAll(); save(); };
+  $('#pdf').onclick = function () { preparePrint(); window.print(); };
+  $('#mt-edit').onclick = function () { document.body.classList.remove('m-preview'); this.className = 'btn'; $('#mt-prev').className = 'btn out'; };
+  $('#mt-prev').onclick = function () { document.body.classList.add('m-preview'); this.className = 'btn'; $('#mt-edit').className = 'btn out'; fit(); window.scrollTo(0, $('.mtabs').offsetTop); };
+  $('#phin').onchange = function () {
+    var file = this.files[0]; if (!file) return;
+    var r = new FileReader();
+    r.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(img.width, img.height), c = document.createElement('canvas'); c.width = c.height = 320;
+        c.getContext('2d').drawImage(img, (img.width - s) / 2, (img.height - s) / 2, s, s, 0, 0, 320, 320);
+        S.photo = c.toDataURL('image/jpeg', .85); fillSimple(); render(); save();
+      };
+      img.src = r.result;
+    };
+    r.readAsDataURL(file); this.value = '';
+  };
+  $('#phrm').onclick = function () { S.photo = ''; fillSimple(); render(); save(); };
+  fillAll();
+  window.addEventListener('load', fit);
+})();
+</script>
+</body>
+</html>
