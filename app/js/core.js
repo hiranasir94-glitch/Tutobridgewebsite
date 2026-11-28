@@ -10,6 +10,11 @@ const APP_URL = location.origin + '/app/';
 
 // Read before the client starts: it consumes the tokens in a password-reset link and clears them from the URL.
 const OPENED_RESET_LINK = /type=recovery/.test(location.hash + location.search);
+// An expired or already-used email link comes back as #error=access_denied&error_code=otp_expired...
+const LINK_ERROR = (() => {
+  const p = new URLSearchParams((location.hash.replace(/^#\/?/, '') + '&' + location.search.replace(/^\?/, '')));
+  return p.get('error_code') || p.get('error') ? (p.get('error_code') || p.get('error')) : null;
+})();
 
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
   auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true },
@@ -466,10 +471,13 @@ ROUTES.signup = ([role]) => {
   };
 };
 
-ROUTES.forgot = () => {
+ROUTES.forgot = (params = []) => {
+  const expired = params[0] === 'expired';
   const a = view(`<div class="narrow" style="padding-top:20px">
     <button class="back" data-a="go" data-v="#/login">← Back to log in</button>
-    <h1>Forgot your password?</h1><p class="muted">Enter your email and we'll send you a link to set a new one.</p>
+    ${expired ? `<div class="card" style="border:2px solid var(--ink);background:#FFF6D6;margin-bottom:14px"><b>⏰ That reset link has expired or was already used.</b>
+      <div class="small" style="margin-top:4px">Each link works only once and for a limited time. Enter your email below to get a fresh one, then open the <b>newest</b> email.</div></div>` : ''}
+    <h1>${expired ? 'Get a new reset link' : 'Forgot your password?'}</h1><p class="muted">Enter your email and we'll send you a link to set a new one.</p>
     <form id="f" novalidate style="margin-top:16px"><label class="f"><span>Email</span><input class="inp" name="email" type="email" autocomplete="email"></label>
     <button class="btn full" id="go">Send reset link</button></form><p class="muted center" style="margin-top:18px;font-size:14px">Still can't get in? Email <a href="mailto:support@tutobridge.com?subject=Password%20help" style="font-weight:800">support@tutobridge.com</a> from your account email and we'll help you recover it.</p></div>`);
   $('#f', a).onsubmit = async (e) => {
@@ -486,7 +494,7 @@ ROUTES.forgot = () => {
       return;
     }
     view(`<div class="narrow center" style="padding:40px 0"><div style="font-size:52px">📬</div><h1>Check your email</h1>
-      <p class="muted">If an account exists for <b>${esc(email)}</b>, a reset link is on its way. Open it on this device to choose a new password. Check your spam folder too.</p>
+      <p class="muted">If an account exists for <b>${esc(email)}</b>, a reset link is on its way. Open the <b>newest</b> email on this device and tap the link once to choose a new password. Each link works one time only. Check your spam folder too.</p>
       <p class="muted" style="font-size:14px">No email after 10 minutes? Write to <a href="mailto:support@tutobridge.com?subject=Password%20help" style="font-weight:800">support@tutobridge.com</a>.</p>
       <a class="btn out" href="#/login">Back to log in</a></div>`);
   };
@@ -528,7 +536,8 @@ async function boot() {
   });
   // Old-style links from the homepage (e.g. /app/?role=teacher or ?login) land on the right screen.
   const q = new URLSearchParams(location.search);
-  if (!location.hash) {
+  if (LINK_ERROR && !S.session) { history.replaceState(null, '', location.pathname); location.hash = '#/forgot/expired'; }
+  else if (!location.hash || /^#(access_token|error)=/.test(location.hash) && !S.recovering) {
     if (q.has('login')) location.hash = '#/login';
     else if (q.get('role') === 'teacher') location.hash = '#/signup/teacher';
     else if (q.get('role') === 'parent') location.hash = '#/signup/parent';
