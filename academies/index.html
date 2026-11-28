@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tuition centres &amp; academies in Lahore · Tutobridge</title>
+<meta name="description" content="Search tuition centres and academies in Lahore by area and course: Matric, FSc, MDCAT, ECAT, SAT, IELTS and more.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.bar .inp{flex:1 1 260px}
+.bar select{flex:0 1 220px}
+.near{white-space:nowrap}
+.alist{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+@media(max-width:799px){.alist{grid-template-columns:1fr}}
+.ac{background:#fff;border:2px solid var(--ink);border-radius:20px;padding:16px 18px;box-shadow:0 5px 0 var(--ink);display:flex;flex-direction:column;gap:8px}
+.ac h3{margin:0;font-size:18px;line-height:1.25}
+.ac .addr{color:var(--muted);font-size:14px}
+.ac .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px}
+.ac .acts a{font-weight:800;font-size:13.5px;border:2px solid var(--ink);border-radius:999px;padding:6px 12px;text-decoration:none;color:var(--ink);background:#fff}
+.ac .acts a.pri{background:var(--lime)}
+.ac .src{font-size:12px;color:var(--muted)}
+.dist{font-weight:800;font-size:13px}
+.count{font-weight:800;margin:6px 0 14px}
+.listcta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--lime);border:2px solid var(--ink);border-radius:22px;padding:20px 22px;box-shadow:0 6px 0 var(--ink);margin-top:28px}
+.listcta h3{margin:0 0 4px}
+</style>
+</head>
+<body data-page="academies">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">🏫 Academies</span>
+  <h1>Tuition centres &amp; academies in Lahore</h1>
+  <p>Search academies by area or course, or find the ones closest to you. Prefer one-to-one lessons? <a href="/tutors/" style="font-weight:800;color:inherit">Find a tutor</a> instead.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="bar">
+    <input class="inp" id="q" type="search" placeholder="Search by name, course or area, e.g. MDCAT, Johar Town" aria-label="Search academies">
+    <select class="inp" id="area" aria-label="Area"><option value="">All areas</option></select>
+    <button class="btn near" id="near">📍 Near me</button>
+  </div>
+  <div class="chips" id="types">
+    <button class="chip on" data-t="">All</button>
+    <button class="chip" data-t="school">Matric &amp; Inter coaching</button>
+    <button class="chip" data-t="entry">Entry tests (MDCAT, ECAT)</button>
+    <button class="chip" data-t="intl">SAT, IELTS &amp; university tests</button>
+  </div>
+  <div class="count" id="count"></div>
+  <div id="list"><div class="spin"></div></div>
+
+  <div class="listcta">
+    <div><h3>Run a tuition centre or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Send us your academy's name, address, phone and courses.</div></div>
+    <a class="btn" href="mailto:support@tutobridge.com?subject=List%20my%20academy%20on%20Tutobridge&amp;body=Academy%20name%3A%0AArea%20and%20full%20address%3A%0APhone%20%2F%20WhatsApp%3A%0AWebsite%20or%20Facebook%20page%3A%0ACourses%20and%20classes%20(e.g.%20Matric%2C%20FSc%2C%20O%20Level%2C%20MDCAT)%3A%0A">List my academy</a>
+  </div>
+  <p class="muted small" style="margin-top:18px">Details come from each academy's website and public education directories, and can change. Please call the academy to confirm courses, timings and fees before you visit. Distances are approximate, based on the area. Spotted a mistake? Email support@tutobridge.com.</p>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  // Approximate area centres, for "Near me" sorting only.
+  var AREAS = {
+    'Allama Iqbal Town': [31.5106, 74.2880], 'Cantt': [31.5360, 74.3900], 'DHA': [31.4830, 74.4500], 'Ferozepur Road': [31.5050, 74.3320],
+    'Garhi Shahu': [31.5600, 74.3460], 'Gulberg': [31.5170, 74.3440], 'Johar Town': [31.4690, 74.2720], 'Lower Mall': [31.5670, 74.3140],
+    'Mughalpura': [31.5600, 74.3800], 'New Muslim Town': [31.5100, 74.3150], 'Shadbagh': [31.5800, 74.3330], 'Shadman': [31.5380, 74.3300],
+    'Township': [31.4520, 74.3110]
+  };
+  var TYPE = { school: 'Matric & Inter', entry: 'Entry tests', intl: 'SAT / IELTS' };
+  var all = [], type = '', me = null;
+  var $ = function (s) { return document.querySelector(s); };
+  function km(a, b) { var R = 6371, r = Math.PI / 180, dLa = (b[0] - a[0]) * r, dLo = (b[1] - a[1]) * r;
+    var h = Math.sin(dLa / 2) * Math.sin(dLa / 2) + Math.cos(a[0] * r) * Math.cos(b[0] * r) * Math.sin(dLo / 2) * Math.sin(dLo / 2); return 2 * R * Math.asin(Math.sqrt(h)); }
+  function draw() {
+    var q = $('#q').value.trim().toLowerCase(), area = $('#area').value;
+    var rows = all.filter(function (x) {
+      if (type && x.types.indexOf(type) < 0) return false;
+      if (area && x.area !== area) return false;
+      if (!q) return true;
+      return [x.name, x.brand, x.area, x.address, (x.offers || []).join(' ')].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+    rows.forEach(function (x) { x._d = me && AREAS[x.area] ? km(me, AREAS[x.area]) : null; });
+    if (me) rows.sort(function (a, b) { return (a._d == null ? 1e9 : a._d) - (b._d == null ? 1e9 : b._d); });
+    $('#count').textContent = rows.length + ' academ' + (rows.length === 1 ? 'y' : 'ies') + (me ? ', closest first' : '');
+    $('#list').innerHTML = rows.length ? '<div class="alist">' + rows.map(function (x) {
+      var maps = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.name.replace(/ – .*/, '') + ', ' + x.address);
+      return '<article class="ac"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>' + TB.esc(x.name) + '</h3>' +
+        (x._d != null ? '<span class="dist">~' + (x._d < 1 ? '<1' : Math.round(x._d)) + ' km</span>' : '') + '</div>' +
+        '<div class="pills"><span class="pill lime">📍 ' + TB.esc(x.area) + '</span>' + x.types.map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') + (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + '</div>' +
+        '<div><b>Courses:</b> ' + TB.esc((x.offers || []).join(', ')) + '</div><div class="addr">' + TB.esc(x.address) + '</div>' +
+        '<div class="acts">' + (x.phone ? '<a class="pri" href="tel:' + x.phone.replace(/[^0-9+]/g, '') + '">📞 ' + TB.esc(x.phone) + '</a>' : '') +
+        '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Map</a>' + (x.website ? '<a href="' + TB.esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>' +
+        (x.source ? '<a class="src" href="' + TB.esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '') + '</article>';
+    }).join('') + '</div>' : '<div class="empty"><b>🔎</b>No academies match yet. Try another area or course, or <a href="/tutors/">find a tutor</a> near you.</div>';
+  }
+  fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) {
+    all = d.academies || [];
+    var areas = Object.keys(all.reduce(function (o, x) { o[x.area] = 1; return o; }, {})).sort();
+    $('#area').insertAdjacentHTML('beforeend', areas.map(function (a) { return '<option>' + TB.esc(a) + '</option>'; }).join(''));
+    draw();
+  }).catch(function () { $('#list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load academies. Please refresh.</div>'; });
+  $('#q').addEventListener('input', draw);
+  $('#area').addEventListener('change', draw);
+  $('#types').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-t]'); if (!b) return;
+    type = b.dataset.t; Array.prototype.forEach.call(document.querySelectorAll('#types .chip'), function (c) { c.classList.toggle('on', c === b); }); draw();
+  });
+  $('#near').addEventListener('click', function () {
+    var b = this;
+    if (!navigator.geolocation) { $('#count').textContent = 'Location is not available on this device. Choose your area instead.'; return; }
+    b.textContent = 'Finding you…';
+    navigator.geolocation.getCurrentPosition(function (p) { me = [p.coords.latitude, p.coords.longitude]; b.textContent = '📍 Sorted by distance'; draw(); },
+      function () { b.textContent = '📍 Near me'; $('#count').textContent = 'Could not get your location. Choose your area from the list instead.'; }, { timeout: 10000 });
+  });
+})();
+</script>
+</body>
+</html>

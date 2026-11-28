@@ -3,6 +3,7 @@
   var LOGO = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 18h19"/><path d="M4.5 18c0-5.5 3.4-9 7.5-9s7.5 3.5 7.5 9"/><path d="M8 18v-5M12 18V9M16 18v-5"/><circle cx="12" cy="5" r="1.6" fill="#111"/></svg>';
   var NAV = [
     ['/tutors/', 'Find a Tutor', 'tutors'],
+    ['/academies/', 'Academies', 'academies'],
     ['/notice-board/', 'Notice Board', 'notice'],
     ['/tools/', 'Latest AI tools', 'tools'],
     ['/subscriptions/', 'Subscriptions', 'subs'],
@@ -19,7 +20,7 @@
     '<nav class="mnav d-only">' + nav + '</nav></div><nav class="mnav m-only">' + nav + '</nav></div></header>' +
     '<style>@media(min-width:900px){.m-only{display:none!important}}@media(max-width:899px){.d-only{display:none!important}}</style>';
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/">Find a Tutor</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/">Find a Tutor</a><a href="/academies/">Academies</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {
