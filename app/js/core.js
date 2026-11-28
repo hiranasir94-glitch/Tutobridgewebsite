@@ -151,10 +151,12 @@ document.addEventListener('click', (e) => {
 
 /* ------------------------------------------------------------------ location input (GPS, typed area, map with movable pin) */
 const LOC_CENTER = [31.5204, 74.3587]; // Lahore
+/* Suggestions while typing the location (users can still type any other area). */
+const LAHORE_AREAS = ["Abdalian Society", "Al Kabir Town", "Al Rehman Garden", "Allama Iqbal Town", "Architects Engineers Society", "Askari 10", "Askari 11", "Bahria Orchard", "Bahria Town", "Bankers Town", "Canal Garden", "Canal View Society", "Cantt", "Cavalry Ground", "Central Park Housing Scheme", "Citi Housing", "DHA Phase 1", "DHA Phase 2", "DHA Phase 3", "DHA Phase 4", "DHA Phase 5", "DHA Phase 6", "DHA Phase 7", "DHA Phase 8", "DHA Phase 9 Town", "DHA Phase 9 Prism", "DHA Rahbar", "Eden City", "EME Housing Society", "Engineers Town", "Etihad Town", "Expo Avenue Society", "Faisal Town", "Fazaia Housing Scheme", "Garden Town", "Green City", "Gulberg I", "Gulberg II", "Gulberg III", "Gulshan-e-Ravi", "Ichhra", "Izmir Town", "Johar Town", "Jubilee Town", "Lake City", "LDA Avenue", "Model Town", "Muslim Town", "Mustafa Town", "NESPAK Society", "NFC Society", "Pak Arab Housing Society", "Paragon City", "Park View City", "PCSIR Housing Society", "PIA Housing Society", "Punjab Cooperative Housing Society", "Revenue Society", "Sabzazar", "Samanabad", "Shadman", "State Life Housing Society", "Sui Gas Housing Society", "Tariq Gardens", "Township", "University Town", "Valencia Town", "Wapda Town", "Wapda Town Phase 2"];
 function locationField(id, { label = 'Current location', value = '', lat = null, lng = null } = {}) {
   return `<div class="f" data-loc="${id}" data-lat="${lat ?? ''}" data-lng="${lng ?? ''}" style="margin-bottom:14px">
     <label class="f" style="margin-bottom:6px"><span>${esc(label)}</span>
-      <input class="inp" name="${id}_label" maxlength="200" placeholder="e.g. Gulberg III, Lahore" value="${esc(value)}"></label>
+      <input class="inp" name="${id}_label" maxlength="200" placeholder="e.g. Abdalian Society, Johar Town" value="${esc(value)}" list="lahore-areas" autocomplete="off"></label>
     <div class="row wrap"><button type="button" class="btn out sm" data-locate="${id}">📍 Use Current Location</button>
       <span class="small muted" data-locmsg>${lat != null ? '✓ Location saved' : 'Optional. Used to show approximate distances.'}</span></div>
     <div class="locmap" data-locmap aria-label="Map: tap or drag the pin to set your location"></div>
@@ -168,12 +170,21 @@ function readLocation(root, id) {
   const lng = box.dataset.lng === '' ? null : Number(box.dataset.lng);
   return { label: $('input', box).value.trim(), lat, lng };
 }
+/* Most specific first: housing society / block, then the wider area, then the city.
+   e.g. "Abdalian Society, Johar Town, Lahore" or "Sector C, Bahria Town, Lahore". */
 async function reverseLabel(lat, lng) {
   let label = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
   try {
-    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=16&lat=${lat}&lon=${lng}`, { headers: { 'Accept-Language': 'en' } });
+    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&zoom=18&addressdetails=1&lat=${lat}&lon=${lng}`, { headers: { 'Accept-Language': 'en' } });
     const a = (await r.json()).address || {};
-    const parts = [...new Set([a.road && (a.suburb || a.neighbourhood) ? null : a.road, a.suburb || a.neighbourhood || a.quarter || a.residential, a.city || a.town || a.county].filter(Boolean))];
+    const city = a.city || a.town || a.county || '';
+    const clean = (x) => (x || '').replace(/\s+/g, ' ').trim();
+    const cands = [a.residential, a.neighbourhood, a.quarter, a.hamlet, a.suburb, a.city_district].map(clean).filter((x) => x && x !== city && !/^(Lahore|Lahore City|Lahore District)$/i.test(x));
+    const seen = [];
+    cands.forEach((x) => { if (!seen.some((y) => y.toLowerCase().includes(x.toLowerCase()) || x.toLowerCase().includes(y.toLowerCase()))) seen.push(x); });
+    const parts = seen.slice(0, 2);
+    if (!parts.length && a.road) parts.push(clean(a.road));
+    if (city) parts.push(/lahore/i.test(city) ? 'Lahore' : city);
     if (parts.length) label = parts.join(', ');
   } catch (_) { /* fall back to coordinates */ }
   return label;
@@ -211,7 +222,7 @@ function initLocMap(el) {
   [150, 500].forEach((t) => setTimeout(() => map.invalidateSize(), t));
   /* typed area -> move the pin there (only if the user typed it) */
   const input = $('input', box);
-  input.addEventListener('input', () => { input.dataset.auto = ''; });
+  input.addEventListener('input', () => { input.dataset.auto = ''; if (LAHORE_AREAS.some((x) => input.value === x + ', Lahore')) input.dispatchEvent(new Event('change')); });
   input.addEventListener('change', async () => {
     const q = input.value.trim();
     if (q.length < 3 || /^-?\d+\.\d+, -?\d+\.\d+$/.test(q)) return;
@@ -223,6 +234,7 @@ function initLocMap(el) {
     } catch (_) { /* map lookup is optional */ }
   });
 }
+document.body.insertAdjacentHTML('beforeend', `<datalist id="lahore-areas">${LAHORE_AREAS.map((x) => `<option value="${x}, Lahore">`).join('')}</datalist>`);
 new MutationObserver(() => $$('[data-locmap]:not([data-ready])').forEach(initLocMap)).observe(document.documentElement, { childList: true, subtree: true });
 document.addEventListener('click', async (e) => {
   const b = e.target.closest('[data-locate]');
