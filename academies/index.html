@@ -35,6 +35,19 @@
 .status{font-weight:800;margin:6px 0 14px}
 .listcta{display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;background:var(--lime);border:2px solid var(--ink);border-radius:22px;padding:20px 22px;box-shadow:0 6px 0 var(--ink);margin-top:28px}
 .listcta h3{margin:0 0 4px}
+dialog.jf{border:2px solid var(--ink);border-radius:22px;padding:0;width:min(640px,calc(100% - 20px));max-height:calc(100dvh - 30px);box-shadow:0 10px 0 var(--ink)}
+dialog.jf::backdrop{background:rgba(17,17,17,.55)}
+.jf .jh{position:sticky;top:0;background:var(--lime);border-bottom:2px solid var(--ink);padding:14px 18px;display:flex;align-items:center;gap:10px;z-index:2}
+.jf .jh h2{margin:0;font-size:20px;flex:1}.jf .x{border:2px solid var(--ink);background:#fff;border-radius:999px;width:36px;height:36px;font-size:16px;cursor:pointer}
+.jf form{padding:16px 18px 20px;display:flex;flex-direction:column;gap:14px}
+.jf label.f{display:flex;flex-direction:column;gap:6px;font-weight:800;font-size:14px}
+.jf .help{font-weight:500;font-size:12.5px;color:var(--muted)}
+.jf .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:560px){.jf .grid2{grid-template-columns:1fr}}
+.jf fieldset{border:0;padding:0;margin:0}.jf legend{font-weight:800;font-size:14px;margin-bottom:6px}
+.jf .sec{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);border-top:1.5px solid var(--line);padding-top:12px}
+.jf .err{color:#B42318;font-weight:700;font-size:13px}.jf .inp.bad{border-color:#B42318}
+.jf .chk{display:flex;gap:10px;align-items:flex-start;font-weight:600;font-size:14px}.jf .chk input{width:20px;height:20px;margin-top:1px;flex:none}
+.jf .hp{position:absolute;left:-9999px}
 </style>
 </head>
 <body data-page="academies">
@@ -65,12 +78,42 @@
   <div id="list"><div class="spin"></div></div>
 
   <div class="listcta">
-    <div><h3>Run a tuition centre or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Send us your academy's name, address, phone and courses.</div></div>
-    <a class="btn" href="mailto:support@tutobridge.com?subject=List%20my%20academy%20on%20Tutobridge&amp;body=Academy%20name%3A%0AArea%20and%20full%20address%3A%0APhone%20%2F%20WhatsApp%3A%0AWebsite%20or%20Facebook%20page%3A%0ACourses%20and%20classes%20(e.g.%20Matric%2C%20FSc%2C%20O%20Level%2C%20MDCAT)%3A%0A">List my academy</a>
+    <div><h3>Run a tuition centre or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Fill in a short form and our team will check it and add you to the map.</div></div>
+    <button class="btn" id="openjoin">List my academy</button>
   </div>
   <p class="muted small" style="margin-top:18px">Details come from each academy's website and public education directories, and can change. Please call the academy to confirm courses, timings and fees before you visit. Academies marked "From OpenStreetMap" come from the free community map and have not been checked by our team. Distances are straight-line. Spotted a mistake? Email support@tutobridge.com.</p>
 </div></section>
 
+<dialog class="jf" id="join" aria-labelledby="jtitle">
+  <div class="jh"><h2 id="jtitle">List my academy</h2><button class="x" type="button" data-close aria-label="Close">✕</button></div>
+  <form id="jform" novalidate>
+    <div class="help" style="font-size:14px">Free listing. Our team checks every academy before it appears on the map. Owner details stay private.</div>
+    <div class="sec">About the academy</div>
+    <label class="f">Academy name<input class="inp" name="academy_name" maxlength="120" required placeholder="e.g. Bright Future Academy"></label>
+    <fieldset><legend>Classes you teach</legend><div class="chips" id="jclasses"></div><div class="help">Pick all that apply.</div></fieldset>
+    <label class="f">Subjects <span class="help">Optional</span><input class="inp" name="subjects" maxlength="500" placeholder="e.g. Maths, Physics, Chemistry, English"></label>
+    <label class="f">How many teachers?<select class="inp" name="teachers_count" required>
+      <option value="">Choose…</option><option value="1">Just one teacher (myself)</option><option value="2-5">2 to 5 teachers</option>
+      <option value="6-10">6 to 10 teachers</option><option value="11-20">11 to 20 teachers</option><option value="20+">More than 20 teachers</option></select></label>
+    <label class="f">Website or Facebook page <span class="help">Optional</span><input class="inp" name="website" type="url" maxlength="300" placeholder="https://"></label>
+    <div class="sec">Location</div>
+    <label class="f">Area<input class="inp" name="area" list="areas" maxlength="120" required placeholder="e.g. Johar Town" autocomplete="off"></label>
+    <label class="f">Full address<textarea class="inp" name="address" maxlength="300" rows="2" required placeholder="Building, street, block, area"></textarea></label>
+    <div><button class="btn sm" type="button" id="jloc" style="background:#fff">📍 I'm at the academy: use my location</button> <span class="help" id="jlocmsg">Optional. Puts your exact pin on the map.</span></div>
+    <div class="sec">Academy owner</div>
+    <label class="f">Owner's full name<input class="inp" name="owner_name" maxlength="80" required autocomplete="name"></label>
+    <div class="grid2">
+      <label class="f">Owner's CNIC number<input class="inp" name="owner_cnic" inputmode="numeric" maxlength="15" required placeholder="35202-1234567-1" autocomplete="off"></label>
+      <label class="f">Owner's contact number<input class="inp" name="owner_phone" type="tel" maxlength="16" required placeholder="03XX XXXXXXX" autocomplete="tel"></label>
+    </div>
+    <div class="help">Your CNIC is used only to verify the academy and is never shown publicly.</div>
+    <label class="chk"><input type="checkbox" name="show_phone"> Show this contact number to parents on the map</label>
+    <label class="chk"><input type="checkbox" name="consent" required> I own or manage this academy and the details are correct. Tutobridge may contact me to verify them.</label>
+    <input class="hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
+    <div class="err" id="jerr" hidden></div>
+    <button class="btn" type="submit" id="jsend" style="align-self:stretch">Submit academy</button>
+  </form>
+</dialog>
 <div id="site-footer"></div>
 <script src="/assets/site.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
@@ -140,7 +183,7 @@
 
   function rows() {
     var q = $('#q').value.trim().toLowerCase(), r = +$('#rad').value;
-    var list = curated.map(function (x) { var c = CENTRES[x.area]; return Object.assign({}, x, { lat: c && c[0], lng: c && c[1], verified: true }); });
+    var list = curated.map(function (x) { var c = CENTRES[x.area]; return Object.assign({}, x, x.exact ? { verified: true } : { lat: c && c[0], lng: c && c[1], verified: true }); });
     if (center) {
       list = list.filter(function (x) { return x.lat != null && km(center, [x.lat, x.lng]) <= r + 1; });
       var brands = list.filter(function (x) { return x.brand; });
@@ -159,19 +202,19 @@
   }
 
   function card(x) {
-    var maps = x.verified ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.name.replace(/ – .*/, '') + ', ' + x.address)
+    var maps = x.verified && !x.exact ? 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(x.name.replace(/ – .*/, '') + ', ' + x.address)
       : 'https://www.google.com/maps/search/?api=1&query=' + x.lat + ',' + x.lng;
     var fix = 'mailto:support@tutobridge.com?subject=' + encodeURIComponent('Academy listing: ' + x.name);
     return '<article class="ac"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>' + esc(x.name) + '</h3>' +
       (x._d != null ? '<span class="dist">' + (x._d < 1 ? (Math.round(x._d * 10) * 100 || 100) + ' m' : x._d.toFixed(1) + ' km') + '</span>' : '') + '</div>' +
       '<div class="pills">' + (x.verified ? '<span class="pill ink">✓ Checked by Tutobridge</span>' : '<span class="pill">From OpenStreetMap</span>') +
       (x.area ? '<span class="pill lime">📍 ' + esc(x.area) + '</span>' : '') + (x.types || []).map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') +
-      (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + '</div>' +
+      (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + (x.teachers ? '<span class="pill">👩‍🏫 ' + esc(x.teachers) + '</span>' : '') + '</div>' +
       (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') + (x.address ? '<div class="addr">' + esc(x.address) + '</div>' : '') +
       '<div class="acts">' + (x.phone ? '<a class="pri" href="tel:' + x.phone.replace(/[^0-9+]/g, '') + '">📞 ' + esc(x.phone) + '</a>' : '') +
       '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Directions</a>' + (x.website ? '<a href="' + esc(x.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>' +
       (x.verified ? (x.source ? '<a class="src" href="' + esc(x.source) + '" target="_blank" rel="noopener">Source ↗</a>' : '')
-        : '<a class="src" href="' + fix + '">Is this your academy? Add your phone and courses →</a>') + '</article>';
+        : '<a class="src" href="#list" data-join>Is this your academy? List it with your phone and courses →</a>') + '</article>';
   }
 
   function draw() {
@@ -180,7 +223,7 @@
     list.forEach(function (x) {
       if (x.lat == null) return;
       L.marker([x.lat, x.lng], { icon: pin(x.verified ? 'v' : '', x.verified ? '✓' : '🏫'), title: x.name })
-        .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified ? '<br><small>Pin shows the area, not the building.</small>' : '') + (x.phone ? '<br>📞 ' + esc(x.phone) : '')).addTo(layer);
+        .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified && !x.exact ? '<br><small>Pin shows the area, not the building.</small>' : '') + (x.phone ? '<br>📞 ' + esc(x.phone) : '')).addTo(layer);
     });
     if (!busy) {
       $('#count').innerHTML = center ? '<b>' + list.length + '</b> academ' + (list.length === 1 ? 'y' : 'ies') + ' within ' + $('#rad').value + ' km of ' + esc(center.label) + ', closest first'
@@ -205,7 +248,17 @@
     }).then(function () { busy--; draw(); });
   }
 
-  fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }).then(function (d) { curated = d.academies || []; draw(); })
+  var GROUP = function (cls) { var t = []; cls.forEach(function (c) { if (/Primary|Middle|Matric|Intermediate|O Level|A Level|IGCSE/.test(c) && t.indexOf('school') < 0) t.push('school'); if (/MDCAT/.test(c)) t.push('entry'); if (/SAT/.test(c)) t.push('intl'); }); return t; };
+  var TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
+  var approved = fetch(TB.URL + '/rest/v1/rpc/public_academies', { method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json' }, body: '{}' })
+    .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
+  Promise.all([fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }), approved]).then(function (res) {
+    curated = (res[0].academies || []).concat((res[1] || []).map(function (a) {
+      return { name: a.academy_name, area: a.area, address: a.address, phone: a.phone || '', website: a.website || '', offers: a.classes.concat(a.subjects ? [a.subjects] : []),
+        types: GROUP(a.classes), lat: a.lat, lng: a.lng, exact: a.lat != null, teachers: TEACH[a.teachers_count] };
+    }));
+    draw();
+  })
     .catch(function () { $('#list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load academies. Please refresh.</div>'; });
 
   $('#near').addEventListener('click', function () {
@@ -228,6 +281,74 @@
   $('#where').addEventListener('change', geocodeArea);
   $('#where').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); geocodeArea(); } });
   $('#where').addEventListener('input', function () { clearTimeout(t); if (AREA_NAMES.indexOf($('#where').value) >= 0) t = setTimeout(geocodeArea, 50); });
+  /* ---------- List my academy form ---------- */
+  var CLASSES = ['Primary (Playgroup–Grade 5)', 'Middle (Grade 6–8)', 'Matric (9–10)', 'Intermediate (FSc, FA, ICS, ICom)', 'O Level', 'A Level', 'IGCSE', 'MDCAT / ECAT entry tests', 'SAT / IELTS', 'Quran', 'Computer & IT', 'Other'];
+  var dlg = $('#join'), jf = $('#jform'), jpos = null, picked = [];
+  $('#jclasses').innerHTML = CLASSES.map(function (c) { return '<button type="button" class="chip" data-c="' + esc(c) + '">' + esc(c) + '</button>'; }).join('');
+  $('#jclasses').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-c]'); if (!b) return;
+    var i = picked.indexOf(b.dataset.c); if (i < 0) picked.push(b.dataset.c); else picked.splice(i, 1);
+    b.classList.toggle('on', i < 0);
+  });
+  function openJoin() { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+  $('#openjoin').addEventListener('click', openJoin);
+  $('#list').addEventListener('click', function (e) {
+    var l = e.target.closest('[data-join]'); if (!l) return;
+    e.preventDefault(); var h = l.closest('.ac').querySelector('h3'); if (h && jf.academy_name) jf.academy_name.value = h.textContent; openJoin();
+  });
+  if (location.hash === '#list') setTimeout(openJoin, 300);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
+  jf.owner_cnic.addEventListener('input', function () {
+    var d = this.value.replace(/\D/g, '').slice(0, 13); this.value = [d.slice(0, 5), d.slice(5, 12), d.slice(12)].filter(Boolean).join('-');
+  });
+  $('#jloc').addEventListener('click', function () {
+    if (!navigator.geolocation) return;
+    $('#jlocmsg').textContent = 'Getting your location…';
+    navigator.geolocation.getCurrentPosition(function (p) { jpos = [p.coords.latitude, p.coords.longitude]; $('#jlocmsg').textContent = '✓ Exact location saved'; },
+      function () { $('#jlocmsg').textContent = 'Could not get your location. That is fine, we will use your address.'; }, { timeout: 10000 });
+  });
+  function bad(el, on) { el.classList.toggle('bad', !!on); return !!on; }
+  jf.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (jf.company.value) return; // spam trap
+    var v = function (n) { return jf[n].value.trim(); };
+    var phone = v('owner_phone').replace(/[^0-9+]/g, '');
+    var errs = [
+      bad(jf.academy_name, v('academy_name').length < 2) && 'Enter the academy name.',
+      !picked.length && 'Choose at least one class you teach.',
+      bad(jf.teachers_count, !v('teachers_count')) && 'Choose how many teachers you have.',
+      bad(jf.website, v('website') && !/^https?:\/\/\S+\.\S+/i.test(v('website'))) && 'Enter the website starting with https://, or leave it empty.',
+      bad(jf.area, v('area').length < 2) && 'Enter your area.',
+      bad(jf.address, v('address').length < 5) && 'Enter the full address.',
+      bad(jf.owner_name, v('owner_name').length < 2) && "Enter the owner's name.",
+      bad(jf.owner_cnic, !/^\d{5}-\d{7}-\d$/.test(v('owner_cnic'))) && 'Enter the 13-digit CNIC number, like 35202-1234567-1.',
+      bad(jf.owner_phone, !/^(\+92|0)\d{9,10}$/.test(phone)) && 'Enter a Pakistani phone number, like 0300 1234567.',
+      !jf.consent.checked && 'Please confirm that you own or manage this academy.'
+    ].filter(Boolean);
+    var box = $('#jerr');
+    if (errs.length) { box.hidden = false; box.textContent = '⚠ ' + errs[0]; return; }
+    box.hidden = true;
+    var btn = $('#jsend'); btn.disabled = true; btn.textContent = 'Submitting…';
+    var findPos = jpos ? Promise.resolve(jpos) : fetch('https://nominatim.openstreetmap.org/search?format=json&limit=1&bounded=1&viewbox=74.0,31.75,74.65,31.25&q=' + encodeURIComponent(v('area') + ', Lahore'))
+      .then(function (r) { return r.json(); }).then(function (d) { return d && d.length ? [+d[0].lat, +d[0].lon] : null; }).catch(function () { return null; });
+    findPos.then(function (pos) {
+      return fetch(TB.URL + '/rest/v1/academy_submissions', {
+        method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
+        body: JSON.stringify({ academy_name: v('academy_name'), classes: picked, subjects: v('subjects') || null, teachers_count: v('teachers_count'),
+          area: v('area'), address: v('address'), lat: pos ? pos[0] : null, lng: pos ? pos[1] : null, website: v('website') || null,
+          owner_name: v('owner_name'), owner_cnic: v('owner_cnic'), owner_phone: v('owner_phone'), show_phone: jf.show_phone.checked, consent: true })
+      });
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      jf.innerHTML = '<div style="text-align:center;padding:20px 6px"><div style="font-size:48px">🎉</div><h3 style="margin:6px 0">Thank you! Your academy has been submitted.</h3>' +
+        '<p class="muted">Our team will check the details, may call the owner to verify, and then add your academy to the map. Questions? Email support@tutobridge.com.</p>' +
+        '<button class="btn" type="button" data-close>Done</button></div>';
+    }).catch(function () {
+      btn.disabled = false; btn.textContent = 'Submit academy';
+      box.hidden = false; box.textContent = '⚠ Could not submit right now. Please check your internet and try again, or email support@tutobridge.com.';
+    });
+  });
+
   $('#rad').addEventListener('change', function () { if (center) search(center, center.label); });
   $('#q').addEventListener('input', draw);
   $('#types').addEventListener('click', function (e) {

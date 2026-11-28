@@ -260,7 +260,7 @@ const TERMS = [
   ['8. Changes', 'We may update these terms. If a change is significant we will tell you in the app or on the website. Continuing to use Tutobridge means you accept the updated terms.'],
 ];
 const PRIVACY = [
-  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; and your chosen subscription plan.'],
+  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; your chosen subscription plan; and, for academies listed through our website, the academy details plus the owner name, CNIC number and phone number, which are used only to verify the academy and are never shown publicly.'],
   ['How we use it', 'To create your account, show teachers near you, let you chat and book, verify teachers, provide support, keep the service safe, and improve Tutobridge.'],
   ['Location', 'We use your location only when you tap Use Current Location or save an address. It is used to sort teachers by approximate distance. Other users never see your exact coordinates.'],
   ['Who can see what', "Teachers see a parent's phone number, address and location only after accepting that parent's request. Parents never see a teacher's address or exact location, only the neighbourhoods they cover and an approximate distance. Messages are visible only to the two people in the conversation. Verification documents are private to the teacher and our review team."],
@@ -283,7 +283,7 @@ ROUTES.terms = () => {
 
 /* ------------------------------------------------------------------ admin review (admins only; enforced by RLS) */
 /* ------------------------------------------------------------------ admin panel */
-const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests']];
+const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests'], ['academies', '🏫 Academies']];
 let ADMIN_TAB = 'overview';
 function stat(n, label) { return `<div class="card center"><div style="font-size:30px;font-weight:800">${n}</div><div class="small muted">${label}</div></div>`; }
 function table(cols, rows) {
@@ -356,6 +356,49 @@ const ADMIN_PANES = {
     const { data, error } = await sb.rpc('admin_requests');
     if (error) throw error;
     p.innerHTML = table(['Date', 'Parent', 'Subject', 'Curriculum', 'Grade', 'Note', 'Status'], (data || []).map((x) => [fmtDate(x.created_at), esc(x.parent_name), esc(x.subject), esc(x.curriculum || '—'), esc(x.grade || '—'), esc(x.note || '—'), statusPill(x.status)]));
+  },
+  async academies(p) {
+    let tab = 'pending', rows = [];
+    const TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
+    p.innerHTML = `<p class="muted">Academies submitted through "List my academy" on the website. Approve to show them on the public Academies map. Owner name and CNIC are never shown publicly.</p>
+      <div class="seg" id="actabs" style="margin:8px 0 14px"></div><div id="aclist"><div class="spin"></div></div>`;
+    const draw = () => {
+      const n = (s) => rows.filter((r) => r.status === s).length;
+      $('#actabs', p).innerHTML = ['pending', 'approved', 'rejected'].map((s) => `<button data-actab="${s}" class="${tab === s ? 'on' : ''}">${s[0].toUpperCase() + s.slice(1)} ${n(s)}</button>`).join('');
+      const shown = rows.filter((r) => r.status === tab);
+      $('#aclist', p).innerHTML = shown.length ? `<div class="tgrid">${shown.map((x) => `<div class="card">
+        <div class="row"><b class="grow" style="font-size:17px">${esc(x.academy_name)}</b>${statusPill(x.status)}</div>
+        <div class="small muted">Submitted ${fmtTime(x.created_at)}</div>
+        <div class="tc-line"><i>📚</i><span>${esc(x.classes.join(', '))}${x.subjects ? ' · ' + esc(x.subjects) : ''}</span></div>
+        <div class="tc-line"><i>👩‍🏫</i><span>${esc(TEACH[x.teachers_count] || x.teachers_count)}</span></div>
+        <div class="tc-line"><i>📍</i><span>${esc(x.area)} · ${esc(x.address)} ${x.lat != null ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${x.lat},${x.lng}">(pin)</a>` : ''}</span></div>
+        ${x.website ? `<div class="tc-line"><i>🌐</i><a href="${esc(x.website)}" target="_blank" rel="noopener">${esc(x.website)}</a></div>` : ''}
+        <div class="card" style="margin:10px 0 0;background:#F6F6F2"><b>Owner (private)</b>
+          <div class="tc-line"><i>👤</i><span>${esc(x.owner_name)}</span></div>
+          <div class="tc-line"><i>🪪</i><span>CNIC: <b>${esc(x.owner_cnic)}</b></span></div>
+          <div class="tc-line"><i>📞</i><span><a href="tel:${esc(x.owner_phone.replace(/[^0-9+]/g, ''))}">${esc(x.owner_phone)}</a> · <a href="https://wa.me/${toIntl(x.owner_phone)}" target="_blank" rel="noopener">WhatsApp</a> ${x.show_phone ? '· shown to parents' : '· hidden from parents'}</span></div></div>
+        <div class="row wrap" style="margin-top:10px">${x.status !== 'approved' ? `<button class="btn sm" data-acset="approved" data-id="${x.id}">✓ Approve</button>` : ''}
+          ${x.status !== 'rejected' ? `<button class="btn out sm" data-acset="rejected" data-id="${x.id}">${x.status === 'approved' ? 'Remove from map' : 'Reject'}</button>` : ''}</div></div>`).join('')}</div>`
+        : '<div class="empty"><b>🏫</b><span class="muted">Nothing here.</span></div>';
+    };
+    const load = async () => {
+      const { data, error } = await sb.from('academy_submissions').select('*').order('created_at', { ascending: false });
+      if (error) throw error;
+      rows = data || [];
+      draw();
+    };
+    await load();
+    p.addEventListener('click', async (e) => {
+      const t = e.target.closest('[data-actab]');
+      if (t) { tab = t.dataset.actab; draw(); return; }
+      const b = e.target.closest('[data-acset]');
+      if (!b) return;
+      setBusy(b, true, '...');
+      const { error } = await sb.from('academy_submissions').update({ status: b.dataset.acset, reviewed_at: new Date().toISOString() }).eq('id', b.dataset.id);
+      if (error) { setBusy(b, false); return toast(errText(error), true); }
+      toast(b.dataset.acset === 'approved' ? 'Approved. It now shows on the Academies map.' : 'Updated.');
+      await load();
+    });
   },
 };
 
