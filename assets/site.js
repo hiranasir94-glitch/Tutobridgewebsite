@@ -5,6 +5,7 @@
     ['/tutors/', 'Find a Tutor', 'tutors'],
     ['/notice-board/', 'Notice Board', 'notice'],
     ['/tools/', 'Latest AI tools', 'tools'],
+    ['/subscriptions/', 'Subscriptions', 'subs'],
     ['/#faq', 'FAQ', 'faq'],
     ['/app/#/login', 'Log in', 'login']
   ];
@@ -18,7 +19,7 @@
     '<nav class="mnav d-only">' + nav + '</nav></div><nav class="mnav m-only">' + nav + '</nav></div></header>' +
     '<style>@media(min-width:900px){.m-only{display:none!important}}@media(max-width:899px){.d-only{display:none!important}}</style>';
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/">Find a Tutor</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/">Find a Tutor</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {

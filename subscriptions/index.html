@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Subscriptions &amp; pricing · Tutobridge</title>
+<meta name="description" content="Tutobridge plans for parents, students and teachers in Lahore. Free for our first 1,000 teachers.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.plans{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:stretch}
+@media(max-width:899px){.plans{grid-template-columns:1fr}}
+.plan{background:#fff;border:2px solid var(--ink);border-radius:22px;padding:22px;box-shadow:0 6px 0 var(--ink);display:flex;flex-direction:column;gap:8px}
+.plan.pop{background:var(--lime)}
+.plan h3{margin:0;font-size:22px}.plan .price{font-size:30px;font-weight:800;letter-spacing:-1px}.plan .price small{font-size:15px;font-weight:700;color:var(--muted);letter-spacing:0}
+.plan ul{list-style:none;padding:0;margin:6px 0 14px;display:flex;flex-direction:column;gap:7px;font-size:15px}
+.plan li::before{content:"✅ "}.plan .btn{margin-top:auto;align-self:stretch;text-align:center}
+.teach{display:grid;grid-template-columns:1.2fr .8fr;gap:22px;align-items:center;background:var(--lime);border:2px solid var(--ink);border-radius:24px;padding:26px;box-shadow:0 8px 0 var(--ink)}
+@media(max-width:899px){.teach{grid-template-columns:1fr}}
+.teach h2{margin:4px 0 8px}.teach .big{font-size:44px;font-weight:800;letter-spacing:-1.5px;line-height:1}
+.spotbar{height:14px;border:2px solid var(--ink);border-radius:99px;background:#fff;overflow:hidden;margin:10px 0 6px}.spotbar i{display:block;height:100%;background:var(--ink);width:0;transition:width .8s}
+</style>
+</head>
+<body data-page="subs">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">💳 Subscriptions</span>
+  <h1>Simple plans for Lahore families and teachers</h1>
+  <p>Searching for a tutor is free. Upgrade only if you want more help. Teachers join free during our launch.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="teach">
+    <div><span class="pill ink">For teachers</span><h2>Free for our first 1,000 teachers</h2>
+      <p class="muted" style="color:#333">Get a verified profile, unlimited trial requests and chats, and a map of parents looking for tutors near you. No fees and no commission on your tuition.</p>
+      <a class="btn" href="/app/#/signup/teacher">Register as a teacher →</a></div>
+    <div><div class="big" id="left">1,000</div><div><b>free spots left</b></div><div class="spotbar"><i id="bar"></i></div><div class="small muted" style="color:#333" id="taken">Spots fill as teachers join.</div></div>
+  </div>
+</div></section>
+
+<section class="pblk soft"><div class="wrap">
+  <h2>For parents &amp; students</h2>
+  <p class="sub">Every plan includes verified teachers and private contact details. Lesson fees are agreed directly with the teacher.</p>
+  <div class="plans">
+    <div class="plan"><h3>Free</h3><div class="price">PKR 0</div><div class="muted">Everything you need to find a teacher</div>
+      <ul><li>Search verified teachers near you</li><li>Chat with up to 3 teachers</li><li>Send trial booking requests</li></ul>
+      <a class="btn" href="/app/#/signup/parent">Sign up free</a></div>
+    <div class="plan pop"><span class="pill ink" style="align-self:flex-start">★ Most popular</span><h3>Plus</h3><div class="price">PKR 499 <small>/ month</small></div><div class="muted" style="color:#333">For families comparing several teachers</div>
+      <ul><li>Everything in Free</li><li>Unlimited chats with teachers</li><li>Save and compare shortlisted teachers</li><li>Priority support</li></ul>
+      <a class="btn" href="/app/#/plans">Choose Plus</a></div>
+    <div class="plan"><h3>Premium</h3><div class="price">PKR 999 <small>/ month</small></div><div class="muted">We help you find the right fit</div>
+      <ul><li>Everything in Plus</li><li>Personal teacher-matching help</li><li>Early access to new Star Teachers</li></ul>
+      <a class="btn" href="/app/#/plans">Choose Premium</a></div>
+  </div>
+  <p class="muted small" style="margin-top:20px">Online payment is coming soon. When you choose a paid plan in the app, our team contacts you to activate it. You can switch back to Free any time. Questions? Email support@tutobridge.com.</p>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+fetch(TB.URL + '/rest/v1/rpc/teacher_free_spots_left', { method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json' }, body: '{}' })
+  .then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
+    if (typeof n !== 'number') return;
+    document.getElementById('left').textContent = n.toLocaleString('en-US');
+    document.getElementById('bar').style.width = ((1000 - n) / 10) + '%';
+    document.getElementById('taken').textContent = (1000 - n).toLocaleString('en-US') + ' of 1,000 spots taken.';
+  }).catch(function () {});
+</script>
+</body>
+</html>
