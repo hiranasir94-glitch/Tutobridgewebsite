@@ -13,6 +13,11 @@
       ['/tools/', '🤖 AI Tool Magazine', 'The latest AI tools for learning'],
       ['/notice-board/best-centers/', '🏆 Best Learning Centers', 'Starred centers, approved by us']
     ]],
+    ['/jobs/', 'Jobs', 'jobs', [
+      ['/app/#/signup/teacher', '👩‍🏫 Register as a teacher', 'Join free with early access'],
+      ['/jobs/', '💼 Work for Tutobridge', 'Open roles in our team'],
+      ['/academies/#list', '🏫 Register my Learning Center', 'Get your academy on the map']
+    ]],
     ['/subscriptions/', 'Subscriptions', 'subs'],
     ['/#faq', 'FAQ', 'faq'],
     ['/app/#/login', 'Log in', 'login']
@@ -20,7 +25,7 @@
   var page = document.body.getAttribute('data-page') || '';
   var nav = NAV.map(function (n) {
     if (n[3]) {
-      var on = (n[2] === 'tutors' ? ['tutors', 'academies'] : ['notice', 'best-teachers', 'tools', 'best-centers']).indexOf(page) > -1;
+      var on = ({ tutors: ['tutors', 'academies'], notice: ['notice', 'best-teachers', 'tools', 'best-centers'], jobs: ['jobs'] })[n[2]].indexOf(page) > -1;
       return '<details class="dd"><summary class="' + (on ? 'on' : '') + '">' + n[1] + ' <i>▾</i></summary><div class="ddm">' +
         n[3].map(function (m) { return '<a href="' + m[0] + '"><b>' + m[1] + '</b><span>' + m[2] + '</span></a>'; }).join('') + '</div></details>';
     }
@@ -34,12 +39,14 @@
   if (h) h.outerHTML = '<header class="tnav"><div class="wrap"><div class="row1"><a class="brand" href="/"><i>' + LOGO + '</i>Tutobridge</a>' +
     '<nav class="mnav d-only">' + nav + '</nav></div><nav class="mnav m-only">' + nav + '</nav></div></header>' +
     '<style>@media(min-width:900px){.m-only{display:none!important}}@media(max-width:899px){.d-only{display:none!important}}</style>';
-  var NB = NAV[1][3], NBP = ['best-teachers', 'notice', 'tools', 'best-centers'];
+  var GROUPS = [[NAV[1][3], ['best-teachers', 'notice', 'tools', 'best-centers']]];
   var hd = document.querySelector('header.tnav');
-  if (hd && NBP.indexOf(page) > -1) hd.insertAdjacentHTML('afterend', '<nav class="subtabs"><div class="wrap">' + NB.map(function (m, i) {
-    return '<a class="' + (NBP[i] === page ? 'on' : '') + '" href="' + m[0] + '">' + m[1] + '</a>'; }).join('') + '</div></nav>');
+  GROUPS.forEach(function (g) {
+    if (hd && page && g[1].indexOf(page) > -1) hd.insertAdjacentHTML('afterend', '<nav class="subtabs"><div class="wrap">' + g[0].map(function (m, i) {
+      return '<a class="' + (g[1][i] === page ? 'on' : '') + '" href="' + m[0] + '">' + m[1] + '</a>'; }).join('') + '</div></nav>');
+  });
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/best-teachers/">Best Teachers in Lahore</a><a href="/notice-board/">Upcoming events</a><a href="/tools/">AI Tool Magazine</a><a href="/notice-board/best-centers/">Best Learning Centers</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/best-teachers/">Best Teachers in Lahore</a><a href="/notice-board/">Upcoming events</a><a href="/tools/">AI Tool Magazine</a><a href="/notice-board/best-centers/">Best Learning Centers</a><a href="/jobs/">Work for Tutobridge</a><a href="/academies/#list">Register my Learning Center</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {

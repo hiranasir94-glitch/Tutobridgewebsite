@@ -260,7 +260,7 @@ const TERMS = [
   ['8. Changes', 'We may update these terms. If a change is significant we will tell you in the app or on the website. Continuing to use Tutobridge means you accept the updated terms.'],
 ];
 const PRIVACY = [
-  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; your chosen subscription plan; and, for academies listed through our website, the academy details plus the owner name, CNIC number and phone number, which are used only to verify the academy and are never shown publicly.'],
+  ['What we collect', 'Your name, phone number, email and password; addresses and location you enter or capture; for teachers, qualifications, experience, fees, a profile photo and verification documents (CNIC and degree); messages you send; booking and tuition requests; your chosen subscription plan; and, for academies listed through our website, the academy details plus the owner name, CNIC number and phone number, which are used only to verify the academy and are never shown publicly; and, if you apply for a job at Tutobridge, the details and CV link you send us.'],
   ['How we use it', 'To create your account, show teachers near you, let you chat and book, verify teachers, provide support, keep the service safe, and improve Tutobridge.'],
   ['Location', 'We use your location only when you tap Use Current Location or save an address. It is used to sort teachers by approximate distance. Other users never see your exact coordinates.'],
   ['Who can see what', "Teachers see a parent's phone number, address and location only after accepting that parent's request. Parents never see a teacher's address or exact location, only the neighbourhoods they cover and an approximate distance. Messages are visible only to the two people in the conversation. Verification documents are private to the teacher and our review team."],
@@ -283,7 +283,7 @@ ROUTES.terms = () => {
 
 /* ------------------------------------------------------------------ admin review (admins only; enforced by RLS) */
 /* ------------------------------------------------------------------ admin panel */
-const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests'], ['academies', '🏫 Academies']];
+const ADMIN_TABS = [['overview', '📊 Overview'], ['teachers', '🧑‍🏫 Teachers'], ['users', '👥 Users'], ['bookings', '📅 Bookings'], ['requests', '📝 Requests'], ['academies', '🏫 Academies'], ['jobs', '💼 Jobs']];
 let ADMIN_TAB = 'overview';
 function stat(n, label) { return `<div class="card center"><div style="font-size:30px;font-weight:800">${n}</div><div class="small muted">${label}</div></div>`; }
 function table(cols, rows) {
@@ -411,6 +411,117 @@ const ADMIN_PANES = {
       if (error) { setBusy(b, false); return toast(errText(error), true); }
       toast(b.dataset.acset === 'approved' ? 'Approved. It now shows on the Academies map.' : 'Updated.');
       await load();
+    });
+  },
+  async jobs(p) {
+    const TYPES = ['Full-time', 'Part-time', 'Internship', 'Contract', 'Volunteer'];
+    const ST = { new: 'New', shortlisted: 'Shortlisted', rejected: 'Rejected', hired: 'Hired' };
+    let jobs = [], apps = [], view = 'jobs', edit = null;
+    p.innerHTML = `<p class="muted">Jobs you post here appear on the website at <b>Jobs › Work for Tutobridge</b>. Applications come in below. Only admins can see them.</p>
+      <div class="seg" id="jtabs" style="margin:8px 0 14px"></div><div id="jbody"><div class="spin"></div></div>`;
+    const load = async () => {
+      const [a, b] = await Promise.all([
+        sb.from('jobs').select('*').order('created_at', { ascending: false }),
+        sb.from('job_applications').select('*').order('created_at', { ascending: false }),
+      ]);
+      if (a.error) throw a.error;
+      if (b.error) throw b.error;
+      jobs = a.data || []; apps = b.data || [];
+      draw();
+    };
+    const title = (id) => (jobs.find((j) => j.id === id) || {}).title || 'Deleted job';
+    const form = (j = {}) => `<form class="card" id="jform" style="display:grid;gap:10px">
+      <b style="font-size:17px">${j.id ? 'Edit job' : 'Post a new job'}</b>
+      <label class="f"><span>Job title</span><input class="inp" name="title" maxlength="120" value="${esc(j.title || '')}" placeholder="e.g. Admission Officer"></label>
+      <div class="row wrap" style="gap:10px">
+        <label class="f grow"><span>Department</span><input class="inp" name="department" maxlength="80" value="${esc(j.department || '')}" placeholder="e.g. Admissions"></label>
+        <label class="f grow"><span>Type</span><select class="inp" name="job_type">${TYPES.map((t) => `<option ${t === (j.job_type || 'Full-time') ? 'selected' : ''}>${t}</option>`).join('')}</select></label>
+      </div>
+      <div class="row wrap" style="gap:10px">
+        <label class="f grow"><span>Location</span><input class="inp" name="location" maxlength="120" value="${esc(j.location || 'Lahore (on-site)')}"></label>
+        <label class="f grow"><span>Salary <small class="muted">(optional)</small></span><input class="inp" name="salary" maxlength="120" value="${esc(j.salary || '')}" placeholder="e.g. PKR 50,000–70,000 / month"></label>
+      </div>
+      <label class="f"><span>About the role</span><textarea class="inp" name="description" rows="4" maxlength="4000">${esc(j.description || '')}</textarea></label>
+      <label class="f"><span>What we look for <small class="muted">(one point per line)</small></span><textarea class="inp" name="requirements" rows="4" maxlength="4000">${esc(j.requirements || '')}</textarea></label>
+      <label class="row" style="gap:8px;font-weight:700"><input type="checkbox" name="is_open" ${j.is_open === false ? '' : 'checked'}> Show on the website (open for applications)</label>
+      <div class="row wrap"><button class="btn" id="jsave">${j.id ? 'Save changes' : 'Post job'}</button><button type="button" class="btn out" data-jcancel>Cancel</button></div></form>`;
+    const draw = () => {
+      const nNew = apps.filter((a) => a.status === 'new').length;
+      $('#jtabs', p).innerHTML = `<button data-jview="jobs" class="${view === 'jobs' ? 'on' : ''}">Jobs ${jobs.length}</button><button data-jview="apps" class="${view === 'apps' ? 'on' : ''}">Applications ${apps.length}${nNew ? ` · ${nNew} new` : ''}</button>`;
+      const b = $('#jbody', p);
+      if (view === 'jobs') {
+        b.innerHTML = (edit ? form(edit === 'new' ? {} : edit) : `<button class="btn" data-jnew style="margin-bottom:12px">＋ Post a new job</button>`) +
+          (jobs.length ? `<div class="tgrid">${jobs.map((j) => {
+            const n = apps.filter((a) => a.job_id === j.id).length;
+            return `<div class="card"><div class="row"><b class="grow" style="font-size:17px">${esc(j.title)}</b><span class="pill ${j.is_open ? 'lime' : ''}">${j.is_open ? 'Open' : 'Closed'}</span></div>
+              <div class="small muted">${esc(j.job_type)} · ${esc(j.location)}${j.department ? ' · ' + esc(j.department) : ''}${j.salary ? ' · ' + esc(j.salary) : ''}</div>
+              <p class="small" style="margin:8px 0">${esc(j.description.slice(0, 180))}${j.description.length > 180 ? '…' : ''}</p>
+              <div class="row wrap"><button class="btn sm" data-jedit="${j.id}">Edit</button><button class="btn out sm" data-jtoggle="${j.id}">${j.is_open ? 'Close job' : 'Reopen'}</button>
+              <button class="btn out sm" data-japps="${j.id}">${n} application${n === 1 ? '' : 's'}</button><button class="btn out sm" data-jdel="${j.id}">Delete</button></div></div>`;
+          }).join('')}</div>` : '<div class="empty"><b>💼</b><span class="muted">No jobs yet.</span></div>');
+        const f = $('#jform', p);
+        if (f) f.onsubmit = async (e) => {
+          e.preventDefault();
+          const v = (n) => f[n].value.trim();
+          if (v('title').length < 2) return toast('Enter a job title.', true);
+          if (v('description').length < 10) return toast('Write a few lines about the role.', true);
+          const row = { title: v('title'), department: v('department') || null, job_type: v('job_type'), location: v('location') || 'Lahore', salary: v('salary') || null,
+            description: v('description'), requirements: v('requirements') || null, is_open: f.is_open.checked, updated_at: new Date().toISOString() };
+          setBusy($('#jsave', p), true, 'Saving...');
+          const { error } = edit === 'new' ? await sb.from('jobs').insert(row) : await sb.from('jobs').update(row).eq('id', edit.id);
+          if (error) { setBusy($('#jsave', p), false); return toast(errText(error), true); }
+          toast(edit === 'new' ? 'Job posted. It is live on the website.' : 'Job updated.');
+          edit = null; await load();
+        };
+      } else {
+        const list = filterJob ? apps.filter((a) => a.job_id === filterJob) : apps;
+        b.innerHTML = (filterJob ? `<div class="row" style="margin-bottom:10px"><span class="grow">Showing applications for <b>${esc(title(filterJob))}</b></span><button class="btn out sm" data-jall>Show all</button></div>` : '') +
+          (list.length ? `<div class="tgrid">${list.map((a) => `<div class="card">
+            <div class="row"><b class="grow" style="font-size:17px">${esc(a.full_name)}</b><span class="pill ${a.status === 'new' ? 'lime' : a.status === 'hired' ? 'ink' : ''}">${ST[a.status]}</span></div>
+            <div class="small muted">For <b>${esc(title(a.job_id))}</b> · ${fmtTime(a.created_at)}</div>
+            <div class="tc-line"><i>📞</i><span><a href="tel:${esc(a.phone.replace(/[^0-9+]/g, ''))}">${esc(a.phone)}</a> · <a href="https://wa.me/${toIntl(a.phone)}" target="_blank" rel="noopener">WhatsApp</a></span></div>
+            ${a.email ? `<div class="tc-line"><i>✉️</i><a href="mailto:${esc(a.email)}">${esc(a.email)}</a></div>` : ''}
+            ${a.area ? `<div class="tc-line"><i>📍</i><span>${esc(a.area)}</span></div>` : ''}
+            ${a.cv_url ? `<div class="tc-line"><i>📄</i><a href="${esc(a.cv_url)}" target="_blank" rel="noopener">Open CV</a></div>` : ''}
+            <div class="small" style="margin-top:6px"><b>Experience:</b> ${esc(a.experience || '—')}</div>
+            ${a.message ? `<div class="small" style="margin-top:4px"><b>Why this role:</b> ${esc(a.message)}</div>` : ''}
+            <div class="row wrap" style="margin-top:10px">${Object.keys(ST).filter((s) => s !== a.status).map((s) => `<button class="btn ${s === 'shortlisted' || s === 'hired' ? '' : 'out'} sm" data-aset="${s}" data-id="${a.id}">${ST[s]}</button>`).join('')}</div></div>`).join('')}</div>`
+            : '<div class="empty"><b>📨</b><span class="muted">No applications yet.</span></div>');
+      }
+    };
+    let filterJob = null;
+    await load();
+    p.addEventListener('click', async (e) => {
+      const t = (s) => e.target.closest(s);
+      let b;
+      if ((b = t('[data-jview]'))) { view = b.dataset.jview; filterJob = null; edit = null; return draw(); }
+      if (t('[data-jnew]')) { edit = 'new'; return draw(); }
+      if (t('[data-jcancel]')) { edit = null; return draw(); }
+      if (t('[data-jall]')) { filterJob = null; return draw(); }
+      if ((b = t('[data-jedit]'))) { edit = jobs.find((j) => j.id === b.dataset.jedit); draw(); return $('#jform', p).scrollIntoView({ behavior: 'smooth' }); }
+      if ((b = t('[data-japps]'))) { view = 'apps'; filterJob = b.dataset.japps; return draw(); }
+      if ((b = t('[data-jtoggle]'))) {
+        const j = jobs.find((x) => x.id === b.dataset.jtoggle);
+        setBusy(b, true, '...');
+        const { error } = await sb.from('jobs').update({ is_open: !j.is_open, updated_at: new Date().toISOString() }).eq('id', j.id);
+        if (error) { setBusy(b, false); return toast(errText(error), true); }
+        toast(j.is_open ? 'Job closed. It is hidden from the website.' : 'Job reopened.');
+        return load();
+      }
+      if ((b = t('[data-jdel]'))) {
+        if (!(await confirmBox('Delete this job?', 'The job and all its applications will be deleted. To just hide it, use Close job instead.', 'Delete', 'Keep it'))) return;
+        const { error } = await sb.from('jobs').delete().eq('id', b.dataset.jdel);
+        if (error) return toast(errText(error), true);
+        toast('Job deleted.');
+        return load();
+      }
+      if ((b = t('[data-aset]'))) {
+        setBusy(b, true, '...');
+        const { error } = await sb.from('job_applications').update({ status: b.dataset.aset }).eq('id', b.dataset.id);
+        if (error) { setBusy(b, false); return toast(errText(error), true); }
+        toast('Updated.');
+        return load();
+      }
     });
   },
 };

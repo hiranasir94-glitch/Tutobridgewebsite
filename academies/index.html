@@ -313,6 +313,10 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
   function syncStar() { $('#jwhy').hidden = !$('#jstar').checked; }
   $('#jstar').addEventListener('change', syncStar);
   if (location.hash === '#star') setTimeout(function () { $('#jstar').checked = true; syncStar(); openJoin(); }, 300);
+  window.addEventListener('hashchange', function () {
+    if (location.hash === '#list') openJoin();
+    if (location.hash === '#star') { $('#jstar').checked = true; syncStar(); openJoin(); }
+  });
   dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
   jf.owner_cnic.addEventListener('input', function () {
     var d = this.value.replace(/\D/g, '').slice(0, 13); this.value = [d.slice(0, 5), d.slice(5, 12), d.slice(12)].filter(Boolean).join('-');
