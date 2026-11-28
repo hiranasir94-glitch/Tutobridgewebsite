@@ -345,7 +345,7 @@ footer .wrap.fcols{display:grid}
 <a href="/tutors/"><b>🔎</b><span><strong>Find a Tutor</strong>Subjects &amp; star ratings</span></a>
 <a href="/notice-board/"><b>📌</b><span><strong>Notice Board</strong>Lahore education events</span></a>
 <a href="/tools/"><b>🧰</b><span><strong>Latest AI tools</strong>For teaching &amp; learning</span></a>
-<a href="/app/#/signup/teacher"><b>👩‍🏫</b><span><strong>For Teachers</strong>Free for the first 1,000</span></a></div></div>
+<a href="/app/#/signup/teacher"><b>👩‍🏫</b><span><strong>For Teachers</strong>Get free early access</span></a></div></div>
 <div class="stage" id="stage"><div class="phone" id="phone"><button class="closeapp" data-close aria-label="Close app">✕</button><div id="app" class="screen"></div><div id="over"></div><div id="fx"></div></div><div class="stores"><span class="stl">Launching soon</span><span class="stb">▶ Play Store</span><span class="stb">● App Store</span></div></div></div></section>
 <section class="blk soft" id="explore"><div class="wrap"><span class="lab c rv">Explore Tutobridge</span><h2 class="rv">More than a tutor app</h2><p class="sub rv">Find tutors, keep up with education events in Lahore, and discover the tools teachers and families use today.</p>
 <div class="hub">
@@ -381,7 +381,7 @@ footer .wrap.fcols{display:grid}
 <li data-edgo="req"><b>📥 Trial requests</b><span>Parents send requests. Accept to see their phone and WhatsApp, or decline politely.</span></li>
 <li data-edgo="map"><b>📍 Parents near you</b><span>See open tuition requests around your area and reach out first.</span></li>
 <li data-edgo="me"><b>⚙️ Your profile and availability</b><span>Pause new requests when you're full, and track your numbers.</span></li></ul>
-<div class="offer1k rv"><b>🎁 Free for our first 1,000 teachers</b><span id="spots">Join now: every teacher feature is free, with no fees and no commission.</span></div>
+<div class="offer1k rv"><b>🎁 Get free early access</b><span>Join now and use every teacher feature free, with no fees and no commission.</span></div>
 <a class="tryapp" href="/app/#/signup/teacher" style="margin-top:8px">Register as a teacher →</a>
 <a class="ed-free" href="/tools/lesson-planner/">📝 <span><b>New: free Lesson Planner</b> Build a timed, printable lesson plan in minutes. No sign-up.</span> →</a></div>
 <div class="ed-stage"><div class="ed-phone" id="edp">
@@ -806,13 +806,6 @@ document.getElementById('educators').addEventListener('click',function(e){
  if(e.target.closest('#edreset')){seed();toast('Preview reset.')}
 });
 seed();})();
-</script>
-<script>
-fetch('https://kdgyxgytcphnmsnvxdiz.supabase.co/rest/v1/rpc/teacher_free_spots_left',{method:'POST',headers:{apikey:'sb_publishable_5mo3bWfClhII0ymU2asdDg_Shpsc6fh','Content-Type':'application/json'},body:'{}'})
- .then(function(r){return r.ok?r.json():null}).then(function(n){
-  if(typeof n!=='number')return;var el=document.getElementById('spots');if(!el)return;
-  el.textContent=n>0?n.toLocaleString('en-US')+' of 1,000 free spots left. No fees and no commission.':'All 1,000 free spots have been taken. Thank you, teachers!';
- }).catch(function(){});
 </script>
 <script>document.addEventListener("click",function(e){document.querySelectorAll("details.dd[open]").forEach(function(d){if(!d.contains(e.target))d.removeAttribute("open")})})</script>
 </body>

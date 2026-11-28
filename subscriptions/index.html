@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Subscriptions &amp; pricing · Tutobridge</title>
-<meta name="description" content="Tutobridge plans for parents, students and teachers in Lahore. Free for our first 1,000 teachers.">
+<meta name="description" content="Tutobridge plans for parents, students and teachers in Lahore. Free early access for teachers.">
 <meta name="theme-color" content="#D4FF00">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -29,15 +29,15 @@
 <section class="phero"><div class="wrap">
   <span class="lab">💳 Subscriptions</span>
   <h1>Simple plans for Lahore families and teachers</h1>
-  <p>Searching for a tutor is free. Upgrade only if you want more help. Teachers join free during our launch.</p>
+  <p>Searching for a tutor is free. Upgrade only if you want more help. Teachers get free early access.</p>
 </div></section>
 
 <section class="pblk"><div class="wrap">
   <div class="teach">
-    <div><span class="pill ink">For teachers</span><h2>Free for our first 1,000 teachers</h2>
+    <div><span class="pill ink">For teachers</span><h2>Get free early access</h2>
       <p class="muted" style="color:#333">Get a verified profile, unlimited trial requests and chats, and a map of parents looking for tutors near you. No fees and no commission on your tuition.</p>
       <a class="btn" href="/app/#/signup/teacher">Register as a teacher →</a></div>
-    <div><div class="big" id="left">1,000</div><div><b>free spots left</b></div><div class="spotbar"><i id="bar"></i></div><div class="small muted" style="color:#333" id="taken">Spots fill as teachers join.</div></div>
+    <div><div class="big">Free</div><div><b>early access for teachers</b></div><ul class="small" style="color:#333;margin:10px 0 0;padding-left:18px;line-height:1.7"><li>Verified profile</li><li>Unlimited requests and chats</li><li>No fees, no commission</li></ul></div>
   </div>
 </div></section>
 
@@ -60,14 +60,5 @@
 
 <div id="site-footer"></div>
 <script src="/assets/site.js"></script>
-<script>
-fetch(TB.URL + '/rest/v1/rpc/teacher_free_spots_left', { method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json' }, body: '{}' })
-  .then(function (r) { return r.ok ? r.json() : null; }).then(function (n) {
-    if (typeof n !== 'number') return;
-    document.getElementById('left').textContent = n.toLocaleString('en-US');
-    document.getElementById('bar').style.width = ((1000 - n) / 10) + '%';
-    document.getElementById('taken').textContent = (1000 - n).toLocaleString('en-US') + ' of 1,000 spots taken.';
-  }).catch(function () {});
-</script>
 </body>
 </html>

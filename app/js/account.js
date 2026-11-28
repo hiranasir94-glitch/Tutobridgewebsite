@@ -171,7 +171,7 @@ ROUTES.plans = async () => {
   if (S.profile.role === 'teacher') {
     view(`<button class="back" data-a="go" data-v="#/home">← Back</button><h1>Your plan</h1>
       <div class="card star st"><div class="row"><h2 class="grow">Founding Teacher</h2><span class="pill lime">✓ Your plan</span></div>
-        <div class="price">Free</div><div class="muted">Tutobridge is free for our first 1,000 teachers.</div>
+        <div class="price">Free</div><div class="muted">You have free early access to every teacher feature.</div>
         <div style="margin:12px 0 4px">${['Verified profile that parents in Lahore can find', 'Unlimited trial requests and chats with parents', 'Map of parents looking for teachers near you', 'No fees and no commission on your tuition']
           .map((f) => `<div class="feat">✅ <span>${f}</span></div>`).join('')}</div></div>
       <p class="small muted">If we ever introduce paid options, we will tell you well in advance. Questions? Email ${SUPPORT_EMAIL}.</p>`);
@@ -221,14 +221,14 @@ const FAQS = [
   ['Students', 'Can a student use Tutobridge?', 'Students should use Tutobridge together with a parent or guardian, who creates the account, chats with teachers and books lessons.'],
   ['Students', 'How do I know a teacher is safe?', 'Teachers show a Verified badge only after our team has reviewed their documents. We still recommend that a parent is at home for the first lesson.'],
   ['Students', 'What is a Star Teacher?', 'A Star Teacher has a 4.8+ rating, many parent reviews and verified student results.'],
-  ['Teachers', 'Is Tutobridge free for teachers?', 'Yes. Tutobridge is free for our first 1,000 teachers, with no fees and no commission on your tuition. If we ever introduce paid options, we will tell you well in advance.'],
+  ['Teachers', 'Is Tutobridge free for teachers?', 'Yes. Teachers who join now get free early access, with no fees and no commission on your tuition. If we ever introduce paid options, we will tell you well in advance.'],
   ['Teachers', 'How do I get verified?', 'Complete your profile, enter your CNIC number and upload the front and back of your CNIC and your highest degree certificate (experience letters help too). You can skip setup after sign-up and finish it later from your dashboard. Your status shows as Pending until our team reviews them. Parents can find you once you are verified.'],
   ['Teachers', 'How do I set my fees?', 'In your profile choose whether you charge per day or per month and enter the amount for home and online tuition. School positions use an expected monthly salary. You can change these any time from the dashboard.'],
   ['Teachers', 'When do parents see my contact details?', 'Never before you accept a request. Your address is never shown to parents, only the neighbourhoods you cover.'],
   ['Teachers', 'How do I pause new requests?', 'Switch off Accepting New Students on your dashboard. You will be hidden from search until you switch it back on.'],
   ['Everyone', 'How do I change my address?', 'Open Account, then Address. Add a new address or pick a saved one and tap Use this address.'],
   ['Everyone', 'How do I use my current location?', 'When entering an address, tap Use Current Location and allow location access in your browser. You can edit the label afterwards, or type it instead.'],
-  ['Everyone', 'How do subscriptions work?', 'Teachers: Tutobridge is free for our first 1,000 teachers. Parents: open Account, then Subscription to compare plans. The Free plan is always available, and paid plans are activated by our team.'],
+  ['Everyone', 'How do subscriptions work?', 'Teachers: join now to get free early access. Parents: open Account, then Subscription to compare plans. The Free plan is always available, and paid plans are activated by our team.'],
   ['Everyone', 'How is payment handled?', 'Lesson fees are agreed and paid directly between parent and teacher. Tutobridge does not take payment for lessons.'],
   ['Everyone', 'Can I use the website and the mobile app?', 'Yes. Your account works on both, and your chats, bookings and addresses are the same everywhere.'],
 ];
