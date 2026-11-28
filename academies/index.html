@@ -50,6 +50,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
 .jf .hp{position:absolute;left:-9999px}
 .ac .lock{border:1.5px dashed #bbb;border-radius:12px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
 .ac .lock span{filter:blur(3.5px);user-select:none}
+.starbox{border:2px solid var(--ink);background:#FBFFE0;border-radius:14px;padding:10px 12px;display:grid;gap:8px}
 </style>
 </head>
 <body data-page="academies">
@@ -81,7 +82,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
   <div id="list"><div class="spin"></div></div>
 
   <div class="listcta">
-    <div><h3>Run a tuition center or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Fill in a short form and our team will check it and add you to the map.</div></div>
+    <div><h3>Run a tuition center or academy in Lahore?</h3><div>Get listed on Tutobridge for free. Fill in a short form and our team will check it and add you to the map. You can also apply for the ⭐ <a href="/notice-board/best-centers/">Best Learning Center</a> star.</div></div>
     <button class="btn" id="openjoin">List my academy</button>
   </div>
   <p class="muted small" style="margin-top:18px">Details come from each academy's website and public education directories, and can change. Please call the academy to confirm courses, timings and fees before you visit. Academies marked "From OpenStreetMap" come from the free community map and have not been checked by our team. Distances are straight-line. Spotted a mistake? Email support@tutobridge.com.</p>
@@ -111,6 +112,10 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     </div>
     <div class="help">Your CNIC is used only to verify the academy and is never shown publicly.</div>
     <label class="chk"><input type="checkbox" name="show_phone"> Show this contact number to parents on the map</label>
+    <div class="starbox">
+      <label class="chk"><input type="checkbox" name="star_requested" id="jstar"> <span><b>⭐ Apply for Best Learning Center</b><br><span class="help">Our team checks your center and, if approved, shows it on the Notice Board and with a star on the map. Free during early access.</span></span></label>
+      <label class="f" id="jwhy" hidden>Why should parents choose your center? <span class="help">Results, years running, facilities, teacher qualifications</span><textarea class="inp" name="star_reason" maxlength="600" rows="3" placeholder="e.g. 40 A grades in O Level 2025, 12 years in Johar Town, small classes of 15"></textarea></label>
+    </div>
     <label class="chk"><input type="checkbox" name="consent" required> I own or manage this academy and the details are correct. Tutobridge may contact me to verify them.</label>
     <input class="hp" name="company" tabindex="-1" autocomplete="off" aria-hidden="true">
     <div class="err" id="jerr" hidden></div>
@@ -212,10 +217,10 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     var fix = 'mailto:support@tutobridge.com?subject=' + encodeURIComponent('Academy listing: ' + x.name);
     return '<article class="ac"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><h3>' + esc(x.name) + '</h3>' +
       (x._d != null ? '<span class="dist">' + (x._d < 1 ? (Math.round(x._d * 10) * 100 || 100) + ' m' : x._d.toFixed(1) + ' km') + '</span>' : '') + '</div>' +
-      '<div class="pills">' + (x.verified ? '<span class="pill ink">✓ Checked by Tutobridge</span>' : '<span class="pill">From OpenStreetMap</span>') +
+      '<div class="pills">' + (x.star ? '<a class="pill ink" href="/notice-board/best-centers/" style="text-decoration:none">⭐ Best Learning Center</a>' : '') + (x.verified ? '<span class="pill ink">✓ Checked by Tutobridge</span>' : '<span class="pill">From OpenStreetMap</span>') +
       (x.area ? '<span class="pill lime">📍 ' + esc(x.area) + '</span>' : '') + (x.types || []).map(function (t) { return '<span class="pill">' + TYPE[t] + '</span>'; }).join('') +
       (x.since ? '<span class="pill">Since ' + x.since + '</span>' : '') + (x.teachers ? '<span class="pill">👩‍🏫 ' + esc(x.teachers) + '</span>' : '') + '</div>' +
-      (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') +
+      (x.offers ? '<div><b>Courses:</b> ' + esc(x.offers.join(', ')) + '</div>' : '') + (x.why ? '<div class="small"><b>Why it stands out:</b> ' + esc(x.why) + '</div>' : '') +
       (!AUTH ? '<div class="lock">🔒 <span>Address · Phone · Website · Directions</span></div>' +
         '<div class="acts"><a class="pri" href="/app/#/signup/parent">Sign up free to see details</a><a href="/app/#/login">Log in</a></div>' :
       (x.address ? '<div class="addr">' + esc(x.address) + '</div>' : '') +
@@ -230,7 +235,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     layer.clearLayers();
     list.forEach(function (x) {
       if (x.lat == null) return;
-      L.marker([x.lat, x.lng], { icon: pin(x.verified ? 'v' : '', x.verified ? '✓' : '🏫'), title: x.name })
+      L.marker([x.lat, x.lng], { icon: pin(x.verified ? 'v' : '', x.star ? '⭐' : x.verified ? '✓' : '🏫'), title: x.name })
         .bindPopup('<b>' + esc(x.name) + '</b>' + (x.verified && !x.exact ? '<br><small>Pin shows the area, not the building.</small>' : '') + (AUTH ? (x.phone ? '<br>📞 ' + esc(x.phone) : '') : '<br><a href="/app/#/signup/parent">Sign up free</a> to see address &amp; phone')).addTo(layer);
     });
     if (!busy) {
@@ -258,12 +263,12 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
 
   var GROUP = function (cls) { var t = []; cls.forEach(function (c) { if (/Primary|Middle|Matric|Intermediate|O Level|A Level|IGCSE/.test(c) && t.indexOf('school') < 0) t.push('school'); if (/MDCAT/.test(c)) t.push('entry'); if (/SAT/.test(c)) t.push('intl'); }); return t; };
   var TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
-  var approved = fetch(TB.URL + '/rest/v1/rpc/public_academies', { method: 'POST', headers: TB.authHeaders(), body: '{}' })
+  var approved = fetch(TB.URL + '/rest/v1/rpc/public_academies_v2', { method: 'POST', headers: TB.authHeaders(), body: '{}' })
     .then(function (r) { return r.ok ? r.json() : []; }).catch(function () { return []; });
   Promise.all([fetch('/data/academies.json', { cache: 'no-cache' }).then(function (r) { return r.json(); }), approved]).then(function (res) {
     curated = (res[0].academies || []).concat((res[1] || []).map(function (a) {
       return { name: a.academy_name, area: a.area, address: a.address, phone: a.phone || '', website: a.website || '', offers: a.classes.concat(a.subjects ? [a.subjects] : []),
-        types: GROUP(a.classes), lat: a.lat, lng: a.lng, exact: a.lat != null, teachers: TEACH[a.teachers_count] };
+        types: GROUP(a.classes), lat: a.lat, lng: a.lng, exact: a.lat != null, teachers: TEACH[a.teachers_count], verified: true, star: a.is_star, why: a.star_reason };
     }));
     draw();
   })
@@ -305,6 +310,9 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
     e.preventDefault(); var h = l.closest('.ac').querySelector('h3'); if (h && jf.academy_name) jf.academy_name.value = h.textContent; openJoin();
   });
   if (location.hash === '#list') setTimeout(openJoin, 300);
+  function syncStar() { $('#jwhy').hidden = !$('#jstar').checked; }
+  $('#jstar').addEventListener('change', syncStar);
+  if (location.hash === '#star') setTimeout(function () { $('#jstar').checked = true; syncStar(); openJoin(); }, 300);
   dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.closest('[data-close]')) dlg.close(); });
   jf.owner_cnic.addEventListener('input', function () {
     var d = this.value.replace(/\D/g, '').slice(0, 13); this.value = [d.slice(0, 5), d.slice(5, 12), d.slice(12)].filter(Boolean).join('-');
@@ -344,7 +352,7 @@ dialog.jf::backdrop{background:rgba(17,17,17,.55)}
         method: 'POST', headers: { apikey: TB.KEY, 'Content-Type': 'application/json', Prefer: 'return=minimal' },
         body: JSON.stringify({ academy_name: v('academy_name'), classes: picked, subjects: v('subjects') || null, teachers_count: v('teachers_count'),
           area: v('area'), address: v('address'), lat: pos ? pos[0] : null, lng: pos ? pos[1] : null, website: v('website') || null,
-          owner_name: v('owner_name'), owner_cnic: v('owner_cnic'), owner_phone: v('owner_phone'), show_phone: jf.show_phone.checked, consent: true })
+          owner_name: v('owner_name'), owner_cnic: v('owner_cnic'), owner_phone: v('owner_phone'), show_phone: jf.show_phone.checked, consent: true, star_requested: jf.star_requested.checked, star_reason: jf.star_requested.checked && v('star_reason') ? v('star_reason') : null })
       });
     }).then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);

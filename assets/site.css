@@ -89,3 +89,14 @@ footer.pfoot .cp{margin-left:auto}
 .ddm a:hover{background:var(--soft)!important}
 .ddm b{font-size:14.5px}.ddm span{font-size:12.5px;color:var(--muted);font-weight:600}
 @media(max-width:899px){.dd{position:static}.tnav .mnav{position:relative}.dd summary{font-size:13.5px;padding:7px 11px;background:var(--soft);color:var(--ink)}.ddm{left:14px;right:14px;top:auto;margin-top:6px;min-width:0}}
+
+/* Notice Board sub-tabs */
+.subtabs{background:#fff;border-bottom:1.5px solid var(--line)}
+.subtabs .wrap{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-top:10px;padding-bottom:10px}
+.subtabs .wrap::-webkit-scrollbar{display:none}
+.subtabs a{flex:none;font-weight:800;font-size:14px;color:var(--ink);text-decoration:none;padding:8px 14px;border-radius:999px;border:1.5px solid var(--line);white-space:nowrap;background:#fff}
+.subtabs a:hover{border-color:var(--ink)}
+.subtabs a.on{background:var(--lime);border-color:var(--ink)}
+.cta-band{border:2px solid var(--ink);border-radius:24px;background:var(--ink);color:#fff;padding:24px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between;margin-top:30px}
+.cta-band b{font-size:20px}
+.cta-band .btns{display:flex;gap:10px;flex-wrap:wrap}

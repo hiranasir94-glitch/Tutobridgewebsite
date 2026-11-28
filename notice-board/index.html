@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Notice Board · Education events in Lahore · Tutobridge</title>
-<meta name="description" content="Upcoming education events in Lahore, updated every Monday, plus Tutobridge's best teachers in Lahore, chosen by our team.">
+<title>Upcoming education events in Lahore · Notice Board · Tutobridge</title>
+<meta name="description" content="Upcoming education events in Lahore for students, parents and teachers, updated every Monday.">
 <meta name="theme-color" content="#D4FF00">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon.ico" sizes="48x48">
@@ -35,9 +35,9 @@
 <body data-page="notice">
 <div id="site-header"></div>
 <section class="phero"><div class="wrap">
-  <span class="lab">📌 Notice board</span>
+  <span class="lab">📌 Notice Board · 📅 Upcoming events</span>
   <h1>What's happening in Lahore education</h1>
-  <p>Upcoming education events in Lahore, refreshed every Monday, and the city's best teachers on Tutobridge, chosen by our team.</p>
+  <p>Expos, fairs and conferences for students, parents and teachers, refreshed every Monday.</p>
 </div></section>
 
 <section class="pblk"><div class="wrap">
@@ -47,16 +47,7 @@
   <p class="muted small" style="margin-top:22px">Dates come from the organisers' and event listing websites. Please confirm with the organiser before you go. Know of an event we missed? Email support@tutobridge.com.</p>
 </div></section>
 
-<section class="pblk soft" id="best"><div class="wrap">
-  <h2>⭐ Best teachers in Lahore</h2>
-  <p class="sub">Every teacher here has passed our document check and been picked as a Star Teacher by the Tutobridge team.</p>
-  <div class="how">
-    <div><b>1. Teacher applies</b>Registers and uploads CNIC and degree.</div>
-    <div><b>2. We verify</b>Our team checks the documents and approves the profile.</div>
-    <div><b>3. Star Teacher</b>Top teachers, based on parent ratings and our review, get the ★ badge.</div>
-  </div>
-  <div id="teachers"><div class="spin"></div></div>
-</div></section>
+
 
 <div id="site-footer"></div>
 <script src="/assets/site.js"></script>
@@ -85,14 +76,6 @@
     }).join('') + '</div>' : '<div class="empty"><b>📅</b>No upcoming events listed right now. New ones are added every Monday.</div>';
   }).catch(function () { document.getElementById('events').innerHTML = '<div class="empty"><b>⚠️</b>Could not load events. Please refresh.</div>'; });
 
-  TB.teachers().then(function (all) {
-    var stars = (all || []).filter(function (t) { return t.is_star_teacher; }).slice(0, 9);
-    document.getElementById('teachers').innerHTML = stars.length ? '<div class="grid">' + stars.map(function (t) {
-      return '<div class="card"><div class="tc-top"><div class="av">' + TB.ini(t.display_name) + '</div><div><h3>' + TB.esc(t.display_name) + '</h3><span class="pill ink">★ Star Teacher</span></div></div>' +
-        '<div class="pills">' + (t.subjects || []).map(function (s) { return '<span class="pill">' + TB.esc(s) + '</span>'; }).join('') + '</div>' +
-        '<div>' + TB.stars(t.rating_avg, t.reviews_count) + '</div><a class="btn sm" href="/app/#/signup/parent" style="align-self:flex-start">Sign up to see profile</a></div>';
-    }).join('') + '</div>' : '<div class="empty"><b>⭐</b><b style="font-size:17px;color:var(--ink)">Our first Star Teachers will be announced here soon.</b>Teachers are added after our team verifies their documents and approves them.<div style="margin-top:14px"><a class="btn" href="/app/#/signup/teacher">Register as a teacher</a></div></div>';
-  }).catch(function () { document.getElementById('teachers').innerHTML = '<div class="empty"><b>⚠️</b>Could not load teachers. Please refresh.</div>'; });
 })();
 </script>
 </body>

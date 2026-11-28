@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Best Learning Centers in Lahore · Notice Board · Tutobridge</title>
+<meta name="description" content="The best tuition and learning centers in Lahore, starred by the Tutobridge team after checking each one.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+@media(max-width:699px){.how{grid-template-columns:1fr}}
+.how div{border:2px solid var(--ink);border-radius:16px;padding:12px 14px;background:#fff;font-size:14px}
+.how b{display:block}
+.bc{position:relative;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:18px;box-shadow:0 6px 0 var(--ink);display:flex;flex-direction:column;gap:10px}
+.bc h3{margin:0;font-size:19px;line-height:1.25;padding-right:44px}
+.bc .medal{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;background:var(--lime);border:2px solid var(--ink);display:grid;place-items:center;font-size:20px}
+.bc .why{background:#F6F6F2;border-radius:14px;padding:10px 12px;font-size:14px}
+.bc .why b{display:block;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:2px}
+.bc .lock{border:1.5px dashed #bbb;border-radius:12px;padding:9px 12px;font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+.bc .lock span{filter:blur(3.5px);user-select:none}
+.bc .acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.bc .acts a{font-weight:800;font-size:14px}
+</style>
+</head>
+<body data-page="best-centers">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">📌 Notice Board · 🏆 Best Learning Centers</span>
+  <h1>Best Learning Centers in Lahore</h1>
+  <p>Tuition and learning centers that earned the ⭐ star from the Tutobridge team. Every one is checked by us before it appears here.</p>
+</div></section>
+
+<section class="pblk"><div class="wrap">
+  <div class="how">
+    <div><b>1. The center applies</b>The owner lists the academy and ticks "Apply for the ⭐ star".</div>
+    <div><b>2. We check it</b>Our team confirms the owner's details, classes, teachers and results.</div>
+    <div><b>3. ⭐ Star awarded</b>Approved centers appear here and stand out on the Academies map.</div>
+  </div>
+  <div id="list"><div class="spin"></div></div>
+  <div class="cta-band">
+    <div><b>Run a great learning center?</b><div style="opacity:.8;font-size:14.5px">Apply for the ⭐ Best Learning Center star. It's free during early access.</div></div>
+    <div class="btns"><a class="btn" href="/academies/#star">Apply for the ⭐ star</a><a class="btn out" href="/academies/">See all academies near me</a></div>
+  </div>
+</div></section>
+
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  var AUTH = !!TB.session(), esc = TB.esc;
+  var TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
+  function card(a) {
+    var maps = a.lat != null ? 'https://www.google.com/maps/search/?api=1&query=' + a.lat + ',' + a.lng : 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(a.academy_name + ', ' + a.area + ', Lahore');
+    return '<article class="bc"><div class="medal">⭐</div><h3>' + esc(a.academy_name) + '</h3>' +
+      '<div class="pills"><span class="pill ink">⭐ Best Learning Center</span><span class="pill lime">📍 ' + esc(a.area) + '</span>' + (TEACH[a.teachers_count] ? '<span class="pill">👩‍🏫 ' + TEACH[a.teachers_count] + '</span>' : '') + '</div>' +
+      '<div><b>Classes:</b> ' + esc(a.classes.join(', ')) + (a.subjects ? ' · ' + esc(a.subjects) : '') + '</div>' +
+      (a.star_reason ? '<div class="why"><b>Why it stands out</b>' + esc(a.star_reason) + '</div>' : '') +
+      (AUTH ? (a.address ? '<div class="small muted">' + esc(a.address) + '</div>' : '') + '<div class="acts">' + (a.phone ? '<a class="btn sm" href="tel:' + a.phone.replace(/[^0-9+]/g, '') + '">📞 ' + esc(a.phone) + '</a>' : '') +
+          '<a href="' + maps + '" target="_blank" rel="noopener">🗺️ Directions</a>' + (a.website ? '<a href="' + esc(a.website) + '" target="_blank" rel="noopener">🌐 Website</a>' : '') + '</div>'
+        : '<div class="lock">🔒 <span>Address · Phone · Website · Directions</span></div><div class="acts"><a class="btn sm" href="/app/#/signup/parent">Sign up free to see details</a><a class="small" href="/app/#/login">Log in</a></div>') +
+      '</article>';
+  }
+  fetch(TB.URL + '/rest/v1/rpc/public_academies_v2', { method: 'POST', headers: TB.authHeaders(), body: '{}' })
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (rows) {
+      var st = (rows || []).filter(function (a) { return a.is_star; });
+      document.getElementById('list').innerHTML = st.length ? '<p class="muted small" style="margin:0 0 12px">' + st.length + ' starred center' + (st.length === 1 ? '' : 's') + '</p><div class="grid">' + st.map(card).join('') + '</div>'
+        : '<div class="empty"><b>🏆</b><b style="font-size:17px;color:var(--ink)">Our first Best Learning Centers will be announced here soon.</b>Centers are added after our team checks them. Run one? Apply below.</div>';
+    })
+    .catch(function () { document.getElementById('list').innerHTML = '<div class="empty"><b>⚠️</b>Could not load centers. Please refresh.</div>'; });
+})();
+</script>
+</body>
+</html>

@@ -360,25 +360,28 @@ const ADMIN_PANES = {
   async academies(p) {
     let tab = 'pending', rows = [];
     const TEACH = { '1': 'One teacher', '2-5': '2–5 teachers', '6-10': '6–10 teachers', '11-20': '11–20 teachers', '20+': '20+ teachers' };
-    p.innerHTML = `<p class="muted">Academies submitted through "List my academy" on the website. Approve to show them on the public Academies map. Owner name and CNIC are never shown publicly.</p>
+    p.innerHTML = `<p class="muted">Academies submitted through "List my academy" on the website. Approve to show them on the public Academies map. Use ⭐ to feature a center under Best Learning Centers on the Notice Board. Owner name and CNIC are never shown publicly.</p>
       <div class="seg" id="actabs" style="margin:8px 0 14px"></div><div id="aclist"><div class="spin"></div></div>`;
     const draw = () => {
       const n = (s) => rows.filter((r) => r.status === s).length;
       $('#actabs', p).innerHTML = ['pending', 'approved', 'rejected'].map((s) => `<button data-actab="${s}" class="${tab === s ? 'on' : ''}">${s[0].toUpperCase() + s.slice(1)} ${n(s)}</button>`).join('');
       const shown = rows.filter((r) => r.status === tab);
       $('#aclist', p).innerHTML = shown.length ? `<div class="tgrid">${shown.map((x) => `<div class="card">
-        <div class="row"><b class="grow" style="font-size:17px">${esc(x.academy_name)}</b>${statusPill(x.status)}</div>
+        <div class="row"><b class="grow" style="font-size:17px">${x.is_star ? '⭐ ' : ''}${esc(x.academy_name)}</b>${statusPill(x.status)}</div>
+        ${x.is_star ? '<span class="pill ink">⭐ Best Learning Center</span>' : x.star_requested ? '<span class="pill lime">⭐ Applied for the star</span>' : ''}
         <div class="small muted">Submitted ${fmtTime(x.created_at)}</div>
         <div class="tc-line"><i>📚</i><span>${esc(x.classes.join(', '))}${x.subjects ? ' · ' + esc(x.subjects) : ''}</span></div>
         <div class="tc-line"><i>👩‍🏫</i><span>${esc(TEACH[x.teachers_count] || x.teachers_count)}</span></div>
         <div class="tc-line"><i>📍</i><span>${esc(x.area)} · ${esc(x.address)} ${x.lat != null ? `<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${x.lat},${x.lng}">(pin)</a>` : ''}</span></div>
+        ${x.star_reason ? `<div class="tc-line"><i>💬</i><span><b>Why it stands out:</b> ${esc(x.star_reason)}</span></div>` : ''}
         ${x.website ? `<div class="tc-line"><i>🌐</i><a href="${esc(x.website)}" target="_blank" rel="noopener">${esc(x.website)}</a></div>` : ''}
         <div class="card" style="margin:10px 0 0;background:#F6F6F2"><b>Owner (private)</b>
           <div class="tc-line"><i>👤</i><span>${esc(x.owner_name)}</span></div>
           <div class="tc-line"><i>🪪</i><span>CNIC: <b>${esc(x.owner_cnic)}</b></span></div>
           <div class="tc-line"><i>📞</i><span><a href="tel:${esc(x.owner_phone.replace(/[^0-9+]/g, ''))}">${esc(x.owner_phone)}</a> · <a href="https://wa.me/${toIntl(x.owner_phone)}" target="_blank" rel="noopener">WhatsApp</a> ${x.show_phone ? '· shown to parents' : '· hidden from parents'}</span></div></div>
         <div class="row wrap" style="margin-top:10px">${x.status !== 'approved' ? `<button class="btn sm" data-acset="approved" data-id="${x.id}">✓ Approve</button>` : ''}
-          ${x.status !== 'rejected' ? `<button class="btn out sm" data-acset="rejected" data-id="${x.id}">${x.status === 'approved' ? 'Remove from map' : 'Reject'}</button>` : ''}</div></div>`).join('')}</div>`
+          ${x.status !== 'rejected' ? `<button class="btn out sm" data-acset="rejected" data-id="${x.id}">${x.status === 'approved' ? 'Remove from map' : 'Reject'}</button>` : ''}
+          ${x.is_star ? `<button class="btn out sm" data-acstar="0" data-id="${x.id}">Remove ⭐ star</button>` : x.status !== 'rejected' ? `<button class="btn sm" data-acstar="1" data-id="${x.id}" style="background:#111;color:#D4FF00">⭐ Make Best Learning Center</button>` : ''}</div></div>`).join('')}</div>`
         : '<div class="empty"><b>🏫</b><span class="muted">Nothing here.</span></div>';
     };
     const load = async () => {
@@ -391,10 +394,20 @@ const ADMIN_PANES = {
     p.addEventListener('click', async (e) => {
       const t = e.target.closest('[data-actab]');
       if (t) { tab = t.dataset.actab; draw(); return; }
+      const st = e.target.closest('[data-acstar]');
+      if (st) {
+        const on = st.dataset.acstar === '1', now = new Date().toISOString();
+        if (on && !(await confirmBox('Star this center?', 'It will be approved and shown on the Notice Board under Best Learning Centers, with a ⭐ on the map.', 'Star it'))) return;
+        setBusy(st, true, '...');
+        const { error } = await sb.from('academy_submissions').update(on ? { is_star: true, starred_at: now, status: 'approved', reviewed_at: now } : { is_star: false, starred_at: null }).eq('id', st.dataset.id);
+        if (error) { setBusy(st, false); return toast(errText(error), true); }
+        toast(on ? 'Starred. It now shows under Best Learning Centers.' : 'Star removed.');
+        return load();
+      }
       const b = e.target.closest('[data-acset]');
       if (!b) return;
       setBusy(b, true, '...');
-      const { error } = await sb.from('academy_submissions').update({ status: b.dataset.acset, reviewed_at: new Date().toISOString() }).eq('id', b.dataset.id);
+      const { error } = await sb.from('academy_submissions').update({ status: b.dataset.acset, reviewed_at: new Date().toISOString(), ...(b.dataset.acset === 'rejected' ? { is_star: false, starred_at: null } : {}) }).eq('id', b.dataset.id);
       if (error) { setBusy(b, false); return toast(errText(error), true); }
       toast(b.dataset.acset === 'approved' ? 'Approved. It now shows on the Academies map.' : 'Updated.');
       await load();

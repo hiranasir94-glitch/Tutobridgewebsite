@@ -7,8 +7,12 @@
       ['/tutors/?mode=home', '🏠 Home tutor', 'Tutor comes to your home'],
       ['/academies/', '🏫 Academies / Centers near me', 'Tuition centers on a map']
     ]],
-    ['/notice-board/', 'Notice Board', 'notice'],
-    ['/tools/', 'Latest AI tools', 'tools'],
+    ['/notice-board/', 'Notice Board', 'notice', [
+      ['/notice-board/best-teachers/', '⭐ Best Teachers in Lahore', 'Star Teachers picked by our team'],
+      ['/notice-board/', '📅 Upcoming events', 'Expos, fairs and conferences'],
+      ['/tools/', '🤖 AI Tool Magazine', 'The latest AI tools for learning'],
+      ['/notice-board/best-centers/', '🏆 Best Learning Centers', 'Starred centers, approved by us']
+    ]],
     ['/subscriptions/', 'Subscriptions', 'subs'],
     ['/#faq', 'FAQ', 'faq'],
     ['/app/#/login', 'Log in', 'login']
@@ -16,7 +20,7 @@
   var page = document.body.getAttribute('data-page') || '';
   var nav = NAV.map(function (n) {
     if (n[3]) {
-      var on = page === 'tutors' || page === 'academies';
+      var on = (n[2] === 'tutors' ? ['tutors', 'academies'] : ['notice', 'best-teachers', 'tools', 'best-centers']).indexOf(page) > -1;
       return '<details class="dd"><summary class="' + (on ? 'on' : '') + '">' + n[1] + ' <i>▾</i></summary><div class="ddm">' +
         n[3].map(function (m) { return '<a href="' + m[0] + '"><b>' + m[1] + '</b><span>' + m[2] + '</span></a>'; }).join('') + '</div></details>';
     }
@@ -30,8 +34,12 @@
   if (h) h.outerHTML = '<header class="tnav"><div class="wrap"><div class="row1"><a class="brand" href="/"><i>' + LOGO + '</i>Tutobridge</a>' +
     '<nav class="mnav d-only">' + nav + '</nav></div><nav class="mnav m-only">' + nav + '</nav></div></header>' +
     '<style>@media(min-width:900px){.m-only{display:none!important}}@media(max-width:899px){.d-only{display:none!important}}</style>';
+  var NB = NAV[1][3], NBP = ['best-teachers', 'notice', 'tools', 'best-centers'];
+  var hd = document.querySelector('header.tnav');
+  if (hd && NBP.indexOf(page) > -1) hd.insertAdjacentHTML('afterend', '<nav class="subtabs"><div class="wrap">' + NB.map(function (m, i) {
+    return '<a class="' + (NBP[i] === page ? 'on' : '') + '" href="' + m[0] + '">' + m[1] + '</a>'; }).join('') + '</div></nav>');
   var f = document.getElementById('site-footer');
-  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/">Notice Board</a><a href="/tools/">Latest AI tools</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
+  if (f) f.outerHTML = '<footer class="pfoot"><div class="wrap"><a href="/">Home</a><a href="/tutors/?mode=online">Online tutors</a><a href="/tutors/?mode=home">Home tutors</a><a href="/academies/">Academies / Centers near me</a><a href="/notice-board/best-teachers/">Best Teachers in Lahore</a><a href="/notice-board/">Upcoming events</a><a href="/tools/">AI Tool Magazine</a><a href="/notice-board/best-centers/">Best Learning Centers</a><a href="/subscriptions/">Subscriptions</a><a href="/tools/lesson-planner/">Lesson Planner</a><a href="/app/#/signup/teacher">Register as a teacher</a><span>support@tutobridge.com</span><span class="cp">© 2026 Tutobridge</span></div></footer>';
 })();
 
 window.TB = {

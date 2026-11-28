@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Best Teachers in Lahore · Notice Board · Tutobridge</title>
+<meta name="description" content="The best teachers in Lahore: verified Star Teachers chosen by the Tutobridge team from parent ratings and document checks.">
+<meta name="theme-color" content="#D4FF00">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"></noscript>
+<link rel="stylesheet" href="/assets/site.css">
+<style>
+.board{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+@media(max-width:699px){.board{grid-template-columns:1fr}}
+.ev{position:relative;background:#fff;border:2px solid var(--ink);border-radius:20px;padding:18px 18px 18px 104px;min-height:120px;box-shadow:0 6px 0 var(--ink);transform:rotate(var(--r,0deg));transition:transform .2s}
+.ev:hover{transform:rotate(0) translateY(-3px)}
+.ev::before{content:"";position:absolute;top:-9px;left:50%;width:16px;height:16px;border-radius:50%;background:#E5484D;border:2px solid var(--ink);transform:translateX(-50%)}
+.date{position:absolute;left:16px;top:18px;width:72px;border:2px solid var(--ink);border-radius:14px;overflow:hidden;text-align:center;background:#fff}
+.date .m{background:var(--lime);font-weight:800;font-size:12px;letter-spacing:.08em;text-transform:uppercase;border-bottom:2px solid var(--ink);padding:3px 0}
+.date .d{font-size:26px;font-weight:800;line-height:1.1;padding:4px 0 0}
+.date .y{font-size:11px;color:var(--muted);padding-bottom:4px}
+.ev h3{margin:0 0 4px;font-size:18px;line-height:1.25}
+.ev p{margin:6px 0 8px;color:var(--muted);font-size:14px}
+.ev .meta{display:flex;flex-wrap:wrap;gap:6px;font-size:13px}
+.ev a.more{font-weight:800;font-size:13.5px}
+.av{width:52px;height:52px;border-radius:16px;border:2px solid var(--ink);background:var(--lime);display:grid;place-items:center;font-weight:800;font-size:18px;flex:none}
+.tc-top{display:flex;gap:12px;align-items:center}
+.how{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+@media(max-width:699px){.how{grid-template-columns:1fr}}
+.how div{border:2px solid var(--ink);border-radius:16px;padding:12px 14px;background:#fff;font-size:14px}
+.how b{display:block}
+</style>
+</head>
+<body data-page="best-teachers">
+<div id="site-header"></div>
+<section class="phero"><div class="wrap">
+  <span class="lab">📌 Notice Board · ⭐ Best Teachers</span>
+  <h1>Best Teachers in Lahore</h1>
+  <p>Verified teachers picked as Star Teachers by the Tutobridge team, based on parent ratings, results and a document check.</p>
+</div></section>
+<section class="pblk" id="best"><div class="wrap">
+  <h2>How a teacher becomes a Star Teacher</h2>
+  <p class="sub">Every teacher here has passed our document check and been picked as a Star Teacher by the Tutobridge team.</p>
+  <div class="how">
+    <div><b>1. Teacher applies</b>Registers and uploads CNIC and degree.</div>
+    <div><b>2. We verify</b>Our team checks the documents and approves the profile.</div>
+    <div><b>3. Star Teacher</b>Top teachers, based on parent ratings and our review, get the ★ badge.</div>
+  </div>
+  <div id="teachers"><div class="spin"></div></div>
+</div></section>
+<section class="pblk soft"><div class="wrap">
+  <div class="cta-band" style="margin-top:0">
+    <div><b>Are you a great teacher?</b><div style="opacity:.8;font-size:14.5px">Join free during early access, get verified, and earn the ★ Star Teacher badge from parent reviews.</div></div>
+    <div class="btns"><a class="btn" href="/app/#/signup/teacher">Register as a teacher</a><a class="btn out" href="/tutors/">Browse all tutors</a></div>
+  </div>
+</div></section>
+<div id="site-footer"></div>
+<script src="/assets/site.js"></script>
+<script>
+(function () {
+  TB.teachers().then(function (all) {
+    var stars = (all || []).filter(function (t) { return t.is_star_teacher; }).slice(0, 9);
+    document.getElementById('teachers').innerHTML = stars.length ? '<div class="grid">' + stars.map(function (t) {
+      return '<div class="card"><div class="tc-top"><div class="av">' + TB.ini(t.display_name) + '</div><div><h3>' + TB.esc(t.display_name) + '</h3><span class="pill ink">★ Star Teacher</span></div></div>' +
+        '<div class="pills">' + (t.subjects || []).map(function (s) { return '<span class="pill">' + TB.esc(s) + '</span>'; }).join('') + '</div>' +
+        '<div>' + TB.stars(t.rating_avg, t.reviews_count) + '</div>' + (TB.session() ? '<a class="btn sm" href="/app/#/home" style="align-self:flex-start">See profile &amp; chat in the app →</a>' : '<div style="display:flex;gap:8px;align-items:center"><a class="btn sm" href="/app/#/signup/parent">Sign up free to see profile</a><a class="small" href="/app/#/login"><b>Log in</b></a></div>') + '</div>';
+    }).join('') + '</div>' : '<div class="empty"><b>⭐</b><b style="font-size:17px;color:var(--ink)">Our first Star Teachers will be announced here soon.</b>Teachers are added after our team verifies their documents and approves them.<div style="margin-top:14px"><a class="btn" href="/app/#/signup/teacher">Register as a teacher</a></div></div>';
+  }).catch(function () { document.getElementById('teachers').innerHTML = '<div class="empty"><b>⚠️</b>Could not load teachers. Please refresh.</div>'; });
+})();
+</script>
+</body>
+</html>
