@@ -1,5 +1,5 @@
 /* Shared styles for Tutobridge sub-pages: Find a Tutor, Notice Board, Tools */
-:root{--lime:#F6C9D4;--limeD:#E8A5B8;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--soft:#FBF6F7}
+:root{--lime:#FBE39A;--limeD:#F0C95E;--ink:#1F2A37;--muted:#595959;--line:#E5E5E5;--soft:#FCFAF3}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
