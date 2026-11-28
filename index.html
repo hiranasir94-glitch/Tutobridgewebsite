@@ -213,6 +213,13 @@ input.t:focus,textarea.t:focus,select.t:focus{border-color:var(--ink);box-shadow
 .hubc h3{margin:4px 0 0;font-size:19px}
 .hubc p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.5}
 .hubc span.go{margin-top:auto;font-weight:800;font-size:14px}
+.ctaweb.ct2{display:flex;flex-direction:column;gap:14px;max-width:470px}
+.ctaweb.ct2 .tryapp{width:100%;font-size:20px;padding:15px 22px;box-shadow:0 7px 0 #1F2A37}
+.ctaweb.ct2 .tryapp.alt{background:#fff}
+.ctaweb.ct2 .tryapp.alt:hover{background:#FFF9E6}
+.ctalog{align-self:center;font-weight:600;font-size:15px;color:#1F2A37;text-decoration:none;margin-top:2px}
+.ctalog b{text-decoration:underline;text-underline-offset:3px}
+@media(max-width:899px){.ctaweb.ct2{max-width:none}.ctaweb.ct2 .tryapp{font-size:18px;padding:15px 16px}}
 </style>
 
 <style>
@@ -383,7 +390,7 @@ footer .wrap.fcols{display:grid}
 <main id="top"><section class="thero"><span class="sa deco" style="left:2%;bottom:5%;--r:-8deg;--s:0"><svg class="stk " width="70" height="70" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-calculator"/></svg></span><span class="sa deco" style="left:42%;top:9%;--r:6deg;--s:1"><svg class="stk " width="58" height="58" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-bulb"/></svg></span><span class="sa deco" style="left:41%;bottom:6%;--r:0deg;--s:2"><svg class="stk " width="66" height="66" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-pencil"/></svg></span><span class="sa deco" style="right:2%;top:6%;--r:8deg;--s:3"><svg class="stk " width="80" height="80" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-books"/></svg></span><span class="sa deco" style="right:1.5%;bottom:5%;--r:-8deg;--s:4"><svg class="stk " width="60" height="60" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-apple"/></svg></span><span class="sa deco" style="left:30%;top:14%;--r:10deg;--s:2"><svg class="stk " width="30" height="30" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-star"/></svg></span><span class="sa deco" style="left:54%;bottom:12%;--r:-10deg;--s:1"><svg class="stk " width="28" height="28" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-heart"/></svg></span><span class="sa deco" style="left:6%;top:12%;--r:0deg;--s:3"><svg class="stk " width="26" height="26" viewBox="0 0 100 100" aria-hidden="true"><use href="#s-spark"/></svg></span><div class="wrap"><div>
 <span class="eyebrow">📍 Lahore</span>
 <h1>Find a trusted tutor <em>right in your neighbourhood.</em></h1>
-<div class="ctaweb"><a class="tryapp" href="/app/">Use on web →</a></div>
+<div class="ctaweb ct2"><a class="tryapp" href="/app/#/signup/parent">👨‍👩‍👧 Sign Up as a Parent / Student →</a><a class="tryapp alt" href="/app/#/signup/teacher">👩‍🏫 Register as a Teacher →</a><a class="ctalog" href="/app/#/login">I already have an account · <b>Log in</b></a></div>
 <p class="lead">Tutobridge connects parents and students with verified teachers nearby. Search by subject, grade or curriculum, chat first, then book a trial.</p>
 
 <div class="trust"><span>✓ Verified teachers</span><span>💬 Chat before you commit</span><span>🔒 Address kept private</span></div>
